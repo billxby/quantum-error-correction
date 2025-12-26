@@ -23,5 +23,5 @@ if "widgets" in nb.metadata:
 print(f"Writing fixed notebook to: {output_path}")
 with open(output_path, 'w', encoding='utf-8') as f:
     nbformat.write(nb, f)
-    
+
 print("Done! Notebook fixed successfully.")
