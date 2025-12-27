@@ -6,8 +6,8 @@ import os
 
 # Get the directory where this script is located
 script_dir = os.path.dirname(os.path.abspath(__file__))
-notebook_path = os.path.join(script_dir, "gnn_attempt.ipynb")
-output_path = os.path.join(script_dir, "gnn_attempt_fixed.ipynb")
+notebook_path = os.path.join(script_dir, "gnn_attempt_fixed.ipynb")
+output_path = os.path.join(script_dir, "gnn_attempt_fixed2.ipynb")
 
 print(f"Reading notebook from: {notebook_path}")
 
