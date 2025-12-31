@@ -596,7 +596,7 @@ if __name__ == "__main__":
     trained_models = {}
 
     # Progressive training for each distance
-    for d in [3, 5, 7]:
+    for d in [3, 5, 7]:    
         model_path = f"gnn_decoder_d{d}_p{train_p}.pt"
 
         # Check if model already exists
