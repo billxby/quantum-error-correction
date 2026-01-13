@@ -1,0 +1,1353 @@
+"""
+Quantum Error Correction Models and Utilities
+
+This module contains reusable model classes and utility functions for 
+quantum error correction with surface codes, including:
+- STIM circuit generation and MWPM decoding utilities
+- Surface code sampling for training data generation
+- Sparse graph representations for GNN-based decoders
+- GCN (Graph Convolutional Network) decoder implementation
+"""
+
+# ============================================================
+# IMPORTS
+# ============================================================
+
+import stim
+import pymatching
+import numpy as np
+import matplotlib.pyplot as plt
+import torch
+import torch.nn.functional as F
+from torch_geometric.data import Data, Batch
+from torch_geometric.nn import MessagePassing, GATConv, GCNConv
+from torch_geometric.utils import add_self_loops
+from datetime import datetime
+from pathlib import Path
+from tqdm import tqdm
+
+
+# ============================================================
+# STIM & MWPM UTILITIES
+# ============================================================
+
+def surface_code_circuit(p: float, d: int) -> stim.Circuit:
+    """
+    Generate a rotated surface code memory circuit.
+    
+    Args:
+        p: Physical error rate
+        d: Code distance (determines code size and rounds)
+        
+    Returns:
+        stim.Circuit: The generated surface code circuit
+    """
+    return stim.Circuit.generated(
+        "surface_code:rotated_memory_z",
+        rounds=d,
+        distance=d,
+        after_clifford_depolarization=p,
+        after_reset_flip_probability=p,
+        before_measure_flip_probability=p,
+        before_round_data_depolarization=p
+    )
+
+
+def count_logical_errors(circuit: stim.Circuit, num_shots: int) -> int:
+    """
+    Count logical errors using MWPM decoder.
+    
+    Args:
+        circuit: The stim circuit to sample from
+        num_shots: Number of samples to take
+        
+    Returns:
+        int: Number of logical errors (decoder mistakes)
+    """
+    # Sample the circuit
+    sampler = circuit.compile_detector_sampler()
+    detection_events, observable_flips = sampler.sample(num_shots, separate_observables=True)
+
+    # Configure a decoder using the circuit
+    detector_error_model = circuit.detector_error_model(decompose_errors=True)
+    matcher = pymatching.Matching.from_detector_error_model(detector_error_model)
+
+    # Run the decoder
+    predictions = matcher.decode_batch(detection_events)
+
+    # Count the mistakes
+    num_errors = 0
+    for shot in range(num_shots):
+        actual_for_shot = observable_flips[shot]
+        predicted_for_shot = predictions[shot]
+        if not np.array_equal(actual_for_shot, predicted_for_shot):
+            num_errors += 1
+    return num_errors
+
+
+def ler_mwpm(p: float, d: int, num_shots: int = 100000) -> float:
+    """
+    Compute logical error rate using MWPM decoder.
+    
+    Args:
+        p: Physical error rate
+        d: Code distance
+        num_shots: Number of samples (default: 100000)
+        
+    Returns:
+        float: Logical error rate
+    """
+    circuit = surface_code_circuit(p, d)
+    num_errors = count_logical_errors(circuit, num_shots)
+    return num_errors / num_shots
+
+
+def plot_mwpm(distances: list = None, noise_range: tuple = None, num_shots: int = 100000):
+    """
+    Plot MWPM decoder performance across distances and error rates.
+    
+    Args:
+        distances: List of code distances (default: [3, 5, 7])
+        noise_range: Tuple of (min, max, num_points) for noise values
+        num_shots: Number of samples per point
+    """
+    if distances is None:
+        distances = [3, 5, 7]
+    if noise_range is None:
+        noise_range = (0.001, 0.008, 8)
+    
+    for d in distances:
+        xs = []
+        ys = []
+        yerrs = []
+        for noise in np.linspace(*noise_range):
+            ler = ler_mwpm(noise, d, num_shots)
+            xs.append(noise)
+            ys.append(ler)
+            yerrs.append(np.sqrt(ler * (1 - ler) / num_shots))
+        plt.errorbar(xs, ys, yerr=yerrs, label=f'd={d}', capsize=3)
+    
+    plt.loglog()
+    plt.xlabel("physical error rate")
+    plt.ylabel("logical error rate per shot")
+    plt.legend()
+    plt.show()
+
+
+# ============================================================
+# SURFACE CODE SAMPLER
+# ============================================================
+
+class SurfaceCodeSampler:
+    """
+    Sampler class for surface code quantum error correction.
+    
+    This class generates surface code circuits and creates training datasets
+    with configurable error rates. The distance d is specified at sample time,
+    allowing sampling from different distance codes without creating multiple
+    sampler instances.
+    
+    Attributes:
+        default_p (float): Default physical error rate
+        device (torch.device): Device to use for tensors
+    """
+    
+    def __init__(self, p: float = 0.01, device: torch.device = None):
+        """
+        Initialize the sampler.
+        
+        Args:
+            p (float): Default physical error rate (used if not overridden)
+            device (torch.device): Device for tensors (defaults to CUDA if available)
+        """
+        self.default_p = p
+        self.device = device if device else torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        
+        # Cache circuits for different (d, p) values to avoid regenerating
+        self._circuit_cache = {}
+        
+        print(f"SurfaceCodeSampler initialized:")
+        print(f"  Default error rate: {p}")
+        print(f"  Device: {self.device}")
+        print(f"  Mode: Dynamic (supports any code distance)")
+    
+    def _generate_circuit(self, d: int, p: float) -> stim.Circuit:
+        """Generate a surface code circuit with given distance and error rate."""
+        return stim.Circuit.generated(
+            "surface_code:rotated_memory_z",
+            rounds=d,
+            distance=d,
+            after_clifford_depolarization=p,
+            after_reset_flip_probability=p,
+            before_measure_flip_probability=p,
+            before_round_data_depolarization=p
+        )
+    
+    def _get_circuit(self, d: int, p: float) -> stim.Circuit:
+        """Get circuit for a given (d, p), using cache if available."""
+        key = (d, p)
+        if key not in self._circuit_cache:
+            self._circuit_cache[key] = self._generate_circuit(d, p)
+        return self._circuit_cache[key]
+    
+    def get_circuit(self, d: int, p: float = None) -> stim.Circuit:
+        """Return a circuit for given distance and error rate."""
+        if p is None:
+            p = self.default_p
+        return self._get_circuit(d, p)
+    
+    def sample(self, 
+               d: int,
+               num_samples: int,
+               p_values: list = None,
+               p_weights: list = None,
+               return_p_labels: bool = False) -> tuple:
+        """
+        Generate training data samples with configurable error rate distribution.
+        
+        This function generates syndrome detection data and observable flip labels.
+        You can specify multiple error rates with weights to control what percentage
+        of the dataset uses each error rate.
+        
+        Args:
+            d (int): Code distance (determines code size and rounds)
+            num_samples (int): Total number of samples to generate
+            p_values (list[float], optional): Array of physical error rates to use.
+                                              Defaults to [self.default_p].
+            p_weights (list[float], optional): Array of weights (same length as p_values).
+                                               Must sum to 1.0. Determines what fraction
+                                               of samples use each error rate.
+                                               Defaults to [1.0] (all samples at one rate).
+            return_p_labels (bool): If True, also return which p was used for each sample.
+        
+        Returns:
+            tuple: (detections, labels) or (detections, labels, p_indices) if return_p_labels
+                - detections: torch.Tensor [num_samples, num_detectors] syndrome measurements (-1 or +1)
+                - labels: torch.Tensor [num_samples] observable flip labels (0 or 1)
+                - p_indices: torch.Tensor [num_samples] index into p_values for each sample
+        
+        Examples:
+            # Single error rate (uses default p) for distance 3
+            detections, labels = sampler.sample(d=3, num_samples=10000)
+            
+            # Single custom error rate for distance 5
+            detections, labels = sampler.sample(d=5, num_samples=10000, p_values=[0.005], p_weights=[1.0])
+            
+            # Mixed error rates: 50% at p=0.001, 30% at p=0.003, 20% at p=0.005
+            detections, labels = sampler.sample(
+                d=3,
+                num_samples=10000,
+                p_values=[0.001, 0.003, 0.005],
+                p_weights=[0.5, 0.3, 0.2]
+            )
+        """
+        # Handle defaults
+        if p_values is None:
+            p_values = [self.default_p]
+        if p_weights is None:
+            p_weights = [1.0]
+        
+        # Validate inputs
+        if len(p_values) != len(p_weights):
+            raise ValueError(f"p_values and p_weights must have same length. "
+                           f"Got {len(p_values)} and {len(p_weights)}")
+        
+        weight_sum = sum(p_weights)
+        if not np.isclose(weight_sum, 1.0, atol=1e-6):
+            raise ValueError(f"p_weights must sum to 1.0, got {weight_sum}")
+        
+        # Calculate samples per error rate
+        samples_per_p = []
+        remaining = num_samples
+        for i, weight in enumerate(p_weights):
+            if i == len(p_weights) - 1:
+                # Last one gets remaining to handle rounding
+                n = remaining
+            else:
+                n = int(round(num_samples * weight))
+                remaining -= n
+            samples_per_p.append(n)
+        
+        # Generate samples for each error rate
+        all_detections = []
+        all_labels = []
+        all_p_indices = []
+        
+        for i, (p, n) in enumerate(zip(p_values, samples_per_p)):
+            if n <= 0:
+                continue
+                
+            circuit = self._get_circuit(d, p)
+            sampler = circuit.compile_detector_sampler()
+            detections, flips = sampler.sample(n, separate_observables=True)
+            
+            # Convert to tensors
+            # Convert detections: 0 -> -1, 1 -> +1 for easier reading
+            det_np = detections.astype(np.float32) * 2 - 1
+            det_tensor = torch.from_numpy(det_np)
+            label_tensor = torch.from_numpy(flips.astype(np.float32).flatten())
+            
+            all_detections.append(det_tensor)
+            all_labels.append(label_tensor)
+            all_p_indices.append(torch.full((n,), i, dtype=torch.long))
+        
+        # Concatenate all samples
+        detections = torch.cat(all_detections, dim=0).to(self.device)
+        labels = torch.cat(all_labels, dim=0).to(self.device)
+        p_indices = torch.cat(all_p_indices, dim=0).to(self.device)
+        
+        # Shuffle the dataset so error rates are mixed
+        perm = torch.randperm(num_samples, device=self.device)
+        detections = detections[perm]
+        labels = labels[perm]
+        p_indices = p_indices[perm]
+        
+        if return_p_labels:
+            return detections, labels, p_indices
+        return detections, labels
+
+
+# ============================================================
+# SPARSE GRAPH REPRESENTATION
+# ============================================================
+
+class SparseGraph:
+    """
+    Converts syndrome detections into sparse PyTorch Geometric graphs.
+    
+    Following the paper's representation (Figure 3.1):
+    - Only fired detectors become nodes (sparse graph)
+    - Node features: [X?, Z?, d_North, d_West, d_time] (5 features)
+    - Edge weights: e_ij = (max{|d_North_i - d_North_j|, |d_West_i - d_West_j|, |d_time_i - d_time_j|})^(-2)
+    - K-nearest neighbor connectivity for scalability
+    
+    This class dynamically handles detections of any size by inferring the code
+    distance from the number of detectors and generating coordinates on-the-fly.
+    Supports variable-size batches where each sample may come from a different distance.
+    
+    Attributes:
+        k_neighbors (int): Maximum number of neighbors per node
+        device (torch.device): Device for output tensors
+    """
+    
+    def __init__(self, k_neighbors: int = 6, device: torch.device = None):
+        """
+        Initialize the SparseGraph builder.
+        
+        Args:
+            k_neighbors (int): Maximum number of neighbors per node (default 6)
+            device (torch.device): Device for output tensors
+        """
+        self.k_neighbors = k_neighbors
+        self.device = device if device else torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        
+        # Caches for dynamic coordinate/feature computation
+        self._coord_cache = {}    # num_detectors -> detector_coords dict
+        self._feature_cache = {}  # num_detectors -> (all_features, normalization_bounds)
+        
+        print(f"SparseGraph initialized:")
+        print(f"  K neighbors: {k_neighbors}")
+        print(f"  Device: {self.device}")
+        print(f"  Mode: Dynamic (supports any code distance)")
+    
+    @staticmethod
+    def _infer_distance(num_detectors: int) -> int:
+        """
+        Infer code distance from number of detectors.
+        """
+        # Try known mappings first
+        known = {24: 3, 120: 5, 336: 7, 680: 9, 1168: 11}
+        if num_detectors in known:
+            return known[num_detectors]
+        
+        # Otherwise solve: num_stabilizers * d = num_detectors
+        # where num_stabilizers = d^2 - 1 for rotated surface code
+        # So: (d^2 - 1) * d = num_detectors
+        for d in range(3, 50, 2):  # odd distances only
+            if (d * d - 1) * d == num_detectors:
+                return d
+        
+        raise ValueError(f"Cannot infer distance from {num_detectors} detectors")
+    
+    @staticmethod
+    def _generate_detector_coords(distance: int) -> dict:
+        """
+        Generate detector coordinates for a rotated surface code by creating
+        a Stim circuit and extracting the actual detector coordinates.
+        
+        Args:
+            distance: The code distance (must be odd >= 3)
+            
+        Returns:
+            dict mapping detector_id -> [x, y, t, basis]
+            where basis is 0 for Z-stabilizer, 1 for X-stabilizer
+        """
+        # Create a minimal Stim circuit for this distance to get correct coordinates
+        circuit = stim.Circuit.generated(
+            "surface_code:rotated_memory_z",
+            rounds=distance,
+            distance=distance,
+            after_clifford_depolarization=0.001  # Minimal noise, just need structure
+        )
+        
+        # Extract coordinates from Stim (returns dict: det_id -> tuple of coords)
+        stim_coords = circuit.get_detector_coordinates()
+        
+        # Convert to our format: det_id -> [x, y, t, basis]
+        detector_coords = {}
+        for det_id, coords in stim_coords.items():
+            x = coords[0]
+            y = coords[1]
+            t = coords[2] if len(coords) > 2 else 0.0
+            # Determine basis from position (checkerboard pattern)
+            # Convention: (x+y)/2 even -> Z stabilizer, odd -> X stabilizer
+            basis = int(((x + y) / 2) % 2)
+            detector_coords[det_id] = [float(x), float(y), float(t), float(basis)]
+        
+        return detector_coords
+    
+    def _get_coords_and_features(self, num_detectors: int):
+        """
+        Get detector coordinates and precomputed features for a given number of detectors.
+        Uses caching to avoid recomputation.
+        
+        Args:
+            num_detectors: Number of detectors in the detection sample
+            
+        Returns:
+            tuple: (detector_coords, all_features, normalization_bounds)
+        """
+        if num_detectors in self._feature_cache:
+            return self._feature_cache[num_detectors]
+        
+        # Cache miss: compute everything
+        distance = self._infer_distance(num_detectors)
+        
+        # Generate or retrieve coordinates
+        if num_detectors not in self._coord_cache:
+            self._coord_cache[num_detectors] = self._generate_detector_coords(distance)
+        
+        detector_coords = self._coord_cache[num_detectors]
+        
+        # Compute normalization bounds
+        coords = list(detector_coords.values())
+        x_vals = [c[0] for c in coords]
+        y_vals = [c[1] for c in coords]
+        t_vals = [c[2] for c in coords]
+        
+        x_min, x_max = min(x_vals), max(x_vals)
+        y_min, y_max = min(y_vals), max(y_vals)
+        t_min, t_max = min(t_vals), max(t_vals)
+        
+        norm_bounds = {
+            'x_min': x_min, 'x_max': x_max,
+            'y_min': y_min, 'y_max': y_max,
+            't_min': t_min, 't_max': t_max
+        }
+        
+        # Precompute features for all detectors
+        features = []
+        for det_id in range(num_detectors):
+            coord = detector_coords.get(det_id, [0, 0, 0, 0])
+            x, y, t = coord[0], coord[1], coord[2]
+            
+            # Get basis from 4th coordinate
+            if len(coord) >= 4:
+                b = coord[3]
+                is_x = 1.0 if b == 1 else 0.0
+                is_z = 1.0 if b == 0 else 0.0
+            else:
+                # Fallback: checkerboard pattern
+                stabilizer_type = int(((x + y) / 2) % 2)
+                is_x = float(stabilizer_type)
+                is_z = 1.0 - is_x
+            
+            # Normalized distances (0 to 1)
+            d_west = (x - x_min) / max(1, x_max - x_min)
+            d_north = (y - y_min) / max(1, y_max - y_min)
+            d_time = (t - t_min) / max(1, t_max - t_min)
+            
+            features.append([is_x, is_z, d_north, d_west, d_time])
+        
+        all_features = torch.tensor(features, dtype=torch.float32)
+        
+        # Cache the result
+        self._feature_cache[num_detectors] = (detector_coords, all_features, norm_bounds)
+        
+        return detector_coords, all_features, norm_bounds
+    
+    def _supremum_distance(self, feat_i: torch.Tensor, feat_j: torch.Tensor) -> float:
+        """
+        Compute supremum norm distance between two nodes.
+        Uses d_North, d_West, d_time (indices 2, 3, 4 of features).
+        """
+        # Features are [X?, Z?, d_North, d_West, d_time]
+        d_north_diff = abs(feat_i[2] - feat_j[2])
+        d_west_diff = abs(feat_i[3] - feat_j[3])
+        d_time_diff = abs(feat_i[4] - feat_j[4])
+        
+        return max(d_north_diff.item(), d_west_diff.item(), d_time_diff.item())
+    
+    def _compute_edge_weight(self, sup_dist: float) -> float:
+        """
+        Compute edge weight from supremum distance.
+        e_ij = (max_distance)^(-2)
+        """
+        if sup_dist < 1e-9:
+            return 1.0  # Same position, max weight
+        return sup_dist ** (-2)
+    
+    def to_pyg(self, detections: torch.Tensor, label: torch.Tensor) -> Data:
+        """
+        Convert a single detection sample to a PyTorch Geometric Data object.
+        
+        Args:
+            detections: Tensor of shape [num_detectors] with values -1 or +1
+            label: Scalar tensor (0 or 1) for the observable flip
+            
+        Returns:
+            torch_geometric.data.Data with:
+                - x: Node features [num_fired, 5]
+                - edge_index: Edge connectivity [2, num_edges]
+                - edge_attr: Edge weights [num_edges, 1]
+                - y: Label
+        """
+        # Move to CPU for processing
+        detections_cpu = detections.cpu()
+        num_detectors = detections_cpu.shape[0]
+        
+        # Get cached coordinates and features for this detection size
+        _, all_features, _ = self._get_coords_and_features(num_detectors)
+        
+        # Find fired detectors (value == +1)
+        fired_mask = detections_cpu > 0
+        fired_indices = torch.where(fired_mask)[0].tolist()
+        
+        # Handle edge case: no fired detectors
+        if len(fired_indices) == 0:
+            return Data(
+                x=torch.zeros((0, 5), dtype=torch.float32),
+                edge_index=torch.zeros((2, 0), dtype=torch.long),
+                edge_attr=torch.zeros((0, 1), dtype=torch.float32),
+                y=label.cpu().clone()
+            )
+        
+        # Handle edge case: only one fired detector
+        if len(fired_indices) == 1:
+            node_features = all_features[fired_indices]  # List indexing already returns [1, 5]
+            return Data(
+                x=node_features,
+                edge_index=torch.zeros((2, 0), dtype=torch.long),
+                edge_attr=torch.zeros((0, 1), dtype=torch.float32),
+                y=label.cpu().clone()
+            )
+        
+        # Get node features for fired detectors
+        node_features = all_features[fired_indices]
+        num_nodes = len(fired_indices)
+        
+        # Build edges using k-nearest neighbors based on supremum distance
+        edges = []
+        edge_weights = []
+        
+        # Compute pairwise supremum distances
+        for i in range(num_nodes):
+            distances = []
+            for j in range(num_nodes):
+                if i != j:
+                    sup_dist = self._supremum_distance(node_features[i], node_features[j])
+                    distances.append((j, sup_dist))
+            
+            # Sort by distance and take k nearest
+            distances.sort(key=lambda x: x[1])
+            k = min(self.k_neighbors, len(distances))
+            
+            for j, sup_dist in distances[:k]:
+                edges.append([i, j])
+                edge_weights.append(self._compute_edge_weight(sup_dist))
+        
+        # Convert to tensors
+        if len(edges) > 0:
+            edge_index = torch.tensor(edges, dtype=torch.long).t().contiguous()
+            edge_attr = torch.tensor(edge_weights, dtype=torch.float32).unsqueeze(1)
+        else:
+            edge_index = torch.zeros((2, 0), dtype=torch.long)
+            edge_attr = torch.zeros((0, 1), dtype=torch.float32)
+        
+        return Data(
+            x=node_features,
+            edge_index=edge_index,
+            edge_attr=edge_attr,
+            y=label.cpu().clone()
+        )
+    
+    def batch_to_pyg(self, detections: list, labels: list) -> list:
+        """
+        Convert a batch of detection samples to a list of PyG Data objects.
+        Supports variable-size inputs where each detection may have different dimensions.
+        
+        Args:
+            detections: List of tensors, each of shape [num_detectors_i]
+            labels: List of scalar tensors
+            
+        Returns:
+            List of torch_geometric.data.Data objects
+        """
+        return [self.to_pyg(det, lbl) for det, lbl in zip(detections, labels)]
+
+
+def visualize_sparse_graph(graph: Data, title: str = "Sparse Graph Visualization"):
+    """
+    Visualize a PyG sparse graph with node features and edge weights.
+    
+    Node colors: Blue = Z-stabilizer, Red = X-stabilizer
+    Node positions: Based on (d_West, d_North) spatial coordinates
+    Edge thickness: Proportional to edge weight
+    
+    Args:
+        graph: PyTorch Geometric Data object from SparseGraph
+        title: Plot title
+    """
+    import networkx as nx
+    
+    fig, axes = plt.subplots(1, 2, figsize=(14, 6))
+    
+    # Left plot: Graph structure
+    ax1 = axes[0]
+    
+    if graph.x.shape[0] == 0:
+        ax1.text(0.5, 0.5, "No fired detectors\n(empty graph)", 
+                ha='center', va='center', fontsize=14)
+        ax1.set_xlim(0, 1)
+        ax1.set_ylim(0, 1)
+    else:
+        # Create NetworkX graph
+        G = nx.DiGraph()
+        
+        # Add nodes with features
+        for i in range(graph.x.shape[0]):
+            features = graph.x[i].tolist()
+            G.add_node(i, 
+                      is_x=features[0], 
+                      is_z=features[1],
+                      d_north=features[2], 
+                      d_west=features[3], 
+                      d_time=features[4])
+        
+        # Add edges with weights
+        edge_index = graph.edge_index.numpy()
+        edge_weights = graph.edge_attr.numpy().flatten() if graph.edge_attr.shape[0] > 0 else []
+        
+        for idx in range(edge_index.shape[1]):
+            src, dst = edge_index[0, idx], edge_index[1, idx]
+            weight = edge_weights[idx] if idx < len(edge_weights) else 1.0
+            G.add_edge(src, dst, weight=weight)
+        
+        # Position nodes based on spatial coordinates (d_West, d_North)
+        # Add time as a small offset to separate overlapping nodes
+        pos = {}
+        for i in range(graph.x.shape[0]):
+            d_west = graph.x[i, 3].item()
+            d_north = graph.x[i, 2].item()
+            d_time = graph.x[i, 4].item()
+            # Use west as x, north as y, with small time-based jitter
+            pos[i] = (d_west + d_time * 0.05, d_north + d_time * 0.05)
+        
+        # Node colors based on stabilizer type
+        node_colors = ['#e74c3c' if graph.x[i, 0].item() > 0.5 else '#3498db' 
+                      for i in range(graph.x.shape[0])]
+        
+        # Edge widths based on weights (scaled for visibility)
+        if len(edge_weights) > 0:
+            max_weight = max(edge_weights)
+            edge_widths = [1 + 3 * (w / max_weight) for w in edge_weights]
+        else:
+            edge_widths = []
+        
+        # Draw the graph
+        nx.draw_networkx_nodes(G, pos, ax=ax1, node_color=node_colors, 
+                              node_size=500, alpha=0.9, edgecolors='black', linewidths=2)
+        nx.draw_networkx_labels(G, pos, ax=ax1, font_size=10, font_weight='bold')
+        
+        if G.number_of_edges() > 0:
+            nx.draw_networkx_edges(G, pos, ax=ax1, width=edge_widths, 
+                                  alpha=0.6, edge_color='gray',
+                                  arrows=True, arrowsize=15,
+                                  connectionstyle="arc3,rad=0.1")
+        
+        # Legend
+        from matplotlib.patches import Patch
+        legend_elements = [
+            Patch(facecolor='#e74c3c', edgecolor='black', label='X-stabilizer'),
+            Patch(facecolor='#3498db', edgecolor='black', label='Z-stabilizer')
+        ]
+        ax1.legend(handles=legend_elements, loc='upper right')
+        
+        ax1.set_xlabel('d_West (spatial)')
+        ax1.set_ylabel('d_North (spatial)')
+    
+    ax1.set_title(f'{title}\nNodes: {graph.x.shape[0]}, Edges: {graph.edge_index.shape[1]}')
+    ax1.set_aspect('equal', adjustable='box')
+    ax1.grid(True, alpha=0.3)
+    
+    # Right plot: Feature details table
+    ax2 = axes[1]
+    ax2.axis('off')
+    
+    if graph.x.shape[0] > 0:
+        # Create feature table
+        headers = ['Node', 'Type', 'd_North', 'd_West', 'd_Time']
+        cell_data = []
+        for i in range(graph.x.shape[0]):
+            f = graph.x[i].tolist()
+            node_type = 'X' if f[0] > 0.5 else 'Z'
+            cell_data.append([i, node_type, f'{f[2]:.3f}', f'{f[3]:.3f}', f'{f[4]:.3f}'])
+        
+        table = ax2.table(cellText=cell_data, colLabels=headers,
+                         loc='upper center', cellLoc='center',
+                         colColours=['#f0f0f0']*5)
+        table.auto_set_font_size(False)
+        table.set_fontsize(10)
+        table.scale(1.2, 1.5)
+        
+        # Add edge info below the table
+        info_text = f"Label: {graph.y.item():.0f} (Observable flip)\n\n"
+        if graph.edge_index.shape[1] > 0:
+            info_text += "Edge Weights (sample):\n"
+            for idx in range(min(5, graph.edge_index.shape[1])):
+                src = graph.edge_index[0, idx].item()
+                dst = graph.edge_index[1, idx].item()
+                w = graph.edge_attr[idx, 0].item()
+                info_text += f"  {src} -> {dst}: {w:.4f}\n"
+            if graph.edge_index.shape[1] > 5:
+                info_text += f"  ... and {graph.edge_index.shape[1] - 5} more edges"
+        
+        ax2.text(0.5, 0.3, info_text, transform=ax2.transAxes,
+                fontsize=10, verticalalignment='top', horizontalalignment='center',
+                family='monospace')
+    else:
+        ax2.text(0.5, 0.5, "No nodes to display", ha='center', va='center', fontsize=12)
+    
+    ax2.set_title('Node Features & Graph Info')
+    
+    plt.tight_layout()
+    plt.show()
+
+
+# ============================================================
+# GCN MODEL
+# ============================================================
+
+class GCNModel(torch.nn.Module):
+    """
+    Graph Convolutional Network that handles dynamic graph sizes.
+    Uses global mean pooling to produce a single output regardless of input graph size.
+    
+    Supports edge weights (edge_attr) from SparseGraph which are passed through
+    all GCN layers for weighted message passing.
+    """
+    
+    def __init__(self, in_channels: int = 5, hidden_dim: int = 128, num_layers: int = 4):
+        super().__init__()
+        self.in_channels = in_channels
+        self.hidden_dim = hidden_dim
+        self.num_layers = num_layers
+        
+        # GCN layers
+        self.convs = torch.nn.ModuleList()
+        self.convs.append(GCNConv(in_channels, hidden_dim))
+        for _ in range(num_layers - 1):
+            self.convs.append(GCNConv(hidden_dim, hidden_dim))
+        
+        # Batch normalization layers
+        self.bns = torch.nn.ModuleList()
+        for _ in range(num_layers):
+            self.bns.append(torch.nn.BatchNorm1d(hidden_dim))
+        
+        # Classification head (compresses to single output)
+        self.fc1 = torch.nn.Linear(hidden_dim, 64)
+        self.fc2 = torch.nn.Linear(64, 1)
+    
+    def forward(self, data) -> torch.Tensor:
+        x, edge_index = data.x, data.edge_index
+        # Convert edge_attr [N,1] to edge_weight [N] for PyG's GCNConv
+        edge_weight = data.edge_attr.view(-1) if hasattr(data, 'edge_attr') and data.edge_attr is not None else None
+        batch = data.batch if hasattr(data, 'batch') and data.batch is not None else torch.zeros(x.size(0), dtype=torch.long, device=x.device)
+        
+        # Apply GCN layers with batch normalization and activation
+        for conv, bn in zip(self.convs, self.bns):
+            x = conv(x, edge_index, edge_weight)
+            x = bn(x)
+            x = F.silu(x)
+        
+        # Global mean pooling: aggregate node features to graph-level
+        batch_size = int(data.num_graphs) if hasattr(data, 'num_graphs') else int(batch.max().item()) + 1
+        x_pooled = torch.zeros(batch_size, x.size(1), device=x.device)
+        for i in range(batch_size):
+            mask = (batch == i)
+            if mask.sum() > 0:
+                x_pooled[i] = x[mask].mean(dim=0)
+        
+        # Classification layers
+        x = self.fc1(x_pooled)
+        x = F.silu(x)
+        x = self.fc2(x)
+        x = torch.sigmoid(x)
+        
+        return x
+
+
+class GCN:
+    """
+    GCN wrapper class with model lifecycle management.
+    Provides init, train, save, and load functionality with human-readable model tracking.
+    
+    Designed to work with SparseGraph outputs:
+    - Node features: [X?, Z?, d_North, d_West, d_time] (5 features)
+    - Edge weights: distance-based weights
+    
+    Attributes:
+        nickname: Human-readable name for this model instance
+        model: The underlying GCNModel
+        device: Torch device (cuda/cpu)
+        _loaded_from: Path of the loaded model (None if freshly initialized)
+    """
+    
+    MODELS_DIR = Path("models/gcn")
+    
+    def __init__(self, 
+                 nickname: str = "gcn_model",
+                 in_channels: int = 5, 
+                 hidden_dim: int = 128, 
+                 num_layers: int = 4,
+                 device: torch.device = None):
+        """
+        Initialize a new GCN model.
+        
+        Args:
+            nickname: Human-readable name for this model
+            in_channels: Number of input features per node (default 5 for SparseGraph)
+            hidden_dim: Hidden dimension size
+            num_layers: Number of GCN layers
+            device: Torch device (defaults to CUDA if available)
+        """
+        self.nickname = nickname
+        self.device = device if device else torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self._loaded_from = None
+        
+        # Store config for saving/loading
+        self._config = {
+            'in_channels': in_channels,
+            'hidden_dim': hidden_dim,
+            'num_layers': num_layers
+        }
+        
+        # Initialize model
+        self.model = GCNModel(in_channels, hidden_dim, num_layers).to(self.device)
+        
+        # Ensure models directory exists
+        self.MODELS_DIR.mkdir(parents=True, exist_ok=True)
+        
+        print(f"GCN initialized: {self}")
+    
+    def train(self, 
+              graphs: list,
+              epochs: int = 10,
+              batch_size: int = 64,
+              lr: float = 1e-3,
+              verbose: bool = True) -> list:
+        """
+        Train the model on a list of PyG graphs.
+        
+        Args:
+            graphs: List of PyG Data objects (from SparseGraph.batch_to_pyg)
+            epochs: Number of training epochs
+            batch_size: Number of graphs per batch
+            lr: Learning rate
+            verbose: Print training progress
+            
+        Returns:
+            List of loss values per epoch
+        """
+        from torch_geometric.loader import DataLoader
+        
+        # Announce training start
+        if verbose:
+            print(f"\n{'='*50}")
+            print(f"Training: {self}")
+            print(f"{'='*50}")
+            print(f"Epochs: {epochs} | Batch size: {batch_size} | LR: {lr}")
+            print(f"Training samples: {len(graphs)}")
+        
+        loader = DataLoader(graphs, batch_size=batch_size, shuffle=True)
+        total_batches = len(loader) * epochs
+        
+        self.model.train()
+        optimizer = torch.optim.Adam(self.model.parameters(), lr=lr)
+        loss_fn = torch.nn.BCELoss()
+        
+        epoch_losses = []
+        running_loss = 0.0
+        running_acc = 0.0
+        batch_count = 0
+        
+        pbar = tqdm(total=total_batches, desc="Training", disable=not verbose)
+        
+        for epoch in range(epochs):
+            epoch_loss = 0.0
+            epoch_correct = 0
+            epoch_total = 0
+            
+            for batch_data in loader:
+                batch_data = batch_data.to(self.device)
+                pred = self.model(batch_data)
+                y = batch_data.y.float().view(-1, 1)
+                
+                loss = loss_fn(pred, y)
+                optimizer.zero_grad()
+                loss.backward()
+                optimizer.step()
+                
+                # Batch metrics
+                batch_loss = loss.item()
+                batch_acc = ((pred > 0.5).float() == y).float().mean().item() * 100
+                
+                # Running averages (exponential smoothing)
+                running_loss = batch_loss * 0.1 + running_loss * 0.9 if running_loss else batch_loss
+                running_acc = batch_acc * 0.1 + running_acc * 0.9 if running_acc else batch_acc
+                
+                # Accumulate epoch stats
+                epoch_loss += batch_loss
+                epoch_correct += ((pred > 0.5).float() == y).sum().item()
+                epoch_total += y.size(0)
+                
+                batch_count += 1
+                pbar.update(1)
+                
+                # Update display every 10 batches
+                if batch_count % 10 == 0:
+                    pbar.set_postfix({
+                        'epoch': f'{epoch+1}/{epochs}',
+                        'loss': f'{running_loss:.4f}',
+                        'acc': f'{running_acc:.1f}%'
+                    })
+            
+            avg_loss = epoch_loss / len(loader)
+            epoch_losses.append(avg_loss)
+        
+        pbar.close()
+        
+        final_acc = 100.0 * epoch_correct / epoch_total if epoch_total > 0 else 0.0
+        if verbose:
+            print(f"\nTraining complete! Final - Loss: {avg_loss:.4f}, Accuracy: {final_acc:.1f}%")
+        
+        return epoch_losses
+    
+    def save(self, name: str) -> Path:
+        """
+        Save the model with a human-readable timestamp.
+        
+        Args:
+            name: Base name for the saved model
+            
+        Returns:
+            Path to the saved model file
+        """
+        # Create timestamp in human-readable format
+        timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        filename = f"{name}_{timestamp}.pt"
+        filepath = self.MODELS_DIR / filename
+        
+        # Ensure directory exists
+        self.MODELS_DIR.mkdir(parents=True, exist_ok=True)
+        
+        # Save model state and config
+        save_dict = {
+            'state_dict': self.model.state_dict(),
+            'config': self._config,
+            'nickname': self.nickname,
+            'timestamp': timestamp
+        }
+        torch.save(save_dict, filepath)
+        
+        print(f"Model saved to: {filepath}")
+        return filepath
+    
+    def load(self, filepath: str) -> 'GCN':
+        """
+        Load a saved model from disk.
+        
+        Args:
+            filepath: Path to the saved model file (relative to models/gcn or absolute)
+            
+        Returns:
+            self (for chaining)
+        """
+        # Handle relative paths
+        path = Path(filepath)
+        if not path.exists():
+            path = self.MODELS_DIR / filepath
+        
+        if not path.exists():
+            raise FileNotFoundError(f"Model file not found: {filepath}")
+        
+        # Load saved data
+        save_dict = torch.load(path, map_location=self.device, weights_only=False)
+        
+        # Recreate model with saved config
+        config = save_dict['config']
+        self._config = config
+        self.model = GCNModel(
+            in_channels=config['in_channels'],
+            hidden_dim=config['hidden_dim'],
+            num_layers=config['num_layers']
+        ).to(self.device)
+        
+        # Load weights
+        self.model.load_state_dict(save_dict['state_dict'])
+        self.model.eval()
+        
+        # Update tracking
+        self._loaded_from = path.name
+        if 'nickname' in save_dict:
+            self.nickname = save_dict['nickname']
+        
+        print(f"Model loaded: {self}")
+        return self
+    
+    def predict(self, data) -> torch.Tensor:
+        """Run inference on data."""
+        self.model.eval()
+        with torch.no_grad():
+            data = data.to(self.device)
+            return self.model(data)
+    
+    def __repr__(self) -> str:
+        loaded_info = f", loaded_from='{self._loaded_from}'" if self._loaded_from else ""
+        return (f"GCN(nickname='{self.nickname}', "
+                f"in_channels={self._config['in_channels']}, "
+                f"hidden_dim={self._config['hidden_dim']}, "
+                f"num_layers={self._config['num_layers']}"
+                f"{loaded_info})")
+
+
+# ============================================================
+# GAT MODEL
+# ============================================================
+
+class GATModel(torch.nn.Module):
+    """
+    Graph Attention Network that handles dynamic graph sizes.
+    Uses PyTorch Geometric's GATConv with multi-head attention.
+    Uses global mean pooling to produce a single output regardless of input graph size.
+    
+    Supports edge weights (edge_attr) from SparseGraph which are flattened and passed
+    as edge_weight to GATConv layers.
+    """
+    
+    def __init__(self, in_channels: int = 5, hidden_dim: int = 128, num_layers: int = 4, 
+                 heads: int = 4, dropout: float = 0.0):
+        super().__init__()
+        self.in_channels = in_channels
+        self.hidden_dim = hidden_dim
+        self.num_layers = num_layers
+        self.heads = heads
+        self.dropout = dropout
+        
+        # GAT layers with multi-head attention
+        self.convs = torch.nn.ModuleList()
+        
+        # First layer: in_channels -> hidden_dim (with heads, output is heads * hidden_dim if concat=True)
+        # We use hidden_dim // heads to get hidden_dim after concatenation
+        head_dim = hidden_dim // heads
+        self.convs.append(GATConv(in_channels, head_dim, heads=heads, concat=True, 
+                                   dropout=dropout, add_self_loops=True))
+        
+        # Middle and final layers: hidden_dim -> hidden_dim
+        for _ in range(num_layers - 1):
+            self.convs.append(GATConv(hidden_dim, head_dim, heads=heads, concat=True,
+                                       dropout=dropout, add_self_loops=True))
+        
+        # Batch normalization layers
+        self.bns = torch.nn.ModuleList()
+        for _ in range(num_layers):
+            self.bns.append(torch.nn.BatchNorm1d(hidden_dim))
+        
+        # Classification head (compresses to single output)
+        self.fc1 = torch.nn.Linear(hidden_dim, 64)
+        self.fc2 = torch.nn.Linear(64, 1)
+    
+    def forward(self, data) -> torch.Tensor:
+        x, edge_index = data.x, data.edge_index
+        
+        # Handle edge weights: flatten edge_attr to 1D for GATConv
+        edge_weight = None
+        if hasattr(data, 'edge_attr') and data.edge_attr is not None:
+            edge_weight = data.edge_attr.view(-1)
+        
+        batch = data.batch if hasattr(data, 'batch') and data.batch is not None else torch.zeros(x.size(0), dtype=torch.long, device=x.device)
+        
+        # Apply GAT layers with batch normalization and activation
+        for conv, bn in zip(self.convs, self.bns):
+            x = conv(x, edge_index, edge_attr=edge_weight)
+            x = bn(x)
+            x = F.silu(x)
+        
+        # Global mean pooling: aggregate node features to graph-level
+        batch_size = int(data.num_graphs) if hasattr(data, 'num_graphs') else int(batch.max().item()) + 1
+        x_pooled = torch.zeros(batch_size, x.size(1), device=x.device)
+        for i in range(batch_size):
+            mask = (batch == i)
+            if mask.sum() > 0:
+                x_pooled[i] = x[mask].mean(dim=0)
+        
+        # Classification layers
+        x = self.fc1(x_pooled)
+        x = F.silu(x)
+        x = self.fc2(x)
+        x = torch.sigmoid(x)
+        
+        return x
+
+
+class GAT:
+    """
+    GAT wrapper class with model lifecycle management.
+    Provides init, train, save, and load functionality with human-readable model tracking.
+    
+    Designed to work with SparseGraph outputs:
+    - Node features: [X?, Z?, d_North, d_West, d_time] (5 features)
+    - Edge weights: distance-based weights (flattened for GATConv)
+    
+    Attributes:
+        nickname: Human-readable name for this model instance
+        model: The underlying GATModel
+        device: Torch device (cuda/cpu)
+        _loaded_from: Path of the loaded model (None if freshly initialized)
+    """
+    
+    MODELS_DIR = Path("models/gat")
+    
+    def __init__(self, 
+                 nickname: str = "gat_model",
+                 in_channels: int = 5, 
+                 hidden_dim: int = 128, 
+                 num_layers: int = 4,
+                 heads: int = 4,
+                 dropout: float = 0.0,
+                 device: torch.device = None):
+        """
+        Initialize a new GAT model.
+        
+        Args:
+            nickname: Human-readable name for this model
+            in_channels: Number of input features per node (default 5 for SparseGraph)
+            hidden_dim: Hidden dimension size (should be divisible by heads)
+            num_layers: Number of GAT layers
+            heads: Number of attention heads
+            dropout: Dropout rate for attention weights
+            device: Torch device (defaults to CUDA if available)
+        """
+        self.nickname = nickname
+        self.device = device if device else torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self._loaded_from = None
+        
+        # Store config for saving/loading
+        self._config = {
+            'in_channels': in_channels,
+            'hidden_dim': hidden_dim,
+            'num_layers': num_layers,
+            'heads': heads,
+            'dropout': dropout
+        }
+        
+        # Initialize model
+        self.model = GATModel(in_channels, hidden_dim, num_layers, heads, dropout).to(self.device)
+        
+        # Ensure models directory exists
+        self.MODELS_DIR.mkdir(parents=True, exist_ok=True)
+        
+        print(f"GAT initialized: {self}")
+    
+    def train(self, 
+              graphs: list,
+              epochs: int = 10,
+              batch_size: int = 64,
+              lr: float = 1e-3,
+              verbose: bool = True) -> list:
+        """
+        Train the model on a list of PyG graphs.
+        
+        Args:
+            graphs: List of PyG Data objects (from SparseGraph.batch_to_pyg)
+            epochs: Number of training epochs
+            batch_size: Number of graphs per batch
+            lr: Learning rate
+            verbose: Print training progress
+            
+        Returns:
+            List of loss values per epoch
+        """
+        from torch_geometric.loader import DataLoader
+        
+        # Announce training start
+        if verbose:
+            print(f"\n{'='*50}")
+            print(f"Training: {self}")
+            print(f"{'='*50}")
+            print(f"Epochs: {epochs} | Batch size: {batch_size} | LR: {lr}")
+            print(f"Training samples: {len(graphs)}")
+        
+        loader = DataLoader(graphs, batch_size=batch_size, shuffle=True)
+        total_batches = len(loader) * epochs
+        
+        self.model.train()
+        optimizer = torch.optim.Adam(self.model.parameters(), lr=lr)
+        loss_fn = torch.nn.BCELoss()
+        
+        epoch_losses = []
+        running_loss = 0.0
+        running_acc = 0.0
+        batch_count = 0
+        
+        pbar = tqdm(total=total_batches, desc="Training", disable=not verbose)
+        
+        for epoch in range(epochs):
+            epoch_loss = 0.0
+            epoch_correct = 0
+            epoch_total = 0
+            
+            for batch_data in loader:
+                batch_data = batch_data.to(self.device)
+                pred = self.model(batch_data)
+                y = batch_data.y.float().view(-1, 1)
+                
+                loss = loss_fn(pred, y)
+                optimizer.zero_grad()
+                loss.backward()
+                optimizer.step()
+                
+                # Batch metrics
+                batch_loss = loss.item()
+                batch_acc = ((pred > 0.5).float() == y).float().mean().item() * 100
+                
+                # Running averages (exponential smoothing)
+                running_loss = batch_loss * 0.1 + running_loss * 0.9 if running_loss else batch_loss
+                running_acc = batch_acc * 0.1 + running_acc * 0.9 if running_acc else batch_acc
+                
+                # Accumulate epoch stats
+                epoch_loss += batch_loss
+                epoch_correct += ((pred > 0.5).float() == y).sum().item()
+                epoch_total += y.size(0)
+                
+                batch_count += 1
+                pbar.update(1)
+                
+                # Update display every 10 batches
+                if batch_count % 10 == 0:
+                    pbar.set_postfix({
+                        'epoch': f'{epoch+1}/{epochs}',
+                        'loss': f'{running_loss:.4f}',
+                        'acc': f'{running_acc:.1f}%'
+                    })
+            
+            avg_loss = epoch_loss / len(loader)
+            epoch_losses.append(avg_loss)
+        
+        pbar.close()
+        
+        final_acc = 100.0 * epoch_correct / epoch_total if epoch_total > 0 else 0.0
+        if verbose:
+            print(f"\nTraining complete! Final - Loss: {avg_loss:.4f}, Accuracy: {final_acc:.1f}%")
+        
+        return epoch_losses
+    
+    def save(self, name: str) -> Path:
+        """
+        Save the model with a human-readable timestamp.
+        
+        Args:
+            name: Base name for the saved model
+            
+        Returns:
+            Path to the saved model file
+        """
+        # Create timestamp in human-readable format
+        timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        filename = f"{name}_{timestamp}.pt"
+        filepath = self.MODELS_DIR / filename
+        
+        # Ensure directory exists
+        self.MODELS_DIR.mkdir(parents=True, exist_ok=True)
+        
+        # Save model state and config
+        save_dict = {
+            'state_dict': self.model.state_dict(),
+            'config': self._config,
+            'nickname': self.nickname,
+            'timestamp': timestamp
+        }
+        torch.save(save_dict, filepath)
+        
+        print(f"Model saved to: {filepath}")
+        return filepath
+    
+    def load(self, filepath: str) -> 'GAT':
+        """
+        Load a saved model from disk.
+        
+        Args:
+            filepath: Path to the saved model file (relative to models/gat or absolute)
+            
+        Returns:
+            self (for chaining)
+        """
+        # Handle relative paths
+        path = Path(filepath)
+        if not path.exists():
+            path = self.MODELS_DIR / filepath
+        
+        if not path.exists():
+            raise FileNotFoundError(f"Model file not found: {filepath}")
+        
+        # Load saved data
+        save_dict = torch.load(path, map_location=self.device, weights_only=False)
+        
+        # Recreate model with saved config
+        config = save_dict['config']
+        self._config = config
+        self.model = GATModel(
+            in_channels=config['in_channels'],
+            hidden_dim=config['hidden_dim'],
+            num_layers=config['num_layers'],
+            heads=config.get('heads', 4),
+            dropout=config.get('dropout', 0.0)
+        ).to(self.device)
+        
+        # Load weights
+        self.model.load_state_dict(save_dict['state_dict'])
+        self.model.eval()
+        
+        # Update tracking
+        self._loaded_from = path.name
+        if 'nickname' in save_dict:
+            self.nickname = save_dict['nickname']
+        
+        print(f"Model loaded: {self}")
+        return self
+    
+    def predict(self, data) -> torch.Tensor:
+        """Run inference on data."""
+        self.model.eval()
+        with torch.no_grad():
+            data = data.to(self.device)
+            return self.model(data)
+    
+    def __repr__(self) -> str:
+        loaded_info = f", loaded_from='{self._loaded_from}'" if self._loaded_from else ""
+        return (f"GAT(nickname='{self.nickname}', "
+                f"in_channels={self._config['in_channels']}, "
+                f"hidden_dim={self._config['hidden_dim']}, "
+                f"num_layers={self._config['num_layers']}, "
+                f"heads={self._config['heads']}"
+                f"{loaded_info})")
