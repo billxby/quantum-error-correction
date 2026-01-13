@@ -877,24 +877,45 @@ class DatasetCache:
         
         return data_path
     
-    def load(self, name: str) -> 'DatasetCache':
+    def load(self, name: str, verbose: bool = True) -> 'DatasetCache':
         """
         Load a dataset from disk.
         
         Args:
             name: Name of the dataset to load
+            verbose: Print progress information (default: True)
             
         Returns:
             self (for chaining)
         """
+        import os
+        
         data_path = self.datasets_dir / f"{name}.pt"
         meta_path = self.datasets_dir / f"{name}.json"
         
         if not data_path.exists():
             raise FileNotFoundError(f"Dataset not found: {data_path}")
         
-        # Load graphs
-        self.graphs = torch.load(data_path, weights_only=False)
+        # Get file size for progress display
+        file_size_bytes = os.path.getsize(data_path)
+        file_size_mb = file_size_bytes / (1024 * 1024)
+        file_size_gb = file_size_bytes / (1024 * 1024 * 1024)
+        
+        if verbose:
+            if file_size_gb >= 1:
+                size_str = f"{file_size_gb:.2f} GB"
+            else:
+                size_str = f"{file_size_mb:.1f} MB"
+            print(f"Loading dataset '{name}' ({size_str})...")
+        
+        # Load graphs with progress indicator
+        if verbose:
+            with tqdm(total=1, desc=f"  Reading {name}.pt", unit="file", 
+                     bar_format='{desc}: {percentage:3.0f}%|{bar}| [{elapsed}<{remaining}]') as pbar:
+                self.graphs = torch.load(data_path, weights_only=False)
+                pbar.update(1)
+        else:
+            self.graphs = torch.load(data_path, weights_only=False)
         
         # Load metadata if exists
         if meta_path.exists():
@@ -903,12 +924,12 @@ class DatasetCache:
         else:
             self.config = {'name': name, 'n_samples': len(self.graphs)}
         
-        print(f"Dataset loaded: {name}")
-        print(f"  Samples: {len(self.graphs):,}")
-        if 'd' in self.config:
-            print(f"  Distance: {self.config['d']}")
-        if 'p_values' in self.config:
-            print(f"  Error rates: {self.config['p_values']}")
+        if verbose:
+            print(f"  Loaded {len(self.graphs):,} graphs")
+            if 'd' in self.config:
+                print(f"  Distance: d={self.config['d']}")
+            if 'p_values' in self.config:
+                print(f"  Error rates: {self.config['p_values']}")
         
         return self
     
