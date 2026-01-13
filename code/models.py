@@ -1417,12 +1417,12 @@ class GATModel(torch.nn.Module):
         # We use hidden_dim // heads to get hidden_dim after concatenation
         head_dim = hidden_dim // heads
         self.convs.append(GATConv(in_channels, head_dim, heads=heads, concat=True,
-                                   dropout=dropout, add_self_loops=True, share_weights=True))
+                                   dropout=dropout, add_self_loops=True))
 
         # Middle and final layers: hidden_dim -> hidden_dim
         for _ in range(num_layers - 1):
             self.convs.append(GATConv(hidden_dim, head_dim, heads=heads, concat=True,
-                                       dropout=dropout, add_self_loops=True, share_weights=True))
+                                       dropout=dropout, add_self_loops=True))
 
         # Batch normalization layers
         self.bns = torch.nn.ModuleList()
