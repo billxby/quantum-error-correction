@@ -1229,7 +1229,13 @@ class GCN:
             print(f"Epochs: {epochs} | Batch size: {batch_size} | LR: {lr}")
             print(f"Training samples: {len(graphs)}")
 
-        loader = DataLoader(graphs, batch_size=batch_size, shuffle=True)
+        loader = DataLoader(
+            graphs,
+            batch_size=batch_size,
+            shuffle=True,
+            num_workers=0,
+            pin_memory=True,
+        )
         total_batches = len(loader) * epochs
 
         self.model.train()
@@ -1564,7 +1570,13 @@ class GAT:
             print(f"Epochs: {epochs} | Batch size: {batch_size} | LR: {lr}")
             print(f"Training samples: {len(graphs)}")
 
-        loader = DataLoader(graphs, batch_size=batch_size, shuffle=True)
+        loader = DataLoader(
+            graphs,
+            batch_size=batch_size,
+            shuffle=True,
+            num_workers=0,
+            pin_memory=True,
+        )
         total_batches = len(loader) * epochs
 
         self.model.train()
@@ -1963,7 +1975,13 @@ class GraphSAGE:
             print(f"Epochs: {epochs} | Batch size: {batch_size} | LR: {lr}")
             print(f"Training samples: {len(graphs)}")
 
-        loader = DataLoader(graphs, batch_size=batch_size, shuffle=True)
+        loader = DataLoader(
+            graphs,
+            batch_size=batch_size,
+            shuffle=True,
+            num_workers=0,
+            pin_memory=True,
+        )
         total_batches = len(loader) * epochs
 
         self.model.train()
@@ -2311,7 +2329,13 @@ class GIN:
             print(f"Epochs: {epochs} | Batch size: {batch_size} | LR: {lr}")
             print(f"Training samples: {len(graphs)}")
 
-        loader = DataLoader(graphs, batch_size=batch_size, shuffle=True)
+        loader = DataLoader(
+            graphs,
+            batch_size=batch_size,
+            shuffle=True,
+            num_workers=0,
+            pin_memory=True,
+        )
         total_batches = len(loader) * epochs
 
         self.model.train()
