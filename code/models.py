@@ -810,17 +810,17 @@ class GCN:
         nickname: Human-readable name for this model instance
         model: The underlying GCNModel
         device: Torch device (cuda/cpu)
+        models_dir: Directory for saving/loading models
         _loaded_from: Path of the loaded model (None if freshly initialized)
     """
-    
-    MODELS_DIR = Path("models/gcn")
     
     def __init__(self, 
                  nickname: str = "gcn_model",
                  in_channels: int = 5, 
                  hidden_dim: int = 128, 
                  num_layers: int = 4,
-                 device: torch.device = None):
+                 device: torch.device = None,
+                 base_path: Path = None):
         """
         Initialize a new GCN model.
         
@@ -830,10 +830,14 @@ class GCN:
             hidden_dim: Hidden dimension size
             num_layers: Number of GCN layers
             device: Torch device (defaults to CUDA if available)
+            base_path: Base path for model storage (defaults to current directory)
         """
         self.nickname = nickname
         self.device = device if device else torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self._loaded_from = None
+        
+        # Set models directory based on base_path
+        self.models_dir = (base_path or Path(".")) / "models" / "gcn"
         
         # Store config for saving/loading
         self._config = {
@@ -846,7 +850,7 @@ class GCN:
         self.model = GCNModel(in_channels, hidden_dim, num_layers).to(self.device)
         
         # Ensure models directory exists
-        self.MODELS_DIR.mkdir(parents=True, exist_ok=True)
+        self.models_dir.mkdir(parents=True, exist_ok=True)
         
         print(f"GCN initialized: {self}")
     
@@ -956,10 +960,10 @@ class GCN:
         # Create timestamp in human-readable format
         timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         filename = f"{name}_{timestamp}.pt"
-        filepath = self.MODELS_DIR / filename
+        filepath = self.models_dir / filename
         
         # Ensure directory exists
-        self.MODELS_DIR.mkdir(parents=True, exist_ok=True)
+        self.models_dir.mkdir(parents=True, exist_ok=True)
         
         # Save model state and config
         save_dict = {
@@ -986,7 +990,7 @@ class GCN:
         # Handle relative paths
         path = Path(filepath)
         if not path.exists():
-            path = self.MODELS_DIR / filepath
+            path = self.models_dir / filepath
         
         if not path.exists():
             raise FileNotFoundError(f"Model file not found: {filepath}")
@@ -1123,10 +1127,9 @@ class GAT:
         nickname: Human-readable name for this model instance
         model: The underlying GATModel
         device: Torch device (cuda/cpu)
+        models_dir: Directory for saving/loading models
         _loaded_from: Path of the loaded model (None if freshly initialized)
     """
-    
-    MODELS_DIR = Path("models/gat")
     
     def __init__(self, 
                  nickname: str = "gat_model",
@@ -1135,7 +1138,8 @@ class GAT:
                  num_layers: int = 4,
                  heads: int = 4,
                  dropout: float = 0.0,
-                 device: torch.device = None):
+                 device: torch.device = None,
+                 base_path: Path = None):
         """
         Initialize a new GAT model.
         
@@ -1147,10 +1151,14 @@ class GAT:
             heads: Number of attention heads
             dropout: Dropout rate for attention weights
             device: Torch device (defaults to CUDA if available)
+            base_path: Base path for model storage (defaults to current directory)
         """
         self.nickname = nickname
         self.device = device if device else torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self._loaded_from = None
+        
+        # Set models directory based on base_path
+        self.models_dir = (base_path or Path(".")) / "models" / "gat"
         
         # Store config for saving/loading
         self._config = {
@@ -1165,7 +1173,7 @@ class GAT:
         self.model = GATModel(in_channels, hidden_dim, num_layers, heads, dropout).to(self.device)
         
         # Ensure models directory exists
-        self.MODELS_DIR.mkdir(parents=True, exist_ok=True)
+        self.models_dir.mkdir(parents=True, exist_ok=True)
         
         print(f"GAT initialized: {self}")
     
@@ -1275,10 +1283,10 @@ class GAT:
         # Create timestamp in human-readable format
         timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         filename = f"{name}_{timestamp}.pt"
-        filepath = self.MODELS_DIR / filename
+        filepath = self.models_dir / filename
         
         # Ensure directory exists
-        self.MODELS_DIR.mkdir(parents=True, exist_ok=True)
+        self.models_dir.mkdir(parents=True, exist_ok=True)
         
         # Save model state and config
         save_dict = {
@@ -1305,7 +1313,7 @@ class GAT:
         # Handle relative paths
         path = Path(filepath)
         if not path.exists():
-            path = self.MODELS_DIR / filepath
+            path = self.models_dir / filepath
         
         if not path.exists():
             raise FileNotFoundError(f"Model file not found: {filepath}")
