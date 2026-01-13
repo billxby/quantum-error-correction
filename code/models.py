@@ -20,11 +20,12 @@ import matplotlib.pyplot as plt
 import torch
 import torch.nn.functional as F
 from torch_geometric.data import Data, Batch
-from torch_geometric.nn import MessagePassing, GATConv, GCNConv
+from torch_geometric.nn import MessagePassing, GATConv, GCNConv, SAGEConv, GINEConv
 from torch_geometric.utils import add_self_loops
 from datetime import datetime
 from pathlib import Path
 from tqdm import tqdm
+import json
 
 
 # ============================================================
@@ -501,6 +502,8 @@ class SparseGraph:
         """
         Convert a single detection sample to a PyTorch Geometric Data object.
         
+        Uses vectorized k-NN computation for ~10-30x speedup over naive loops.
+        
         Args:
             detections: Tensor of shape [num_detectors] with values -1 or +1
             label: Scalar tensor (0 or 1) for the observable flip
@@ -521,10 +524,11 @@ class SparseGraph:
         
         # Find fired detectors (value == +1)
         fired_mask = detections_cpu > 0
-        fired_indices = torch.where(fired_mask)[0].tolist()
+        fired_indices = torch.where(fired_mask)[0]
+        num_nodes = fired_indices.shape[0]
         
         # Handle edge case: no fired detectors
-        if len(fired_indices) == 0:
+        if num_nodes == 0:
             return Data(
                 x=torch.zeros((0, 5), dtype=torch.float32),
                 edge_index=torch.zeros((2, 0), dtype=torch.long),
@@ -532,9 +536,11 @@ class SparseGraph:
                 y=label.cpu().clone()
             )
         
+        # Get node features for fired detectors
+        node_features = all_features[fired_indices]
+        
         # Handle edge case: only one fired detector
-        if len(fired_indices) == 1:
-            node_features = all_features[fired_indices]  # List indexing already returns [1, 5]
+        if num_nodes == 1:
             return Data(
                 x=node_features,
                 edge_index=torch.zeros((2, 0), dtype=torch.long),
@@ -542,37 +548,36 @@ class SparseGraph:
                 y=label.cpu().clone()
             )
         
-        # Get node features for fired detectors
-        node_features = all_features[fired_indices]
-        num_nodes = len(fired_indices)
+        # === VECTORIZED k-NN with supremum (L-infinity) distance ===
+        # Extract spatial coordinates: d_north, d_west, d_time (indices 2, 3, 4)
+        coords = node_features[:, 2:5]  # [n, 3]
         
-        # Build edges using k-nearest neighbors based on supremum distance
-        edges = []
-        edge_weights = []
+        # Compute pairwise L-infinity (supremum) distance using broadcasting
+        # diff[i, j, k] = coords[i, k] - coords[j, k]
+        diff = coords.unsqueeze(0) - coords.unsqueeze(1)  # [n, n, 3]
+        sup_dist = diff.abs().max(dim=2).values  # [n, n] pairwise supremum distances
         
-        # Compute pairwise supremum distances
-        for i in range(num_nodes):
-            distances = []
-            for j in range(num_nodes):
-                if i != j:
-                    sup_dist = self._supremum_distance(node_features[i], node_features[j])
-                    distances.append((j, sup_dist))
-            
-            # Sort by distance and take k nearest
-            distances.sort(key=lambda x: x[1])
-            k = min(self.k_neighbors, len(distances))
-            
-            for j, sup_dist in distances[:k]:
-                edges.append([i, j])
-                edge_weights.append(self._compute_edge_weight(sup_dist))
+        # Exclude self-connections by setting diagonal to infinity
+        sup_dist.fill_diagonal_(float('inf'))
         
-        # Convert to tensors
-        if len(edges) > 0:
-            edge_index = torch.tensor(edges, dtype=torch.long).t().contiguous()
-            edge_attr = torch.tensor(edge_weights, dtype=torch.float32).unsqueeze(1)
-        else:
-            edge_index = torch.zeros((2, 0), dtype=torch.long)
-            edge_attr = torch.zeros((0, 1), dtype=torch.float32)
+        # Determine actual k (can't have more neighbors than nodes - 1)
+        k = min(self.k_neighbors, num_nodes - 1)
+        
+        # Get k-nearest neighbors for each node (smallest distances)
+        # topk with largest=False gives k smallest values
+        _, knn_indices = sup_dist.topk(k, largest=False, dim=1)  # [n, k]
+        
+        # Build edge_index vectorized
+        # src: each node repeated k times [0,0,...,0, 1,1,...,1, ..., n-1,n-1,...,n-1]
+        # dst: the k nearest neighbors for each node
+        src = torch.arange(num_nodes).unsqueeze(1).expand(-1, k).flatten()  # [n*k]
+        dst = knn_indices.flatten()  # [n*k]
+        edge_index = torch.stack([src, dst], dim=0).long()  # [2, n*k]
+        
+        # Compute edge weights vectorized: w = sup_dist^(-2), clamped to max 1.0
+        edge_distances = sup_dist[src, dst]  # [n*k]
+        # Handle near-zero distances (same position) by clamping
+        edge_attr = (edge_distances ** -2).clamp(max=1.0).unsqueeze(1)  # [n*k, 1]
         
         return Data(
             x=node_features,
@@ -733,6 +738,335 @@ def visualize_sparse_graph(graph: Data, title: str = "Sparse Graph Visualization
     plt.tight_layout()
     plt.show()
 
+# ============================================================
+# DATASET CACHE
+# ============================================================
+
+class DatasetCache:
+    """
+    Cache manager for pre-generated PyG graph datasets.
+    
+    This class handles the generation, storage, and retrieval of training datasets
+    for GNN-based quantum error correction decoders. It eliminates the need to
+    regenerate graphs on every training run by caching them to disk.
+    
+    Features:
+    - Generate datasets with configurable distance, error rates, and sample sizes
+    - Save/load datasets to/from disk with metadata
+    - Incrementally grow datasets with ensure_size()
+    - List and manage cached datasets
+    
+    Attributes:
+        graphs (list): List of PyG Data objects
+        config (dict): Dataset configuration metadata
+        datasets_dir (Path): Directory for cached datasets
+    """
+    
+    def __init__(self, base_path: Path = None, device: torch.device = None):
+        """
+        Initialize the DatasetCache.
+        
+        Args:
+            base_path: Base path for dataset storage (defaults to current directory)
+            device: Torch device for generation (defaults to CUDA if available)
+        """
+        self.device = device if device else torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self.datasets_dir = (base_path or Path(".")) / "datasets"
+        self.datasets_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Current dataset state
+        self.graphs = []
+        self.config = {}
+    
+    def generate(
+        self,
+        d: int,
+        n_samples: int,
+        p_values: list,
+        p_weights: list,
+        k_neighbors: int = 6,
+        verbose: bool = True
+    ) -> 'DatasetCache':
+        """
+        Generate a new dataset of PyG graphs.
+        
+        Args:
+            d: Code distance
+            n_samples: Number of samples to generate
+            p_values: List of physical error rates
+            p_weights: Weights for error rate distribution (must sum to 1.0)
+            k_neighbors: K-neighbors for SparseGraph (default: 6)
+            verbose: Print progress information
+            
+        Returns:
+            self (for chaining)
+        """
+        if verbose:
+            print(f"\n{'='*60}")
+            print(f"Generating dataset: d={d}, n_samples={n_samples:,}")
+            print(f"Error rates: {p_values} (weights: {p_weights})")
+            print(f"{'='*60}")
+        
+        # Store configuration
+        self.config = {
+            'd': d,
+            'n_samples': n_samples,
+            'p_values': p_values,
+            'p_weights': p_weights,
+            'k_neighbors': k_neighbors,
+            'generated_at': datetime.now().isoformat()
+        }
+        
+        # Initialize sampler and graph builder
+        sampler = SurfaceCodeSampler(p=p_values[0], device=self.device)
+        graph_builder = SparseGraph(k_neighbors=k_neighbors, device=self.device)
+        
+        # Generate samples
+        if verbose:
+            print(f"\nSampling {n_samples:,} detection events...")
+        
+        detections, labels = sampler.sample(
+            d=d,
+            num_samples=n_samples,
+            p_values=p_values,
+            p_weights=p_weights
+        )
+        
+        # Convert to graphs with progress bar
+        if verbose:
+            print(f"Converting to PyG graphs...")
+        
+        self.graphs = []
+        with tqdm(total=n_samples, desc="Converting", unit="graph", 
+                  disable=not verbose, dynamic_ncols=True) as pbar:
+            for i in range(n_samples):
+                graph = graph_builder.to_pyg(detections[i], labels[i])
+                self.graphs.append(graph)
+                pbar.update(1)
+        
+        if verbose:
+            print(f"\nGenerated {len(self.graphs):,} graphs")
+        
+        return self
+    
+    def save(self, name: str) -> Path:
+        """
+        Save the dataset to disk with metadata.
+        
+        Args:
+            name: Name for the dataset (e.g., 'd5_baseline')
+            
+        Returns:
+            Path to the saved dataset file
+        """
+        if not self.graphs:
+            raise ValueError("No graphs to save. Call generate() first.")
+        
+        # Save graphs
+        data_path = self.datasets_dir / f"{name}.pt"
+        torch.save(self.graphs, data_path)
+        
+        # Save metadata
+        meta_path = self.datasets_dir / f"{name}.json"
+        with open(meta_path, 'w') as f:
+            json.dump(self.config, f, indent=2)
+        
+        print(f"Dataset saved: {data_path}")
+        print(f"  Metadata: {meta_path}")
+        print(f"  Samples: {len(self.graphs):,}")
+        
+        return data_path
+    
+    def load(self, name: str, verbose: bool = True) -> 'DatasetCache':
+        """
+        Load a dataset from disk.
+        
+        Args:
+            name: Name of the dataset to load
+            verbose: Print progress information (default: True)
+            
+        Returns:
+            self (for chaining)
+        """
+        import os
+        
+        data_path = self.datasets_dir / f"{name}.pt"
+        meta_path = self.datasets_dir / f"{name}.json"
+        
+        if not data_path.exists():
+            raise FileNotFoundError(f"Dataset not found: {data_path}")
+        
+        # Get file size for progress display
+        file_size_bytes = os.path.getsize(data_path)
+        file_size_mb = file_size_bytes / (1024 * 1024)
+        file_size_gb = file_size_bytes / (1024 * 1024 * 1024)
+        
+        if verbose:
+            if file_size_gb >= 1:
+                size_str = f"{file_size_gb:.2f} GB"
+            else:
+                size_str = f"{file_size_mb:.1f} MB"
+            print(f"Loading dataset '{name}' ({size_str})...")
+        
+        # Load graphs (mmap=True speeds up loading for large files)
+        if verbose:
+            print(f"  Reading {name}.pt (this may take a while for large files)...")
+        self.graphs = torch.load(data_path, weights_only=False, mmap=True)
+        
+        # Load metadata if exists
+        if meta_path.exists():
+            with open(meta_path, 'r') as f:
+                self.config = json.load(f)
+        else:
+            self.config = {'name': name, 'n_samples': len(self.graphs)}
+        
+        if verbose:
+            print(f"  Loaded {len(self.graphs):,} graphs")
+            if 'd' in self.config:
+                print(f"  Distance: d={self.config['d']}")
+            if 'p_values' in self.config:
+                print(f"  Error rates: {self.config['p_values']}")
+        
+        return self
+    
+    def ensure_size(self, n: int, verbose: bool = True) -> 'DatasetCache':
+        """
+        Ensure the dataset has at least n samples, generating more if needed.
+        
+        Args:
+            n: Minimum number of samples required
+            verbose: Print progress information
+            
+        Returns:
+            self (for chaining)
+        """
+        current_size = len(self.graphs)
+        
+        if current_size >= n:
+            if verbose:
+                print(f"Dataset already has {current_size:,} samples (requested {n:,})")
+            return self
+        
+        # Need to generate more
+        needed = n - current_size
+        
+        if not self.config or 'd' not in self.config:
+            raise ValueError("Cannot grow dataset without config. Load a dataset first or call generate().")
+        
+        if verbose:
+            print(f"\n{'='*60}")
+            print(f"Growing dataset: {current_size:,} -> {n:,} (+{needed:,})")
+            print(f"{'='*60}")
+        
+        # Generate additional samples
+        d = self.config['d']
+        p_values = self.config['p_values']
+        p_weights = self.config['p_weights']
+        k_neighbors = self.config.get('k_neighbors', 6)
+        
+        sampler = SurfaceCodeSampler(p=p_values[0], device=self.device)
+        graph_builder = SparseGraph(k_neighbors=k_neighbors, device=self.device)
+        
+        if verbose:
+            print(f"\nSampling {needed:,} additional detection events...")
+        
+        detections, labels = sampler.sample(
+            d=d,
+            num_samples=needed,
+            p_values=p_values,
+            p_weights=p_weights
+        )
+        
+        if verbose:
+            print(f"Converting to PyG graphs...")
+        
+        with tqdm(total=needed, desc="Converting", unit="graph",
+                  disable=not verbose, dynamic_ncols=True) as pbar:
+            for i in range(needed):
+                graph = graph_builder.to_pyg(detections[i], labels[i])
+                self.graphs.append(graph)
+                pbar.update(1)
+        
+        # Update config
+        self.config['n_samples'] = len(self.graphs)
+        self.config['last_grown'] = datetime.now().isoformat()
+        
+        if verbose:
+            print(f"\nDataset now has {len(self.graphs):,} samples")
+        
+        return self
+    
+    def get_graphs(self, n: int = None, shuffle: bool = False) -> list:
+        """
+        Get graphs from the dataset.
+        
+        Args:
+            n: Number of graphs to return (None = all)
+            shuffle: Whether to shuffle before returning
+            
+        Returns:
+            List of PyG Data objects
+        """
+        import random
+        
+        graphs = self.graphs.copy() if shuffle else self.graphs
+        
+        if shuffle:
+            random.shuffle(graphs)
+        
+        if n is not None:
+            return graphs[:n]
+        return graphs
+    
+    def size(self) -> int:
+        """Return the number of graphs in the dataset."""
+        return len(self.graphs)
+    
+    @classmethod
+    def list_datasets(cls, base_path: Path = None) -> list:
+        """
+        List all cached datasets.
+        
+        Args:
+            base_path: Base path for dataset storage
+            
+        Returns:
+            List of dicts with dataset info
+        """
+        datasets_dir = (base_path or Path(".")) / "datasets"
+        
+        if not datasets_dir.exists():
+            return []
+        
+        datasets = []
+        for pt_file in datasets_dir.glob("*.pt"):
+            name = pt_file.stem
+            meta_path = datasets_dir / f"{name}.json"
+            
+            info = {
+                'name': name,
+                'path': str(pt_file),
+                'size_mb': pt_file.stat().st_size / (1024 * 1024)
+            }
+            
+            if meta_path.exists():
+                with open(meta_path, 'r') as f:
+                    meta = json.load(f)
+                info.update(meta)
+            
+            datasets.append(info)
+        
+        return datasets
+    
+    def __repr__(self) -> str:
+        if self.config:
+            return (f"DatasetCache(n_samples={len(self.graphs):,}, "
+                    f"d={self.config.get('d', '?')}, "
+                    f"p_values={self.config.get('p_values', '?')})")
+        return f"DatasetCache(n_samples={len(self.graphs):,})"
+    
+    def __len__(self) -> int:
+        return len(self.graphs)
 
 # ============================================================
 # GCN MODEL
@@ -820,7 +1154,8 @@ class GCN:
                  hidden_dim: int = 128, 
                  num_layers: int = 4,
                  device: torch.device = None,
-                 base_path: Path = None):
+                 base_path: Path = None,
+                 seed: int = None):
         """
         Initialize a new GCN model.
         
@@ -831,6 +1166,7 @@ class GCN:
             num_layers: Number of GCN layers
             device: Torch device (defaults to CUDA if available)
             base_path: Base path for model storage (defaults to current directory)
+            seed: Random seed for reproducibility (default: None, no seeding)
         """
         self.nickname = nickname
         self.device = device if device else torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -843,8 +1179,18 @@ class GCN:
         self._config = {
             'in_channels': in_channels,
             'hidden_dim': hidden_dim,
-            'num_layers': num_layers
+            'num_layers': num_layers,
+            'seed': seed
         }
+        
+        # Set random seeds for reproducibility before model initialization
+        if seed is not None:
+            import random
+            torch.manual_seed(seed)
+            np.random.seed(seed)
+            random.seed(seed)
+            if torch.cuda.is_available():
+                torch.cuda.manual_seed_all(seed)
         
         # Initialize model
         self.model = GCNModel(in_channels, hidden_dim, num_layers).to(self.device)
@@ -1139,7 +1485,8 @@ class GAT:
                  heads: int = 4,
                  dropout: float = 0.0,
                  device: torch.device = None,
-                 base_path: Path = None):
+                 base_path: Path = None,
+                 seed: int = None):
         """
         Initialize a new GAT model.
         
@@ -1152,6 +1499,7 @@ class GAT:
             dropout: Dropout rate for attention weights
             device: Torch device (defaults to CUDA if available)
             base_path: Base path for model storage (defaults to current directory)
+            seed: Random seed for reproducibility (default: None, no seeding)
         """
         self.nickname = nickname
         self.device = device if device else torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -1166,8 +1514,18 @@ class GAT:
             'hidden_dim': hidden_dim,
             'num_layers': num_layers,
             'heads': heads,
-            'dropout': dropout
+            'dropout': dropout,
+            'seed': seed
         }
+        
+        # Set random seeds for reproducibility before model initialization
+        if seed is not None:
+            import random
+            torch.manual_seed(seed)
+            np.random.seed(seed)
+            random.seed(seed)
+            if torch.cuda.is_available():
+                torch.cuda.manual_seed_all(seed)
         
         # Initialize model
         self.model = GATModel(in_channels, hidden_dim, num_layers, heads, dropout).to(self.device)
@@ -1359,3 +1717,752 @@ class GAT:
                 f"num_layers={self._config['num_layers']}, "
                 f"heads={self._config['heads']}"
                 f"{loaded_info})")
+
+
+# ============================================================
+# GraphSAGE MODEL
+# ============================================================
+
+class WeightedSAGEConv(MessagePassing):
+    """
+    GraphSAGE convolution with edge weight support.
+    
+    Standard SAGEConv does not support edge weights. This custom layer follows
+    the GraphSAGE approach (aggregate neighbors then concatenate with self)
+    but incorporates edge weights into the aggregation.
+    
+    Formula:
+    h_v = W * [h_v || weighted_agg(h_u * w_uv for u in N(v))]
+    
+    where weighted_agg performs weighted mean aggregation.
+    """
+    
+    def __init__(self, in_channels: int, out_channels: int, normalize: bool = False, 
+                 root_weight: bool = True, bias: bool = True, **kwargs):
+        kwargs.setdefault('aggr', 'add')  # Use 'add' for weighted mean
+        super().__init__(**kwargs)
+        
+        self.in_channels = in_channels
+        self.out_channels = out_channels
+        self.normalize = normalize
+        self.root_weight = root_weight
+        
+        # Linear transformation for concatenated [self || neighbors]
+        if root_weight:
+            self.lin = torch.nn.Linear(in_channels * 2, out_channels, bias=bias)
+        else:
+            self.lin = torch.nn.Linear(in_channels, out_channels, bias=bias)
+        
+        self.reset_parameters()
+    
+    def reset_parameters(self):
+        self.lin.reset_parameters()
+    
+    def forward(self, x, edge_index, edge_weight=None):
+        # Compute weighted sum of neighbors
+        # If edge_weight is None, fall back to unweighted sum
+        out = self.propagate(edge_index, x=x, edge_weight=edge_weight)
+        
+        # Normalize by degree (weighted degree if edge_weight provided)
+        if edge_weight is not None:
+            # Compute weighted degree for each node
+            row, col = edge_index
+            deg = torch.zeros(x.size(0), device=x.device)
+            deg.scatter_add_(0, row, edge_weight)
+            deg = deg.clamp(min=1)  # Avoid division by zero
+            out = out / deg.view(-1, 1)
+        else:
+            # Compute regular degree
+            from torch_geometric.utils import degree
+            row, col = edge_index
+            deg = degree(row, x.size(0), dtype=x.dtype)
+            deg = deg.clamp(min=1)
+            out = out / deg.view(-1, 1)
+        
+        # Concatenate self with aggregated neighbors (GraphSAGE style)
+        if self.root_weight:
+            out = torch.cat([x, out], dim=-1)
+        
+        out = self.lin(out)
+        
+        if self.normalize:
+            out = F.normalize(out, p=2, dim=-1)
+        
+        return out
+    
+    def message(self, x_j, edge_weight):
+        # Weight neighbor features by edge weight
+        if edge_weight is not None:
+            return x_j * edge_weight.view(-1, 1)
+        return x_j
+    
+    def __repr__(self):
+        return f'{self.__class__.__name__}({self.in_channels}, {self.out_channels})'
+
+
+class GraphSAGEModel(torch.nn.Module):
+    """
+    GraphSAGE (Graph SAmple and aggreGatE) model that handles dynamic graph sizes.
+    Uses custom WeightedSAGEConv layers that support edge weights.
+    Uses global mean pooling to produce a single output regardless of input graph size.
+    
+    Key difference from GCN: GraphSAGE concatenates aggregated neighbor features
+    with the node's own features, then applies a linear transformation.
+    
+    Supports edge weights from SparseGraph for weighted neighbor aggregation.
+    """
+    
+    def __init__(self, in_channels: int = 5, hidden_dim: int = 128, num_layers: int = 4):
+        super().__init__()
+        self.in_channels = in_channels
+        self.hidden_dim = hidden_dim
+        self.num_layers = num_layers
+        
+        # WeightedSAGEConv layers (custom layer with edge weight support)
+        self.convs = torch.nn.ModuleList()
+        self.convs.append(WeightedSAGEConv(in_channels, hidden_dim))
+        for _ in range(num_layers - 1):
+            self.convs.append(WeightedSAGEConv(hidden_dim, hidden_dim))
+        
+        # Batch normalization layers
+        self.bns = torch.nn.ModuleList()
+        for _ in range(num_layers):
+            self.bns.append(torch.nn.BatchNorm1d(hidden_dim))
+        
+        # Classification head (compresses to single output)
+        self.fc1 = torch.nn.Linear(hidden_dim, 64)
+        self.fc2 = torch.nn.Linear(64, 1)
+    
+    def forward(self, data) -> torch.Tensor:
+        x, edge_index = data.x, data.edge_index
+        # Convert edge_attr [N,1] to edge_weight [N] for weighted aggregation
+        edge_weight = data.edge_attr.view(-1) if hasattr(data, 'edge_attr') and data.edge_attr is not None else None
+        batch = data.batch if hasattr(data, 'batch') and data.batch is not None else torch.zeros(x.size(0), dtype=torch.long, device=x.device)
+        
+        # Apply WeightedSAGEConv layers with batch normalization and activation
+        for conv, bn in zip(self.convs, self.bns):
+            x = conv(x, edge_index, edge_weight)
+            x = bn(x)
+            x = F.silu(x)
+        
+        # Global mean pooling: aggregate node features to graph-level
+        batch_size = int(data.num_graphs) if hasattr(data, 'num_graphs') else int(batch.max().item()) + 1
+        x_pooled = torch.zeros(batch_size, x.size(1), device=x.device)
+        for i in range(batch_size):
+            mask = (batch == i)
+            if mask.sum() > 0:
+                x_pooled[i] = x[mask].mean(dim=0)
+        
+        # Classification layers
+        x = self.fc1(x_pooled)
+        x = F.silu(x)
+        x = self.fc2(x)
+        x = torch.sigmoid(x)
+        
+        return x
+
+
+class GraphSAGE:
+    """
+    GraphSAGE wrapper class with model lifecycle management.
+    Provides init, train, save, and load functionality with human-readable model tracking.
+    
+    Designed to work with SparseGraph outputs:
+    - Node features: [X?, Z?, d_North, d_West, d_time] (5 features)
+    - Edge weights: distance-based weights (used for weighted neighbor aggregation)
+    
+    Uses custom WeightedSAGEConv layers that incorporate edge weights into the
+    GraphSAGE aggregation mechanism.
+    
+    Attributes:
+        nickname: Human-readable name for this model instance
+        model: The underlying GraphSAGEModel
+        device: Torch device (cuda/cpu)
+        models_dir: Directory for saving/loading models
+        _loaded_from: Path of the loaded model (None if freshly initialized)
+    """
+    
+    def __init__(self, 
+                 nickname: str = "gsage_model",
+                 in_channels: int = 5, 
+                 hidden_dim: int = 128, 
+                 num_layers: int = 4,
+                 device: torch.device = None,
+                 base_path: Path = None,
+                 seed: int = None):
+        """
+        Initialize a new GraphSAGE model.
+        
+        Args:
+            nickname: Human-readable name for this model
+            in_channels: Number of input features per node (default 5 for SparseGraph)
+            hidden_dim: Hidden dimension size
+            num_layers: Number of WeightedSAGEConv layers
+            device: Torch device (defaults to CUDA if available)
+            base_path: Base path for model storage (defaults to current directory)
+            seed: Random seed for reproducibility (default: None, no seeding)
+        """
+        self.nickname = nickname
+        self.device = device if device else torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self._loaded_from = None
+        
+        # Set models directory based on base_path
+        self.models_dir = (base_path or Path(".")) / "models" / "gsage"
+        
+        # Store config for saving/loading
+        self._config = {
+            'in_channels': in_channels,
+            'hidden_dim': hidden_dim,
+            'num_layers': num_layers,
+            'seed': seed
+        }
+        
+        # Set random seeds for reproducibility before model initialization
+        if seed is not None:
+            import random
+            torch.manual_seed(seed)
+            np.random.seed(seed)
+            random.seed(seed)
+            if torch.cuda.is_available():
+                torch.cuda.manual_seed_all(seed)
+        
+        # Initialize model
+        self.model = GraphSAGEModel(in_channels, hidden_dim, num_layers).to(self.device)
+        
+        # Ensure models directory exists
+        self.models_dir.mkdir(parents=True, exist_ok=True)
+        
+        print(f"GraphSAGE initialized: {self}")
+    
+    def train(self, 
+              graphs: list,
+              epochs: int = 10,
+              batch_size: int = 64,
+              lr: float = 1e-3,
+              verbose: bool = True) -> list:
+        """
+        Train the model on a list of PyG graphs.
+        
+        Args:
+            graphs: List of PyG Data objects (from SparseGraph.batch_to_pyg)
+            epochs: Number of training epochs
+            batch_size: Number of graphs per batch
+            lr: Learning rate
+            verbose: Print training progress
+            
+        Returns:
+            List of loss values per epoch
+        """
+        from torch_geometric.loader import DataLoader
+        
+        # Announce training start
+        if verbose:
+            print(f"\n{'='*50}")
+            print(f"Training: {self}")
+            print(f"{'='*50}")
+            print(f"Epochs: {epochs} | Batch size: {batch_size} | LR: {lr}")
+            print(f"Training samples: {len(graphs)}")
+        
+        loader = DataLoader(graphs, batch_size=batch_size, shuffle=True)
+        total_batches = len(loader) * epochs
+        
+        self.model.train()
+        optimizer = torch.optim.Adam(self.model.parameters(), lr=lr)
+        loss_fn = torch.nn.BCELoss()
+        
+        epoch_losses = []
+        running_loss = 0.0
+        running_acc = 0.0
+        batch_count = 0
+        
+        pbar = tqdm(total=total_batches, desc="Training", disable=not verbose)
+        
+        for epoch in range(epochs):
+            epoch_loss = 0.0
+            epoch_correct = 0
+            epoch_total = 0
+            
+            for batch_data in loader:
+                batch_data = batch_data.to(self.device)
+                pred = self.model(batch_data)
+                y = batch_data.y.float().view(-1, 1)
+                
+                loss = loss_fn(pred, y)
+                optimizer.zero_grad()
+                loss.backward()
+                optimizer.step()
+                
+                # Batch metrics
+                batch_loss = loss.item()
+                batch_acc = ((pred > 0.5).float() == y).float().mean().item() * 100
+                
+                # Running averages (exponential smoothing)
+                running_loss = batch_loss * 0.1 + running_loss * 0.9 if running_loss else batch_loss
+                running_acc = batch_acc * 0.1 + running_acc * 0.9 if running_acc else batch_acc
+                
+                # Accumulate epoch stats
+                epoch_loss += batch_loss
+                epoch_correct += ((pred > 0.5).float() == y).sum().item()
+                epoch_total += y.size(0)
+                
+                batch_count += 1
+                pbar.update(1)
+                
+                # Update display every 10 batches
+                if batch_count % 10 == 0:
+                    pbar.set_postfix({
+                        'epoch': f'{epoch+1}/{epochs}',
+                        'loss': f'{running_loss:.4f}',
+                        'acc': f'{running_acc:.1f}%'
+                    })
+            
+            avg_loss = epoch_loss / len(loader)
+            epoch_losses.append(avg_loss)
+        
+        pbar.close()
+        
+        final_acc = 100.0 * epoch_correct / epoch_total if epoch_total > 0 else 0.0
+        if verbose:
+            print(f"\nTraining complete! Final - Loss: {avg_loss:.4f}, Accuracy: {final_acc:.1f}%")
+        
+        return epoch_losses
+    
+    def save(self, name: str) -> Path:
+        """
+        Save the model with a human-readable timestamp.
+        
+        Args:
+            name: Base name for the saved model
+            
+        Returns:
+            Path to the saved model file
+        """
+        # Create timestamp in human-readable format
+        timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        filename = f"{name}_{timestamp}.pt"
+        filepath = self.models_dir / filename
+        
+        # Ensure directory exists
+        self.models_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Save model state and config
+        save_dict = {
+            'state_dict': self.model.state_dict(),
+            'config': self._config,
+            'nickname': self.nickname,
+            'timestamp': timestamp
+        }
+        torch.save(save_dict, filepath)
+        
+        print(f"Model saved to: {filepath}")
+        return filepath
+    
+    def load(self, filepath: str) -> 'GraphSAGE':
+        """
+        Load a saved model from disk.
+        
+        Args:
+            filepath: Path to the saved model file (relative to models/gsage or absolute)
+            
+        Returns:
+            self (for chaining)
+        """
+        # Handle relative paths
+        path = Path(filepath)
+        if not path.exists():
+            path = self.models_dir / filepath
+        
+        if not path.exists():
+            raise FileNotFoundError(f"Model file not found: {filepath}")
+        
+        # Load saved data
+        save_dict = torch.load(path, map_location=self.device, weights_only=False)
+        
+        # Recreate model with saved config
+        config = save_dict['config']
+        self._config = config
+        self.model = GraphSAGEModel(
+            in_channels=config['in_channels'],
+            hidden_dim=config['hidden_dim'],
+            num_layers=config['num_layers']
+        ).to(self.device)
+        
+        # Load weights
+        self.model.load_state_dict(save_dict['state_dict'])
+        self.model.eval()
+        
+        # Update tracking
+        self._loaded_from = path.name
+        if 'nickname' in save_dict:
+            self.nickname = save_dict['nickname']
+        
+        print(f"Model loaded: {self}")
+        return self
+    
+    def predict(self, data) -> torch.Tensor:
+        """Run inference on data."""
+        self.model.eval()
+        with torch.no_grad():
+            data = data.to(self.device)
+            return self.model(data)
+    
+    def __repr__(self) -> str:
+        loaded_info = f", loaded_from='{self._loaded_from}'" if self._loaded_from else ""
+        return (f"GraphSAGE(nickname='{self.nickname}', "
+                f"in_channels={self._config['in_channels']}, "
+                f"hidden_dim={self._config['hidden_dim']}, "
+                f"num_layers={self._config['num_layers']}"
+                f"{loaded_info})")
+
+
+# ============================================================
+# GIN MODEL (Graph Isomorphism Network with Edge features)
+# ============================================================
+
+class GINModel(torch.nn.Module):
+    """
+    Graph Isomorphism Network with Edge features (GINE) that handles dynamic graph sizes.
+    Uses PyTorch Geometric's GINEConv which incorporates edge features into message passing.
+    Uses global mean pooling to produce a single output regardless of input graph size.
+    
+    GIN is provably the most expressive GNN under the message-passing framework,
+    achieving the same discriminative power as the Weisfeiler-Lehman graph isomorphism test.
+    
+    GINE formula:
+    h_v^(k) = MLP^(k)((1 + eps^(k)) * h_v^(k-1) + sum_{u in N(v)} ReLU(h_u^(k-1) + e_uv))
+    
+    Key features:
+    - Learnable epsilon (eps) parameter for self-loop weighting
+    - MLP applied to aggregated features (not just linear transform)
+    - Sum aggregation (critical for expressiveness)
+    - Edge features incorporated via addition before ReLU
+    """
+    
+    def __init__(self, in_channels: int = 5, hidden_dim: int = 128, num_layers: int = 4,
+                 train_eps: bool = True, edge_dim: int = 1):
+        super().__init__()
+        self.in_channels = in_channels
+        self.hidden_dim = hidden_dim
+        self.num_layers = num_layers
+        self.train_eps = train_eps
+        self.edge_dim = edge_dim
+        
+        # GINEConv layers with MLPs
+        self.convs = torch.nn.ModuleList()
+        self.bns = torch.nn.ModuleList()
+        
+        # First layer: in_channels -> hidden_dim
+        mlp1 = torch.nn.Sequential(
+            torch.nn.Linear(in_channels, hidden_dim),
+            torch.nn.ReLU(),
+            torch.nn.Linear(hidden_dim, hidden_dim)
+        )
+        self.convs.append(GINEConv(mlp1, train_eps=train_eps, edge_dim=edge_dim))
+        self.bns.append(torch.nn.BatchNorm1d(hidden_dim))
+        
+        # Remaining layers: hidden_dim -> hidden_dim
+        for _ in range(num_layers - 1):
+            mlp = torch.nn.Sequential(
+                torch.nn.Linear(hidden_dim, hidden_dim),
+                torch.nn.ReLU(),
+                torch.nn.Linear(hidden_dim, hidden_dim)
+            )
+            self.convs.append(GINEConv(mlp, train_eps=train_eps, edge_dim=edge_dim))
+            self.bns.append(torch.nn.BatchNorm1d(hidden_dim))
+        
+        # Classification head (compresses to single output)
+        self.fc1 = torch.nn.Linear(hidden_dim, 64)
+        self.fc2 = torch.nn.Linear(64, 1)
+    
+    def forward(self, data) -> torch.Tensor:
+        x, edge_index = data.x, data.edge_index
+        
+        # Get edge attributes for GINEConv
+        edge_attr = data.edge_attr if hasattr(data, 'edge_attr') and data.edge_attr is not None else None
+        
+        batch = data.batch if hasattr(data, 'batch') and data.batch is not None else torch.zeros(x.size(0), dtype=torch.long, device=x.device)
+        
+        # Apply GINEConv layers with batch normalization and activation
+        for conv, bn in zip(self.convs, self.bns):
+            x = conv(x, edge_index, edge_attr)
+            x = bn(x)
+            x = F.silu(x)
+        
+        # Global mean pooling: aggregate node features to graph-level
+        batch_size = int(data.num_graphs) if hasattr(data, 'num_graphs') else int(batch.max().item()) + 1
+        x_pooled = torch.zeros(batch_size, x.size(1), device=x.device)
+        for i in range(batch_size):
+            mask = (batch == i)
+            if mask.sum() > 0:
+                x_pooled[i] = x[mask].mean(dim=0)
+        
+        # Classification layers
+        x = self.fc1(x_pooled)
+        x = F.silu(x)
+        x = self.fc2(x)
+        x = torch.sigmoid(x)
+        
+        return x
+
+
+class GIN:
+    """
+    GIN (Graph Isomorphism Network) wrapper class with model lifecycle management.
+    Provides init, train, save, and load functionality with human-readable model tracking.
+    
+    Uses GINEConv (edge-aware variant) to incorporate edge weights from SparseGraph.
+    
+    Designed to work with SparseGraph outputs:
+    - Node features: [X?, Z?, d_North, d_West, d_time] (5 features)
+    - Edge weights: distance-based weights (1-dim edge features)
+    
+    Attributes:
+        nickname: Human-readable name for this model instance
+        model: The underlying GINModel
+        device: Torch device (cuda/cpu)
+        models_dir: Directory for saving/loading models
+        _loaded_from: Path of the loaded model (None if freshly initialized)
+    """
+    
+    def __init__(self, 
+                 nickname: str = "gin_model",
+                 in_channels: int = 5, 
+                 hidden_dim: int = 128, 
+                 num_layers: int = 4,
+                 train_eps: bool = True,
+                 edge_dim: int = 1,
+                 device: torch.device = None,
+                 base_path: Path = None,
+                 seed: int = None):
+        """
+        Initialize a new GIN model.
+        
+        Args:
+            nickname: Human-readable name for this model
+            in_channels: Number of input features per node (default 5 for SparseGraph)
+            hidden_dim: Hidden dimension size
+            num_layers: Number of GINEConv layers
+            train_eps: Whether epsilon is learnable (default True)
+            edge_dim: Dimension of edge features (default 1 for SparseGraph)
+            device: Torch device (defaults to CUDA if available)
+            base_path: Base path for model storage (defaults to current directory)
+            seed: Random seed for reproducibility (default: None, no seeding)
+        """
+        self.nickname = nickname
+        self.device = device if device else torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self._loaded_from = None
+        
+        # Set models directory based on base_path
+        self.models_dir = (base_path or Path(".")) / "models" / "gin"
+        
+        # Store config for saving/loading
+        self._config = {
+            'in_channels': in_channels,
+            'hidden_dim': hidden_dim,
+            'num_layers': num_layers,
+            'train_eps': train_eps,
+            'edge_dim': edge_dim,
+            'seed': seed
+        }
+        
+        # Set random seeds for reproducibility before model initialization
+        if seed is not None:
+            import random
+            torch.manual_seed(seed)
+            np.random.seed(seed)
+            random.seed(seed)
+            if torch.cuda.is_available():
+                torch.cuda.manual_seed_all(seed)
+        
+        # Initialize model
+        self.model = GINModel(in_channels, hidden_dim, num_layers, train_eps, edge_dim).to(self.device)
+        
+        # Ensure models directory exists
+        self.models_dir.mkdir(parents=True, exist_ok=True)
+        
+        print(f"GIN initialized: {self}")
+    
+    def train(self, 
+              graphs: list,
+              epochs: int = 10,
+              batch_size: int = 64,
+              lr: float = 1e-3,
+              verbose: bool = True) -> list:
+        """
+        Train the model on a list of PyG graphs.
+        
+        Args:
+            graphs: List of PyG Data objects (from SparseGraph.batch_to_pyg)
+            epochs: Number of training epochs
+            batch_size: Number of graphs per batch
+            lr: Learning rate
+            verbose: Print training progress
+            
+        Returns:
+            List of loss values per epoch
+        """
+        from torch_geometric.loader import DataLoader
+        
+        # Announce training start
+        if verbose:
+            print(f"\n{'='*50}")
+            print(f"Training: {self}")
+            print(f"{'='*50}")
+            print(f"Epochs: {epochs} | Batch size: {batch_size} | LR: {lr}")
+            print(f"Training samples: {len(graphs)}")
+        
+        loader = DataLoader(graphs, batch_size=batch_size, shuffle=True)
+        total_batches = len(loader) * epochs
+        
+        self.model.train()
+        optimizer = torch.optim.Adam(self.model.parameters(), lr=lr)
+        loss_fn = torch.nn.BCELoss()
+        
+        epoch_losses = []
+        running_loss = 0.0
+        running_acc = 0.0
+        batch_count = 0
+        
+        pbar = tqdm(total=total_batches, desc="Training", disable=not verbose)
+        
+        for epoch in range(epochs):
+            epoch_loss = 0.0
+            epoch_correct = 0
+            epoch_total = 0
+            
+            for batch_data in loader:
+                batch_data = batch_data.to(self.device)
+                pred = self.model(batch_data)
+                y = batch_data.y.float().view(-1, 1)
+                
+                loss = loss_fn(pred, y)
+                optimizer.zero_grad()
+                loss.backward()
+                optimizer.step()
+                
+                # Batch metrics
+                batch_loss = loss.item()
+                batch_acc = ((pred > 0.5).float() == y).float().mean().item() * 100
+                
+                # Running averages (exponential smoothing)
+                running_loss = batch_loss * 0.1 + running_loss * 0.9 if running_loss else batch_loss
+                running_acc = batch_acc * 0.1 + running_acc * 0.9 if running_acc else batch_acc
+                
+                # Accumulate epoch stats
+                epoch_loss += batch_loss
+                epoch_correct += ((pred > 0.5).float() == y).sum().item()
+                epoch_total += y.size(0)
+                
+                batch_count += 1
+                pbar.update(1)
+                
+                # Update display every 10 batches
+                if batch_count % 10 == 0:
+                    pbar.set_postfix({
+                        'epoch': f'{epoch+1}/{epochs}',
+                        'loss': f'{running_loss:.4f}',
+                        'acc': f'{running_acc:.1f}%'
+                    })
+            
+            avg_loss = epoch_loss / len(loader)
+            epoch_losses.append(avg_loss)
+        
+        pbar.close()
+        
+        final_acc = 100.0 * epoch_correct / epoch_total if epoch_total > 0 else 0.0
+        if verbose:
+            print(f"\nTraining complete! Final - Loss: {avg_loss:.4f}, Accuracy: {final_acc:.1f}%")
+        
+        return epoch_losses
+    
+    def save(self, name: str) -> Path:
+        """
+        Save the model with a human-readable timestamp.
+        
+        Args:
+            name: Base name for the saved model
+            
+        Returns:
+            Path to the saved model file
+        """
+        # Create timestamp in human-readable format
+        timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        filename = f"{name}_{timestamp}.pt"
+        filepath = self.models_dir / filename
+        
+        # Ensure directory exists
+        self.models_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Save model state and config
+        save_dict = {
+            'state_dict': self.model.state_dict(),
+            'config': self._config,
+            'nickname': self.nickname,
+            'timestamp': timestamp
+        }
+        torch.save(save_dict, filepath)
+        
+        print(f"Model saved to: {filepath}")
+        return filepath
+    
+    def load(self, filepath: str) -> 'GIN':
+        """
+        Load a saved model from disk.
+        
+        Args:
+            filepath: Path to the saved model file (relative to models/gin or absolute)
+            
+        Returns:
+            self (for chaining)
+        """
+        # Handle relative paths
+        path = Path(filepath)
+        if not path.exists():
+            path = self.models_dir / filepath
+        
+        if not path.exists():
+            raise FileNotFoundError(f"Model file not found: {filepath}")
+        
+        # Load saved data
+        save_dict = torch.load(path, map_location=self.device, weights_only=False)
+        
+        # Recreate model with saved config
+        config = save_dict['config']
+        self._config = config
+        self.model = GINModel(
+            in_channels=config['in_channels'],
+            hidden_dim=config['hidden_dim'],
+            num_layers=config['num_layers'],
+            train_eps=config.get('train_eps', True),
+            edge_dim=config.get('edge_dim', 1)
+        ).to(self.device)
+        
+        # Load weights
+        self.model.load_state_dict(save_dict['state_dict'])
+        self.model.eval()
+        
+        # Update tracking
+        self._loaded_from = path.name
+        if 'nickname' in save_dict:
+            self.nickname = save_dict['nickname']
+        
+        print(f"Model loaded: {self}")
+        return self
+    
+    def predict(self, data) -> torch.Tensor:
+        """Run inference on data."""
+        self.model.eval()
+        with torch.no_grad():
+            data = data.to(self.device)
+            return self.model(data)
+    
+    def __repr__(self) -> str:
+        loaded_info = f", loaded_from='{self._loaded_from}'" if self._loaded_from else ""
+        return (f"GIN(nickname='{self.nickname}', "
+                f"in_channels={self._config['in_channels']}, "
+                f"hidden_dim={self._config['hidden_dim']}, "
+                f"num_layers={self._config['num_layers']}, "
+                f"train_eps={self._config['train_eps']}"
+                f"{loaded_info})")
+
+
