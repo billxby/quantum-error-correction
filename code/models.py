@@ -908,14 +908,10 @@ class DatasetCache:
                 size_str = f"{file_size_mb:.1f} MB"
             print(f"Loading dataset '{name}' ({size_str})...")
         
-        # Load graphs with progress indicator
+        # Load graphs (mmap=True speeds up loading for large files)
         if verbose:
-            with tqdm(total=1, desc=f"  Reading {name}.pt", unit="file", 
-                     bar_format='{desc}: {percentage:3.0f}%|{bar}| [{elapsed}<{remaining}]') as pbar:
-                self.graphs = torch.load(data_path, weights_only=False)
-                pbar.update(1)
-        else:
-            self.graphs = torch.load(data_path, weights_only=False)
+            print(f"  Reading {name}.pt (this may take a while for large files)...")
+        self.graphs = torch.load(data_path, weights_only=False, mmap=True)
         
         # Load metadata if exists
         if meta_path.exists():
@@ -1158,7 +1154,8 @@ class GCN:
                  hidden_dim: int = 128, 
                  num_layers: int = 4,
                  device: torch.device = None,
-                 base_path: Path = None):
+                 base_path: Path = None,
+                 seed: int = None):
         """
         Initialize a new GCN model.
         
@@ -1169,6 +1166,7 @@ class GCN:
             num_layers: Number of GCN layers
             device: Torch device (defaults to CUDA if available)
             base_path: Base path for model storage (defaults to current directory)
+            seed: Random seed for reproducibility (default: None, no seeding)
         """
         self.nickname = nickname
         self.device = device if device else torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -1181,8 +1179,18 @@ class GCN:
         self._config = {
             'in_channels': in_channels,
             'hidden_dim': hidden_dim,
-            'num_layers': num_layers
+            'num_layers': num_layers,
+            'seed': seed
         }
+        
+        # Set random seeds for reproducibility before model initialization
+        if seed is not None:
+            import random
+            torch.manual_seed(seed)
+            np.random.seed(seed)
+            random.seed(seed)
+            if torch.cuda.is_available():
+                torch.cuda.manual_seed_all(seed)
         
         # Initialize model
         self.model = GCNModel(in_channels, hidden_dim, num_layers).to(self.device)
@@ -1477,7 +1485,8 @@ class GAT:
                  heads: int = 4,
                  dropout: float = 0.0,
                  device: torch.device = None,
-                 base_path: Path = None):
+                 base_path: Path = None,
+                 seed: int = None):
         """
         Initialize a new GAT model.
         
@@ -1490,6 +1499,7 @@ class GAT:
             dropout: Dropout rate for attention weights
             device: Torch device (defaults to CUDA if available)
             base_path: Base path for model storage (defaults to current directory)
+            seed: Random seed for reproducibility (default: None, no seeding)
         """
         self.nickname = nickname
         self.device = device if device else torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -1504,8 +1514,18 @@ class GAT:
             'hidden_dim': hidden_dim,
             'num_layers': num_layers,
             'heads': heads,
-            'dropout': dropout
+            'dropout': dropout,
+            'seed': seed
         }
+        
+        # Set random seeds for reproducibility before model initialization
+        if seed is not None:
+            import random
+            torch.manual_seed(seed)
+            np.random.seed(seed)
+            random.seed(seed)
+            if torch.cuda.is_available():
+                torch.cuda.manual_seed_all(seed)
         
         # Initialize model
         self.model = GATModel(in_channels, hidden_dim, num_layers, heads, dropout).to(self.device)
