@@ -1,0 +1,33 @@
+{
+  "model_type": "gcn",
+  "model_nickname": "d3_baseline",
+  "distance": 3,
+  "num_samples": 10000,
+  "batch_size": 64,
+  "p": 0.005,
+  "num_runs": 5,
+  "timestamp": "2026-01-13T17:06:41.771060",
+  "benchmarks": {
+    "mwpm": {
+      "total_time_sec": 0.006081479974091053,
+      "total_time_std": 0.0003593408455710968,
+      "throughput_graphs_per_sec": 1644336.582970433,
+      "latency_ms_per_graph": 0.0006081479974091054,
+      "device": "cpu"
+    },
+    "gcn_cpu": {
+      "total_time_sec": 2.1400475200265645,
+      "total_time_std": 0.05539697612197938,
+      "throughput_graphs_per_sec": 4672.7934339868625,
+      "latency_ms_per_graph": 0.21400475200265645,
+      "device": "cpu"
+    },
+    "gcn_cuda": {
+      "total_time_sec": 10.03185459994711,
+      "total_time_std": 0.7583818415127604,
+      "throughput_graphs_per_sec": 996.8246549399472,
+      "latency_ms_per_graph": 1.003185459994711,
+      "device": "cuda"
+    }
+  }
+}
