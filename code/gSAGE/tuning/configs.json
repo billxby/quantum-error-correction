@@ -1,6 +1,6 @@
 {
   "seed": 42,
-  "n_configs": 40,
+  "n_configs": 50,
   "generated_at": "2026-01-14T01:49:09.754285",
   "search_space": {
     "num_layers": [
@@ -360,6 +360,87 @@
       "learning_rate": 0.0003,
       "dropout": 0.3,
       "aggr": "max"
+    },
+    {
+      "id": 40,
+      "num_layers": 2,
+      "hidden_dim": 256,
+      "learning_rate": 0.0003,
+      "dropout": 0.3,
+      "aggr": "max"
+    },
+    {
+      "id": 41,
+      "num_layers": 2,
+      "hidden_dim": 512,
+      "learning_rate": 0.003,
+      "dropout": 0.3,
+      "aggr": "lstm"
+    },
+    {
+      "id": 42,
+      "num_layers": 2,
+      "hidden_dim": 512,
+      "learning_rate": 0.003,
+      "dropout": 0.2,
+      "aggr": "lstm"
+    },
+    {
+      "id": 43,
+      "num_layers": 5,
+      "hidden_dim": 512,
+      "learning_rate": 0.0003,
+      "dropout": 0.0,
+      "aggr": "mean"
+    },
+    {
+      "id": 44,
+      "num_layers": 2,
+      "hidden_dim": 512,
+      "learning_rate": 0.0003,
+      "dropout": 0.0,
+      "aggr": "mean"
+    },
+    {
+      "id": 45,
+      "num_layers": 5,
+      "hidden_dim": 128,
+      "learning_rate": 0.001,
+      "dropout": 0.2,
+      "aggr": "lstm"
+    },
+    {
+      "id": 46,
+      "num_layers": 3,
+      "hidden_dim": 512,
+      "learning_rate": 0.0001,
+      "dropout": 0.0,
+      "aggr": "lstm"
+    },
+    {
+      "id": 47,
+      "num_layers": 2,
+      "hidden_dim": 128,
+      "learning_rate": 0.0001,
+      "dropout": 0.1,
+      "aggr": "max"
+    },
+    {
+      "id": 48,
+      "num_layers": 4,
+      "hidden_dim": 64,
+      "learning_rate": 0.003,
+      "dropout": 0.0,
+      "aggr": "lstm"
+    },
+    {
+      "id": 49,
+      "num_layers": 2,
+      "hidden_dim": 64,
+      "learning_rate": 0.003,
+      "dropout": 0.3,
+      "aggr": "lstm"
     }
-  ]
+  ],
+  "worker5_added_at": "2026-01-14T14:13:11.621582"
 }
