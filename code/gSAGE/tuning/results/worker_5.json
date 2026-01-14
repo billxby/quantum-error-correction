@@ -1,0 +1,20 @@
+[
+  {
+    "config_id": 40,
+    "config": {
+      "id": 40,
+      "num_layers": 2,
+      "hidden_dim": 256,
+      "learning_rate": 0.0003,
+      "dropout": 0.3,
+      "aggr": "max"
+    },
+    "val_accuracy": 0.77796,
+    "test_accuracy": 0.77678,
+    "training_time_sec": 4095.8991713523865,
+    "final_loss": 0.38420332911491395,
+    "model_path": "/content/drive/MyDrive/Research/QEC/quantum-error-correction/quantum-error-correction/code/gSAGE/tuning/models/config_40.pt",
+    "status": "completed",
+    "timestamp": "2026-01-14T20:32:56.862973"
+  }
+]
