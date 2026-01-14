@@ -1737,25 +1737,30 @@ class GAT:
 
 class WeightedSAGEConv(MessagePassing):
     """
-    GraphSAGE convolution with edge weight support.
+    GraphSAGE convolution with edge weight support and configurable aggregation.
 
     Standard SAGEConv does not support edge weights. This custom layer follows
     the GraphSAGE approach (aggregate neighbors then concatenate with self)
     but incorporates edge weights into the aggregation.
 
+    Supports three aggregation types:
+    - 'mean': Weighted mean aggregation (default)
+    - 'max': Element-wise max aggregation (edge weights used for weighting before max)
+    - 'lstm': LSTM-based aggregation (sequential processing of neighbors)
+
     Formula:
     h_v = W * [h_v || weighted_agg(h_u * w_uv for u in N(v))]
-
-    where weighted_agg performs weighted mean aggregation.
     """
 
-    def __init__(self, in_channels: int, out_channels: int, normalize: bool = False,
-                 root_weight: bool = True, bias: bool = True, **kwargs):
-        kwargs.setdefault('aggr', 'add')  # Use 'add' for weighted mean
+    def __init__(self, in_channels: int, out_channels: int, aggr_type: str = 'mean',
+                 normalize: bool = False, root_weight: bool = True, bias: bool = True, **kwargs):
+        # For LSTM we use a custom aggregation, otherwise use 'add' for weighted mean/max
+        kwargs.setdefault('aggr', 'add')
         super().__init__(**kwargs)
 
         self.in_channels = in_channels
         self.out_channels = out_channels
+        self.aggr_type = aggr_type
         self.normalize = normalize
         self.root_weight = root_weight
 
@@ -1765,31 +1770,27 @@ class WeightedSAGEConv(MessagePassing):
         else:
             self.lin = torch.nn.Linear(in_channels, out_channels, bias=bias)
 
+        # LSTM for lstm aggregation
+        if aggr_type == 'lstm':
+            self.lstm = torch.nn.LSTM(in_channels, in_channels, batch_first=True)
+
         self.reset_parameters()
 
     def reset_parameters(self):
         self.lin.reset_parameters()
+        if hasattr(self, 'lstm'):
+            self.lstm.reset_parameters()
 
     def forward(self, x, edge_index, edge_weight=None):
-        # Compute weighted sum of neighbors
-        # If edge_weight is None, fall back to unweighted sum
-        out = self.propagate(edge_index, x=x, edge_weight=edge_weight)
-
-        # Normalize by degree (weighted degree if edge_weight provided)
-        if edge_weight is not None:
-            # Compute weighted degree for each node
-            row, col = edge_index
-            deg = torch.zeros(x.size(0), device=x.device)
-            deg.scatter_add_(0, row, edge_weight)
-            deg = deg.clamp(min=1)  # Avoid division by zero
-            out = out / deg.view(-1, 1)
+        if self.aggr_type == 'lstm':
+            # LSTM aggregation: process neighbors sequentially
+            out = self._lstm_aggregate(x, edge_index, edge_weight)
+        elif self.aggr_type == 'max':
+            # Max aggregation with edge weights
+            out = self._max_aggregate(x, edge_index, edge_weight)
         else:
-            # Compute regular degree
-            from torch_geometric.utils import degree
-            row, col = edge_index
-            deg = degree(row, x.size(0), dtype=x.dtype)
-            deg = deg.clamp(min=1)
-            out = out / deg.view(-1, 1)
+            # Mean aggregation (default)
+            out = self._mean_aggregate(x, edge_index, edge_weight)
 
         # Concatenate self with aggregated neighbors (GraphSAGE style)
         if self.root_weight:
@@ -1802,14 +1803,85 @@ class WeightedSAGEConv(MessagePassing):
 
         return out
 
-    def message(self, x_j, edge_weight):
-        # Weight neighbor features by edge weight
+    def _mean_aggregate(self, x, edge_index, edge_weight):
+        """Weighted mean aggregation."""
+        out = self.propagate(edge_index, x=x, edge_weight=edge_weight, aggr_mode='mean')
+
+        # Normalize by degree (weighted degree if edge_weight provided)
+        if edge_weight is not None:
+            row, col = edge_index
+            deg = torch.zeros(x.size(0), device=x.device)
+            deg.scatter_add_(0, row, edge_weight)
+            deg = deg.clamp(min=1)
+            out = out / deg.view(-1, 1)
+        else:
+            from torch_geometric.utils import degree
+            row, col = edge_index
+            deg = degree(row, x.size(0), dtype=x.dtype)
+            deg = deg.clamp(min=1)
+            out = out / deg.view(-1, 1)
+
+        return out
+
+    def _max_aggregate(self, x, edge_index, edge_weight):
+        """Max aggregation with optional edge weight scaling."""
+        num_nodes = x.size(0)
+        row, col = edge_index
+
+        # Get neighbor features, optionally scaled by edge weights
+        neighbor_features = x[col]
+        if edge_weight is not None:
+            neighbor_features = neighbor_features * edge_weight.view(-1, 1)
+
+        # Initialize output with very negative values for max
+        out = torch.full((num_nodes, x.size(1)), float('-inf'), device=x.device)
+
+        # Scatter max: for each node, take element-wise max of all neighbor features
+        out = out.scatter_reduce(0, row.unsqueeze(1).expand(-1, x.size(1)),
+                                  neighbor_features, reduce='amax', include_self=False)
+
+        # Replace -inf with 0 for nodes with no neighbors
+        out = torch.where(out == float('-inf'), torch.zeros_like(out), out)
+
+        return out
+
+    def _lstm_aggregate(self, x, edge_index, edge_weight):
+        """LSTM-based aggregation of neighbors."""
+        num_nodes = x.size(0)
+        row, col = edge_index
+
+        # Group neighbors by source node
+        out = torch.zeros(num_nodes, x.size(1), device=x.device)
+
+        for node in range(num_nodes):
+            # Get neighbors of this node
+            mask = (row == node)
+            if not mask.any():
+                continue
+
+            neighbors = col[mask]
+            neighbor_feats = x[neighbors]  # [num_neighbors, in_channels]
+
+            # Apply edge weights if provided
+            if edge_weight is not None:
+                weights = edge_weight[mask].view(-1, 1)
+                neighbor_feats = neighbor_feats * weights
+
+            # Process through LSTM (add batch dimension)
+            neighbor_feats = neighbor_feats.unsqueeze(0)  # [1, num_neighbors, in_channels]
+            _, (h_n, _) = self.lstm(neighbor_feats)
+            out[node] = h_n.squeeze(0).squeeze(0)
+
+        return out
+
+    def message(self, x_j, edge_weight, aggr_mode=None):
+        """Weight neighbor features by edge weight."""
         if edge_weight is not None:
             return x_j * edge_weight.view(-1, 1)
         return x_j
 
     def __repr__(self):
-        return f'{self.__class__.__name__}({self.in_channels}, {self.out_channels})'
+        return f'{self.__class__.__name__}({self.in_channels}, {self.out_channels}, aggr={self.aggr_type})'
 
 
 class GraphSAGEModel(torch.nn.Module):
@@ -1822,24 +1894,41 @@ class GraphSAGEModel(torch.nn.Module):
     with the node's own features, then applies a linear transformation.
 
     Supports edge weights from SparseGraph for weighted neighbor aggregation.
+
+    Args:
+        in_channels: Number of input features per node (default 5 for SparseGraph)
+        hidden_dim: Hidden dimension size
+        num_layers: Number of WeightedSAGEConv layers
+        dropout: Dropout rate applied after each GNN layer (default 0.0)
+        aggr: Aggregation function: 'mean', 'max', or 'lstm' (default 'mean')
     """
 
-    def __init__(self, in_channels: int = 5, hidden_dim: int = 128, num_layers: int = 4):
+    def __init__(self, in_channels: int = 5, hidden_dim: int = 128, num_layers: int = 4,
+                 dropout: float = 0.0, aggr: str = 'mean'):
         super().__init__()
         self.in_channels = in_channels
         self.hidden_dim = hidden_dim
         self.num_layers = num_layers
+        self.dropout_rate = dropout
+        self.aggr = aggr
+
+        # Validate aggregation type
+        if aggr not in ['mean', 'max', 'lstm']:
+            raise ValueError(f"aggr must be 'mean', 'max', or 'lstm', got '{aggr}'")
 
         # WeightedSAGEConv layers (custom layer with edge weight support)
         self.convs = torch.nn.ModuleList()
-        self.convs.append(WeightedSAGEConv(in_channels, hidden_dim))
+        self.convs.append(WeightedSAGEConv(in_channels, hidden_dim, aggr_type=aggr))
         for _ in range(num_layers - 1):
-            self.convs.append(WeightedSAGEConv(hidden_dim, hidden_dim))
+            self.convs.append(WeightedSAGEConv(hidden_dim, hidden_dim, aggr_type=aggr))
 
         # Batch normalization layers
         self.bns = torch.nn.ModuleList()
         for _ in range(num_layers):
             self.bns.append(torch.nn.BatchNorm1d(hidden_dim))
+
+        # Dropout layer
+        self.dropout = torch.nn.Dropout(dropout)
 
         # Classification head (compresses to single output)
         self.fc1 = torch.nn.Linear(hidden_dim, 64)
@@ -1851,11 +1940,12 @@ class GraphSAGEModel(torch.nn.Module):
         edge_weight = data.edge_attr.view(-1) if hasattr(data, 'edge_attr') and data.edge_attr is not None else None
         batch = data.batch if hasattr(data, 'batch') and data.batch is not None else torch.zeros(x.size(0), dtype=torch.long, device=x.device)
 
-        # Apply WeightedSAGEConv layers with batch normalization and activation
+        # Apply WeightedSAGEConv layers with batch normalization, activation, and dropout
         for conv, bn in zip(self.convs, self.bns):
             x = conv(x, edge_index, edge_weight)
             x = bn(x)
             x = F.silu(x)
+            x = self.dropout(x)
 
         # Global mean pooling: aggregate node features to graph-level
         batch_size = int(data.num_graphs) if hasattr(data, 'num_graphs') else int(batch.max().item()) + 1
@@ -1868,6 +1958,7 @@ class GraphSAGEModel(torch.nn.Module):
         # Classification layers
         x = self.fc1(x_pooled)
         x = F.silu(x)
+        x = self.dropout(x)
         x = self.fc2(x)
         x = torch.sigmoid(x)
 
@@ -1886,6 +1977,10 @@ class GraphSAGE:
     Uses custom WeightedSAGEConv layers that incorporate edge weights into the
     GraphSAGE aggregation mechanism.
 
+    Supports configurable:
+    - dropout: Dropout rate after each GNN layer
+    - aggr: Aggregation function ('mean', 'max', 'lstm')
+
     Attributes:
         nickname: Human-readable name for this model instance
         model: The underlying GraphSAGEModel
@@ -1899,6 +1994,8 @@ class GraphSAGE:
                  in_channels: int = 5,
                  hidden_dim: int = 128,
                  num_layers: int = 4,
+                 dropout: float = 0.0,
+                 aggr: str = 'mean',
                  device: torch.device = None,
                  base_path: Path = None,
                  seed: int = None):
@@ -1910,6 +2007,8 @@ class GraphSAGE:
             in_channels: Number of input features per node (default 5 for SparseGraph)
             hidden_dim: Hidden dimension size
             num_layers: Number of WeightedSAGEConv layers
+            dropout: Dropout rate after each GNN layer (default 0.0)
+            aggr: Aggregation function: 'mean', 'max', or 'lstm' (default 'mean')
             device: Torch device (defaults to CUDA if available)
             base_path: Base path for model storage (defaults to current directory)
             seed: Random seed for reproducibility (default: None, no seeding)
@@ -1926,6 +2025,8 @@ class GraphSAGE:
             'in_channels': in_channels,
             'hidden_dim': hidden_dim,
             'num_layers': num_layers,
+            'dropout': dropout,
+            'aggr': aggr,
             'seed': seed
         }
 
@@ -1939,7 +2040,7 @@ class GraphSAGE:
                 torch.cuda.manual_seed_all(seed)
 
         # Initialize model
-        self.model = GraphSAGEModel(in_channels, hidden_dim, num_layers).to(self.device)
+        self.model = GraphSAGEModel(in_channels, hidden_dim, num_layers, dropout, aggr).to(self.device)
 
         # Ensure models directory exists
         self.models_dir.mkdir(parents=True, exist_ok=True)
@@ -2102,7 +2203,9 @@ class GraphSAGE:
         self.model = GraphSAGEModel(
             in_channels=config['in_channels'],
             hidden_dim=config['hidden_dim'],
-            num_layers=config['num_layers']
+            num_layers=config['num_layers'],
+            dropout=config.get('dropout', 0.0),
+            aggr=config.get('aggr', 'mean')
         ).to(self.device)
 
         # Load weights
@@ -2126,11 +2229,13 @@ class GraphSAGE:
 
     def __repr__(self) -> str:
         loaded_info = f", loaded_from='{self._loaded_from}'" if self._loaded_from else ""
+        dropout_info = f", dropout={self._config.get('dropout', 0.0)}" if self._config.get('dropout', 0.0) > 0 else ""
+        aggr_info = f", aggr='{self._config.get('aggr', 'mean')}'" if self._config.get('aggr', 'mean') != 'mean' else ""
         return (f"GraphSAGE(nickname='{self.nickname}', "
                 f"in_channels={self._config['in_channels']}, "
                 f"hidden_dim={self._config['hidden_dim']}, "
                 f"num_layers={self._config['num_layers']}"
-                f"{loaded_info})")
+                f"{dropout_info}{aggr_info}{loaded_info})")
 
 
 # ============================================================
