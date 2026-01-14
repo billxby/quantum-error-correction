@@ -1,0 +1,26 @@
+{
+  "model_type": "gcn",
+  "model_nickname": "d3_baseline",
+  "distance": 3,
+  "num_samples": 10000,
+  "batch_size": 64,
+  "p": 0.005,
+  "num_runs": 5,
+  "timestamp": "2026-01-13T23:55:34.175394",
+  "benchmarks": {
+    "mwpm": {
+      "total_time_sec": 0.002950350198079832,
+      "total_time_std": 9.090938621590097e-05,
+      "throughput_graphs_per_sec": 3389428.145346363,
+      "latency_ms_per_graph": 0.0002950350198079832,
+      "device": "cpu"
+    },
+    "gcn_cpu": {
+      "total_time_sec": 0.7321301831980236,
+      "total_time_std": 0.042874938087647675,
+      "throughput_graphs_per_sec": 13658.773029024595,
+      "latency_ms_per_graph": 0.07321301831980236,
+      "device": "cpu"
+    }
+  }
+}
