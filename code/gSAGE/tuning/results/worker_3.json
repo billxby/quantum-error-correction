@@ -52,5 +52,41 @@
     "model_path": "/content/drive/MyDrive/Research/QEC/quantum-error-correction/quantum-error-correction/code/gSAGE/tuning/models/config_10.pt",
     "status": "completed",
     "timestamp": "2026-01-14T20:58:15.434854"
+  },
+  {
+    "config_id": 14,
+    "config": {
+      "id": 14,
+      "num_layers": 3,
+      "hidden_dim": 128,
+      "learning_rate": 0.001,
+      "dropout": 0.3,
+      "aggr": "max"
+    },
+    "val_accuracy": 0.81414,
+    "test_accuracy": 0.81187,
+    "training_time_sec": 2464.1009476184845,
+    "final_loss": 0.32012611261367796,
+    "model_path": "/content/drive/MyDrive/Research/QEC/quantum-error-correction/quantum-error-correction/code/gSAGE/tuning/models/config_14.pt",
+    "status": "completed",
+    "timestamp": "2026-01-14T21:39:31.575063"
+  },
+  {
+    "config_id": 18,
+    "config": {
+      "id": 18,
+      "num_layers": 5,
+      "hidden_dim": 128,
+      "learning_rate": 0.0005,
+      "dropout": 0.1,
+      "aggr": "mean"
+    },
+    "val_accuracy": 0.87897,
+    "test_accuracy": 0.87748,
+    "training_time_sec": 2600.2816762924194,
+    "final_loss": 0.25232485765933993,
+    "model_path": "/content/drive/MyDrive/Research/QEC/quantum-error-correction/quantum-error-correction/code/gSAGE/tuning/models/config_18.pt",
+    "status": "completed",
+    "timestamp": "2026-01-14T22:23:04.034370"
   }
 ]
