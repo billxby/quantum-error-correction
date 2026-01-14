@@ -36,7 +36,7 @@
   },
   "fixed_params": {
     "batch_size": 256,
-    "epochs": 50,
+    "epochs": 10,
     "distance": 7,
     "in_channels": 5
   },
