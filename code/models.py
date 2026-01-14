@@ -1846,32 +1846,74 @@ class WeightedSAGEConv(MessagePassing):
         return out
 
     def _lstm_aggregate(self, x, edge_index, edge_weight):
-        """LSTM-based aggregation of neighbors."""
+        """LSTM-based aggregation of neighbors (batched implementation).
+        
+        Uses pack_padded_sequence for efficient batched LSTM processing,
+        avoiding the slow Python for-loop over nodes.
+        """
+        from torch_geometric.utils import degree
+        
         num_nodes = x.size(0)
         row, col = edge_index
-
-        # Group neighbors by source node
-        out = torch.zeros(num_nodes, x.size(1), device=x.device)
-
-        for node in range(num_nodes):
-            # Get neighbors of this node
-            mask = (row == node)
-            if not mask.any():
-                continue
-
-            neighbors = col[mask]
-            neighbor_feats = x[neighbors]  # [num_neighbors, in_channels]
-
-            # Apply edge weights if provided
-            if edge_weight is not None:
-                weights = edge_weight[mask].view(-1, 1)
-                neighbor_feats = neighbor_feats * weights
-
-            # Process through LSTM (add batch dimension)
-            neighbor_feats = neighbor_feats.unsqueeze(0)  # [1, num_neighbors, in_channels]
-            _, (h_n, _) = self.lstm(neighbor_feats)
-            out[node] = h_n.squeeze(0).squeeze(0)
-
+        
+        # Handle empty edge case
+        if edge_index.numel() == 0:
+            return torch.zeros(num_nodes, self.in_channels, device=x.device)
+        
+        # Get neighbor features
+        neighbor_feats = x[col]  # [num_edges, in_channels]
+        
+        # Apply edge weights if provided
+        if edge_weight is not None:
+            neighbor_feats = neighbor_feats * edge_weight.view(-1, 1)
+        
+        # Sort edges by source node for grouping
+        perm = torch.argsort(row)
+        row_sorted = row[perm]
+        neighbor_feats_sorted = neighbor_feats[perm]
+        
+        # Get counts per node (degree)
+        deg = degree(row, num_nodes, dtype=torch.long)
+        
+        # Split into list of tensors (one per node)
+        splits = deg.tolist()
+        neighbor_groups = torch.split(neighbor_feats_sorted, splits)
+        
+        # Initialize output
+        out = torch.zeros(num_nodes, self.in_channels, device=x.device)
+        
+        # Find nodes that have neighbors
+        nodes_with_neighbors = (deg > 0).nonzero(as_tuple=True)[0]
+        
+        if len(nodes_with_neighbors) == 0:
+            return out
+        
+        # Pad sequences and batch them
+        max_neighbors = deg.max().item()
+        batch_size = len(nodes_with_neighbors)
+        
+        # Create padded tensor for batched LSTM
+        padded = torch.zeros(batch_size, max_neighbors, self.in_channels, device=x.device)
+        lengths = []
+        
+        for i, node_idx in enumerate(nodes_with_neighbors):
+            seq = neighbor_groups[node_idx.item()]
+            seq_len = seq.size(0)
+            padded[i, :seq_len] = seq
+            lengths.append(seq_len)
+        
+        # Pack for efficient LSTM processing (lengths must be on CPU)
+        lengths_tensor = torch.tensor(lengths, dtype=torch.long, device='cpu')
+        packed = torch.nn.utils.rnn.pack_padded_sequence(
+            padded, lengths_tensor, batch_first=True, enforce_sorted=False
+        )
+        
+        # Run LSTM on entire batch at once
+        _, (h_n, _) = self.lstm(packed)  # h_n: [1, batch_size, hidden]
+        
+        # Place results back into output tensor
+        out[nodes_with_neighbors] = h_n.squeeze(0)
+        
         return out
 
     def message(self, x_j, edge_weight, aggr_mode=None):
