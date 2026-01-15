@@ -1,0 +1,26 @@
+{
+  "description": "Best GraphSAGE model configuration from hyperparameter tuning",
+  "config_id": 17,
+  "generated_from": "tuning.ipynb",
+  "generated_at": "2026-01-15T08:40:20.057198",
+  "model_params": {
+    "in_channels": 5,
+    "hidden_dim": 128,
+    "num_layers": 5,
+    "dropout": 0.0,
+    "aggr": "max"
+  },
+  "training_params": {
+    "learning_rate": 0.0005,
+    "batch_size": 256,
+    "epochs": 10,
+    "distance": 7
+  },
+  "performance": {
+    "val_accuracy": 0.90218,
+    "test_accuracy": 0.9028,
+    "final_loss": 0.1889691991090774,
+    "training_time_sec": 2271.292650461197
+  },
+  "model_file": "models/config_17.pt"
+}
