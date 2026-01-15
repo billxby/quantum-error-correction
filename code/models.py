@@ -777,6 +777,10 @@ class DatasetCache:
         # Current dataset state
         self.graphs = []
         self.config = {}
+        
+        # Original detection arrays (saved alongside graphs)
+        self.detections = None
+        self.labels = None
 
     def generate(
         self,
@@ -832,6 +836,10 @@ class DatasetCache:
             p_weights=p_weights
         )
 
+        # Store original arrays (saved alongside graphs in save())
+        self.detections = detections.cpu()
+        self.labels = labels.cpu()
+
         # Convert to graphs with progress bar
         if verbose:
             print(f"Converting to PyG graphs...")
@@ -874,6 +882,24 @@ class DatasetCache:
         print(f"Dataset saved: {data_path}")
         print(f"  Metadata: {meta_path}")
         print(f"  Samples: {len(self.graphs):,}")
+
+        # Save array format to nn_datasets/ (if detections available)
+        if self.detections is not None:
+            nn_datasets_dir = self.datasets_dir.parent / "nn_datasets"
+            nn_datasets_dir.mkdir(parents=True, exist_ok=True)
+
+            array_data = {
+                'detections': self.detections,
+                'labels': self.labels,
+                'd': self.config['d'],
+                'n_samples': len(self.labels),
+                'num_detectors': self.detections.shape[1],
+                'p_values': self.config['p_values'],
+                'generated_at': self.config['generated_at'],
+            }
+            array_path = nn_datasets_dir / f"{name}_array.pt"
+            torch.save(array_data, array_path)
+            print(f"  Array dataset: {array_path}")
 
         return data_path
 
