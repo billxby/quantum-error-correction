@@ -196,5 +196,23 @@
     "model_path": "/content/drive/MyDrive/Research/QEC/quantum-error-correction/quantum-error-correction/code/gSAGE/tuning/models/config_42.pt",
     "status": "completed",
     "timestamp": "2026-01-15T04:37:41.760469"
+  },
+  {
+    "config_id": 46,
+    "config": {
+      "id": 46,
+      "num_layers": 4,
+      "hidden_dim": 512,
+      "learning_rate": 0.0001,
+      "dropout": 0.3,
+      "aggr": "max"
+    },
+    "val_accuracy": 0.80655,
+    "test_accuracy": 0.80425,
+    "training_time_sec": 10808.123109817505,
+    "final_loss": 0.2884968575191498,
+    "model_path": "/content/drive/MyDrive/Research/QEC/quantum-error-correction/quantum-error-correction/code/gSAGE/tuning/models/config_46.pt",
+    "status": "completed",
+    "timestamp": "2026-01-15T07:38:02.948543"
   }
 ]
