@@ -1,0 +1,588 @@
+{
+  "seed": 42,
+  "n_configs": 50,
+  "generated_at": "2026-01-14T21:19:20.961416",
+  "search_space": {
+    "hidden_dims": [
+      "(256, 512, 1024)",
+      "(128, 256, 512)",
+      "(512, 1024, 2048)",
+      "(64, 128, 256)"
+    ],
+    "learning_rate": [
+      0.0001,
+      0.0003,
+      0.0005,
+      0.001,
+      0.003
+    ],
+    "batch_size": [
+      64,
+      128,
+      256,
+      512
+    ],
+    "dropout": [
+      0.0,
+      0.1,
+      0.2,
+      0.3
+    ]
+  },
+  "fixed_params": {
+    "epochs": 50,
+    "distance": 7
+  },
+  "configs": [
+    {
+      "id": 0,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.0001,
+      "batch_size": 256,
+      "dropout": 0.1
+    },
+    {
+      "id": 1,
+      "hidden_dims": [
+        128,
+        256,
+        512
+      ],
+      "learning_rate": 0.0003,
+      "batch_size": 64,
+      "dropout": 0.0
+    },
+    {
+      "id": 2,
+      "hidden_dims": [
+        64,
+        128,
+        256
+      ],
+      "learning_rate": 0.0001,
+      "batch_size": 64,
+      "dropout": 0.0
+    },
+    {
+      "id": 3,
+      "hidden_dims": [
+        128,
+        256,
+        512
+      ],
+      "learning_rate": 0.0003,
+      "batch_size": 64,
+      "dropout": 0.1
+    },
+    {
+      "id": 4,
+      "hidden_dims": [
+        64,
+        128,
+        256
+      ],
+      "learning_rate": 0.0003,
+      "batch_size": 512,
+      "dropout": 0.2
+    },
+    {
+      "id": 5,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.0003,
+      "batch_size": 512,
+      "dropout": 0.2
+    },
+    {
+      "id": 6,
+      "hidden_dims": [
+        512,
+        1024,
+        2048
+      ],
+      "learning_rate": 0.0003,
+      "batch_size": 128,
+      "dropout": 0.2
+    },
+    {
+      "id": 7,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.0001,
+      "batch_size": 512,
+      "dropout": 0.0
+    },
+    {
+      "id": 8,
+      "hidden_dims": [
+        512,
+        1024,
+        2048
+      ],
+      "learning_rate": 0.0005,
+      "batch_size": 256,
+      "dropout": 0.0
+    },
+    {
+      "id": 9,
+      "hidden_dims": [
+        64,
+        128,
+        256
+      ],
+      "learning_rate": 0.003,
+      "batch_size": 64,
+      "dropout": 0.3
+    },
+    {
+      "id": 10,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.003,
+      "batch_size": 256,
+      "dropout": 0.2
+    },
+    {
+      "id": 11,
+      "hidden_dims": [
+        128,
+        256,
+        512
+      ],
+      "learning_rate": 0.0001,
+      "batch_size": 64,
+      "dropout": 0.1
+    },
+    {
+      "id": 12,
+      "hidden_dims": [
+        512,
+        1024,
+        2048
+      ],
+      "learning_rate": 0.0001,
+      "batch_size": 128,
+      "dropout": 0.0
+    },
+    {
+      "id": 13,
+      "hidden_dims": [
+        64,
+        128,
+        256
+      ],
+      "learning_rate": 0.0005,
+      "batch_size": 512,
+      "dropout": 0.2
+    },
+    {
+      "id": 14,
+      "hidden_dims": [
+        128,
+        256,
+        512
+      ],
+      "learning_rate": 0.0005,
+      "batch_size": 256,
+      "dropout": 0.1
+    },
+    {
+      "id": 15,
+      "hidden_dims": [
+        512,
+        1024,
+        2048
+      ],
+      "learning_rate": 0.0001,
+      "batch_size": 128,
+      "dropout": 0.1
+    },
+    {
+      "id": 16,
+      "hidden_dims": [
+        128,
+        256,
+        512
+      ],
+      "learning_rate": 0.001,
+      "batch_size": 512,
+      "dropout": 0.2
+    },
+    {
+      "id": 17,
+      "hidden_dims": [
+        128,
+        256,
+        512
+      ],
+      "learning_rate": 0.0005,
+      "batch_size": 64,
+      "dropout": 0.1
+    },
+    {
+      "id": 18,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.0005,
+      "batch_size": 512,
+      "dropout": 0.2
+    },
+    {
+      "id": 19,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.0003,
+      "batch_size": 256,
+      "dropout": 0.1
+    },
+    {
+      "id": 20,
+      "hidden_dims": [
+        64,
+        128,
+        256
+      ],
+      "learning_rate": 0.001,
+      "batch_size": 512,
+      "dropout": 0.1
+    },
+    {
+      "id": 21,
+      "hidden_dims": [
+        512,
+        1024,
+        2048
+      ],
+      "learning_rate": 0.0003,
+      "batch_size": 128,
+      "dropout": 0.2
+    },
+    {
+      "id": 22,
+      "hidden_dims": [
+        64,
+        128,
+        256
+      ],
+      "learning_rate": 0.003,
+      "batch_size": 512,
+      "dropout": 0.2
+    },
+    {
+      "id": 23,
+      "hidden_dims": [
+        128,
+        256,
+        512
+      ],
+      "learning_rate": 0.0003,
+      "batch_size": 512,
+      "dropout": 0.0
+    },
+    {
+      "id": 24,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.0001,
+      "batch_size": 128,
+      "dropout": 0.1
+    },
+    {
+      "id": 25,
+      "hidden_dims": [
+        64,
+        128,
+        256
+      ],
+      "learning_rate": 0.003,
+      "batch_size": 64,
+      "dropout": 0.3
+    },
+    {
+      "id": 26,
+      "hidden_dims": [
+        64,
+        128,
+        256
+      ],
+      "learning_rate": 0.003,
+      "batch_size": 512,
+      "dropout": 0.2
+    },
+    {
+      "id": 27,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.0001,
+      "batch_size": 256,
+      "dropout": 0.2
+    },
+    {
+      "id": 28,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.0005,
+      "batch_size": 512,
+      "dropout": 0.1
+    },
+    {
+      "id": 29,
+      "hidden_dims": [
+        64,
+        128,
+        256
+      ],
+      "learning_rate": 0.0001,
+      "batch_size": 256,
+      "dropout": 0.1
+    },
+    {
+      "id": 30,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.0005,
+      "batch_size": 128,
+      "dropout": 0.1
+    },
+    {
+      "id": 31,
+      "hidden_dims": [
+        512,
+        1024,
+        2048
+      ],
+      "learning_rate": 0.0003,
+      "batch_size": 64,
+      "dropout": 0.2
+    },
+    {
+      "id": 32,
+      "hidden_dims": [
+        64,
+        128,
+        256
+      ],
+      "learning_rate": 0.0001,
+      "batch_size": 64,
+      "dropout": 0.2
+    },
+    {
+      "id": 33,
+      "hidden_dims": [
+        512,
+        1024,
+        2048
+      ],
+      "learning_rate": 0.0003,
+      "batch_size": 64,
+      "dropout": 0.1
+    },
+    {
+      "id": 34,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.0001,
+      "batch_size": 512,
+      "dropout": 0.0
+    },
+    {
+      "id": 35,
+      "hidden_dims": [
+        128,
+        256,
+        512
+      ],
+      "learning_rate": 0.0003,
+      "batch_size": 512,
+      "dropout": 0.1
+    },
+    {
+      "id": 36,
+      "hidden_dims": [
+        512,
+        1024,
+        2048
+      ],
+      "learning_rate": 0.003,
+      "batch_size": 512,
+      "dropout": 0.1
+    },
+    {
+      "id": 37,
+      "hidden_dims": [
+        128,
+        256,
+        512
+      ],
+      "learning_rate": 0.0005,
+      "batch_size": 512,
+      "dropout": 0.2
+    },
+    {
+      "id": 38,
+      "hidden_dims": [
+        64,
+        128,
+        256
+      ],
+      "learning_rate": 0.003,
+      "batch_size": 512,
+      "dropout": 0.0
+    },
+    {
+      "id": 39,
+      "hidden_dims": [
+        128,
+        256,
+        512
+      ],
+      "learning_rate": 0.0003,
+      "batch_size": 64,
+      "dropout": 0.2
+    },
+    {
+      "id": 40,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.003,
+      "batch_size": 128,
+      "dropout": 0.1
+    },
+    {
+      "id": 41,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.0001,
+      "batch_size": 64,
+      "dropout": 0.1
+    },
+    {
+      "id": 42,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.0001,
+      "batch_size": 256,
+      "dropout": 0.0
+    },
+    {
+      "id": 43,
+      "hidden_dims": [
+        128,
+        256,
+        512
+      ],
+      "learning_rate": 0.0005,
+      "batch_size": 512,
+      "dropout": 0.1
+    },
+    {
+      "id": 44,
+      "hidden_dims": [
+        128,
+        256,
+        512
+      ],
+      "learning_rate": 0.003,
+      "batch_size": 512,
+      "dropout": 0.1
+    },
+    {
+      "id": 45,
+      "hidden_dims": [
+        64,
+        128,
+        256
+      ],
+      "learning_rate": 0.001,
+      "batch_size": 128,
+      "dropout": 0.0
+    },
+    {
+      "id": 46,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.001,
+      "batch_size": 256,
+      "dropout": 0.3
+    },
+    {
+      "id": 47,
+      "hidden_dims": [
+        64,
+        128,
+        256
+      ],
+      "learning_rate": 0.001,
+      "batch_size": 64,
+      "dropout": 0.0
+    },
+    {
+      "id": 48,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.001,
+      "batch_size": 256,
+      "dropout": 0.0
+    },
+    {
+      "id": 49,
+      "hidden_dims": [
+        128,
+        256,
+        512
+      ],
+      "learning_rate": 0.0003,
+      "batch_size": 128,
+      "dropout": 0.3
+    }
+  ]
+}

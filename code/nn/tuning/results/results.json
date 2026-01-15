@@ -1,0 +1,3302 @@
+[
+  {
+    "config_id": 0,
+    "config": {
+      "id": 0,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.0001,
+      "batch_size": 256,
+      "dropout": 0.1
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "SimpleNN.__init__() got an unexpected keyword argument 'hidden_dims'",
+    "timestamp": "2026-01-14T21:33:14.496902"
+  },
+  {
+    "config_id": 1,
+    "config": {
+      "id": 1,
+      "hidden_dims": [
+        128,
+        256,
+        512
+      ],
+      "learning_rate": 0.0003,
+      "batch_size": 64,
+      "dropout": 0.0
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "SimpleNN.__init__() got an unexpected keyword argument 'hidden_dims'",
+    "timestamp": "2026-01-14T21:33:14.653413"
+  },
+  {
+    "config_id": 2,
+    "config": {
+      "id": 2,
+      "hidden_dims": [
+        64,
+        128,
+        256
+      ],
+      "learning_rate": 0.0001,
+      "batch_size": 64,
+      "dropout": 0.0
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "SimpleNN.__init__() got an unexpected keyword argument 'hidden_dims'",
+    "timestamp": "2026-01-14T21:33:14.803951"
+  },
+  {
+    "config_id": 3,
+    "config": {
+      "id": 3,
+      "hidden_dims": [
+        128,
+        256,
+        512
+      ],
+      "learning_rate": 0.0003,
+      "batch_size": 64,
+      "dropout": 0.1
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "SimpleNN.__init__() got an unexpected keyword argument 'hidden_dims'",
+    "timestamp": "2026-01-14T21:33:14.938561"
+  },
+  {
+    "config_id": 4,
+    "config": {
+      "id": 4,
+      "hidden_dims": [
+        64,
+        128,
+        256
+      ],
+      "learning_rate": 0.0003,
+      "batch_size": 512,
+      "dropout": 0.2
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "SimpleNN.__init__() got an unexpected keyword argument 'hidden_dims'",
+    "timestamp": "2026-01-14T21:33:15.082209"
+  },
+  {
+    "config_id": 5,
+    "config": {
+      "id": 5,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.0003,
+      "batch_size": 512,
+      "dropout": 0.2
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "SimpleNN.__init__() got an unexpected keyword argument 'hidden_dims'",
+    "timestamp": "2026-01-14T21:33:15.248477"
+  },
+  {
+    "config_id": 6,
+    "config": {
+      "id": 6,
+      "hidden_dims": [
+        512,
+        1024,
+        2048
+      ],
+      "learning_rate": 0.0003,
+      "batch_size": 128,
+      "dropout": 0.2
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "SimpleNN.__init__() got an unexpected keyword argument 'hidden_dims'",
+    "timestamp": "2026-01-14T21:33:15.371165"
+  },
+  {
+    "config_id": 7,
+    "config": {
+      "id": 7,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.0001,
+      "batch_size": 512,
+      "dropout": 0.0
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "SimpleNN.__init__() got an unexpected keyword argument 'hidden_dims'",
+    "timestamp": "2026-01-14T21:33:15.500819"
+  },
+  {
+    "config_id": 8,
+    "config": {
+      "id": 8,
+      "hidden_dims": [
+        512,
+        1024,
+        2048
+      ],
+      "learning_rate": 0.0005,
+      "batch_size": 256,
+      "dropout": 0.0
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "SimpleNN.__init__() got an unexpected keyword argument 'hidden_dims'",
+    "timestamp": "2026-01-14T21:33:15.642132"
+  },
+  {
+    "config_id": 9,
+    "config": {
+      "id": 9,
+      "hidden_dims": [
+        64,
+        128,
+        256
+      ],
+      "learning_rate": 0.003,
+      "batch_size": 64,
+      "dropout": 0.3
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "SimpleNN.__init__() got an unexpected keyword argument 'hidden_dims'",
+    "timestamp": "2026-01-14T21:33:15.766798"
+  },
+  {
+    "config_id": 10,
+    "config": {
+      "id": 10,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.003,
+      "batch_size": 256,
+      "dropout": 0.2
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "SimpleNN.__init__() got an unexpected keyword argument 'hidden_dims'",
+    "timestamp": "2026-01-14T21:33:15.932326"
+  },
+  {
+    "config_id": 11,
+    "config": {
+      "id": 11,
+      "hidden_dims": [
+        128,
+        256,
+        512
+      ],
+      "learning_rate": 0.0001,
+      "batch_size": 64,
+      "dropout": 0.1
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "SimpleNN.__init__() got an unexpected keyword argument 'hidden_dims'",
+    "timestamp": "2026-01-14T21:33:16.056546"
+  },
+  {
+    "config_id": 12,
+    "config": {
+      "id": 12,
+      "hidden_dims": [
+        512,
+        1024,
+        2048
+      ],
+      "learning_rate": 0.0001,
+      "batch_size": 128,
+      "dropout": 0.0
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "SimpleNN.__init__() got an unexpected keyword argument 'hidden_dims'",
+    "timestamp": "2026-01-14T21:33:16.180250"
+  },
+  {
+    "config_id": 13,
+    "config": {
+      "id": 13,
+      "hidden_dims": [
+        64,
+        128,
+        256
+      ],
+      "learning_rate": 0.0005,
+      "batch_size": 512,
+      "dropout": 0.2
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "SimpleNN.__init__() got an unexpected keyword argument 'hidden_dims'",
+    "timestamp": "2026-01-14T21:33:16.300924"
+  },
+  {
+    "config_id": 14,
+    "config": {
+      "id": 14,
+      "hidden_dims": [
+        128,
+        256,
+        512
+      ],
+      "learning_rate": 0.0005,
+      "batch_size": 256,
+      "dropout": 0.1
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "SimpleNN.__init__() got an unexpected keyword argument 'hidden_dims'",
+    "timestamp": "2026-01-14T21:33:16.432270"
+  },
+  {
+    "config_id": 15,
+    "config": {
+      "id": 15,
+      "hidden_dims": [
+        512,
+        1024,
+        2048
+      ],
+      "learning_rate": 0.0001,
+      "batch_size": 128,
+      "dropout": 0.1
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "SimpleNN.__init__() got an unexpected keyword argument 'hidden_dims'",
+    "timestamp": "2026-01-14T21:33:16.576883"
+  },
+  {
+    "config_id": 16,
+    "config": {
+      "id": 16,
+      "hidden_dims": [
+        128,
+        256,
+        512
+      ],
+      "learning_rate": 0.001,
+      "batch_size": 512,
+      "dropout": 0.2
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "SimpleNN.__init__() got an unexpected keyword argument 'hidden_dims'",
+    "timestamp": "2026-01-14T21:33:16.707645"
+  },
+  {
+    "config_id": 17,
+    "config": {
+      "id": 17,
+      "hidden_dims": [
+        128,
+        256,
+        512
+      ],
+      "learning_rate": 0.0005,
+      "batch_size": 64,
+      "dropout": 0.1
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "SimpleNN.__init__() got an unexpected keyword argument 'hidden_dims'",
+    "timestamp": "2026-01-14T21:33:16.832340"
+  },
+  {
+    "config_id": 18,
+    "config": {
+      "id": 18,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.0005,
+      "batch_size": 512,
+      "dropout": 0.2
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "SimpleNN.__init__() got an unexpected keyword argument 'hidden_dims'",
+    "timestamp": "2026-01-14T21:33:16.968945"
+  },
+  {
+    "config_id": 19,
+    "config": {
+      "id": 19,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.0003,
+      "batch_size": 256,
+      "dropout": 0.1
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "SimpleNN.__init__() got an unexpected keyword argument 'hidden_dims'",
+    "timestamp": "2026-01-14T21:33:17.086659"
+  },
+  {
+    "config_id": 20,
+    "config": {
+      "id": 20,
+      "hidden_dims": [
+        64,
+        128,
+        256
+      ],
+      "learning_rate": 0.001,
+      "batch_size": 512,
+      "dropout": 0.1
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "SimpleNN.__init__() got an unexpected keyword argument 'hidden_dims'",
+    "timestamp": "2026-01-14T21:33:17.204315"
+  },
+  {
+    "config_id": 21,
+    "config": {
+      "id": 21,
+      "hidden_dims": [
+        512,
+        1024,
+        2048
+      ],
+      "learning_rate": 0.0003,
+      "batch_size": 128,
+      "dropout": 0.2
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "SimpleNN.__init__() got an unexpected keyword argument 'hidden_dims'",
+    "timestamp": "2026-01-14T21:33:17.329006"
+  },
+  {
+    "config_id": 22,
+    "config": {
+      "id": 22,
+      "hidden_dims": [
+        64,
+        128,
+        256
+      ],
+      "learning_rate": 0.003,
+      "batch_size": 512,
+      "dropout": 0.2
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "SimpleNN.__init__() got an unexpected keyword argument 'hidden_dims'",
+    "timestamp": "2026-01-14T21:33:17.452650"
+  },
+  {
+    "config_id": 23,
+    "config": {
+      "id": 23,
+      "hidden_dims": [
+        128,
+        256,
+        512
+      ],
+      "learning_rate": 0.0003,
+      "batch_size": 512,
+      "dropout": 0.0
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "SimpleNN.__init__() got an unexpected keyword argument 'hidden_dims'",
+    "timestamp": "2026-01-14T21:33:17.578319"
+  },
+  {
+    "config_id": 24,
+    "config": {
+      "id": 24,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.0001,
+      "batch_size": 128,
+      "dropout": 0.1
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "SimpleNN.__init__() got an unexpected keyword argument 'hidden_dims'",
+    "timestamp": "2026-01-14T21:33:17.706009"
+  },
+  {
+    "config_id": 25,
+    "config": {
+      "id": 25,
+      "hidden_dims": [
+        64,
+        128,
+        256
+      ],
+      "learning_rate": 0.003,
+      "batch_size": 64,
+      "dropout": 0.3
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "SimpleNN.__init__() got an unexpected keyword argument 'hidden_dims'",
+    "timestamp": "2026-01-14T21:33:17.829642"
+  },
+  {
+    "config_id": 26,
+    "config": {
+      "id": 26,
+      "hidden_dims": [
+        64,
+        128,
+        256
+      ],
+      "learning_rate": 0.003,
+      "batch_size": 512,
+      "dropout": 0.2
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "SimpleNN.__init__() got an unexpected keyword argument 'hidden_dims'",
+    "timestamp": "2026-01-14T21:33:17.959145"
+  },
+  {
+    "config_id": 27,
+    "config": {
+      "id": 27,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.0001,
+      "batch_size": 256,
+      "dropout": 0.2
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "SimpleNN.__init__() got an unexpected keyword argument 'hidden_dims'",
+    "timestamp": "2026-01-14T21:33:18.085805"
+  },
+  {
+    "config_id": 28,
+    "config": {
+      "id": 28,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.0005,
+      "batch_size": 512,
+      "dropout": 0.1
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "SimpleNN.__init__() got an unexpected keyword argument 'hidden_dims'",
+    "timestamp": "2026-01-14T21:33:18.207501"
+  },
+  {
+    "config_id": 29,
+    "config": {
+      "id": 29,
+      "hidden_dims": [
+        64,
+        128,
+        256
+      ],
+      "learning_rate": 0.0001,
+      "batch_size": 256,
+      "dropout": 0.1
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "SimpleNN.__init__() got an unexpected keyword argument 'hidden_dims'",
+    "timestamp": "2026-01-14T21:33:18.327617"
+  },
+  {
+    "config_id": 30,
+    "config": {
+      "id": 30,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.0005,
+      "batch_size": 128,
+      "dropout": 0.1
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "SimpleNN.__init__() got an unexpected keyword argument 'hidden_dims'",
+    "timestamp": "2026-01-14T21:33:18.459264"
+  },
+  {
+    "config_id": 31,
+    "config": {
+      "id": 31,
+      "hidden_dims": [
+        512,
+        1024,
+        2048
+      ],
+      "learning_rate": 0.0003,
+      "batch_size": 64,
+      "dropout": 0.2
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "SimpleNN.__init__() got an unexpected keyword argument 'hidden_dims'",
+    "timestamp": "2026-01-14T21:33:18.600885"
+  },
+  {
+    "config_id": 32,
+    "config": {
+      "id": 32,
+      "hidden_dims": [
+        64,
+        128,
+        256
+      ],
+      "learning_rate": 0.0001,
+      "batch_size": 64,
+      "dropout": 0.2
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "SimpleNN.__init__() got an unexpected keyword argument 'hidden_dims'",
+    "timestamp": "2026-01-14T21:33:18.730538"
+  },
+  {
+    "config_id": 33,
+    "config": {
+      "id": 33,
+      "hidden_dims": [
+        512,
+        1024,
+        2048
+      ],
+      "learning_rate": 0.0003,
+      "batch_size": 64,
+      "dropout": 0.1
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "SimpleNN.__init__() got an unexpected keyword argument 'hidden_dims'",
+    "timestamp": "2026-01-14T21:33:18.865179"
+  },
+  {
+    "config_id": 34,
+    "config": {
+      "id": 34,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.0001,
+      "batch_size": 512,
+      "dropout": 0.0
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "SimpleNN.__init__() got an unexpected keyword argument 'hidden_dims'",
+    "timestamp": "2026-01-14T21:33:19.007797"
+  },
+  {
+    "config_id": 35,
+    "config": {
+      "id": 35,
+      "hidden_dims": [
+        128,
+        256,
+        512
+      ],
+      "learning_rate": 0.0003,
+      "batch_size": 512,
+      "dropout": 0.1
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "SimpleNN.__init__() got an unexpected keyword argument 'hidden_dims'",
+    "timestamp": "2026-01-14T21:33:19.208261"
+  },
+  {
+    "config_id": 36,
+    "config": {
+      "id": 36,
+      "hidden_dims": [
+        512,
+        1024,
+        2048
+      ],
+      "learning_rate": 0.003,
+      "batch_size": 512,
+      "dropout": 0.1
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "SimpleNN.__init__() got an unexpected keyword argument 'hidden_dims'",
+    "timestamp": "2026-01-14T21:33:19.389776"
+  },
+  {
+    "config_id": 37,
+    "config": {
+      "id": 37,
+      "hidden_dims": [
+        128,
+        256,
+        512
+      ],
+      "learning_rate": 0.0005,
+      "batch_size": 512,
+      "dropout": 0.2
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "SimpleNN.__init__() got an unexpected keyword argument 'hidden_dims'",
+    "timestamp": "2026-01-14T21:33:19.563311"
+  },
+  {
+    "config_id": 38,
+    "config": {
+      "id": 38,
+      "hidden_dims": [
+        64,
+        128,
+        256
+      ],
+      "learning_rate": 0.003,
+      "batch_size": 512,
+      "dropout": 0.0
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "SimpleNN.__init__() got an unexpected keyword argument 'hidden_dims'",
+    "timestamp": "2026-01-14T21:33:19.732334"
+  },
+  {
+    "config_id": 39,
+    "config": {
+      "id": 39,
+      "hidden_dims": [
+        128,
+        256,
+        512
+      ],
+      "learning_rate": 0.0003,
+      "batch_size": 64,
+      "dropout": 0.2
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "SimpleNN.__init__() got an unexpected keyword argument 'hidden_dims'",
+    "timestamp": "2026-01-14T21:33:19.849021"
+  },
+  {
+    "config_id": 40,
+    "config": {
+      "id": 40,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.003,
+      "batch_size": 128,
+      "dropout": 0.1
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "SimpleNN.__init__() got an unexpected keyword argument 'hidden_dims'",
+    "timestamp": "2026-01-14T21:33:20.027543"
+  },
+  {
+    "config_id": 41,
+    "config": {
+      "id": 41,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.0001,
+      "batch_size": 64,
+      "dropout": 0.1
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "SimpleNN.__init__() got an unexpected keyword argument 'hidden_dims'",
+    "timestamp": "2026-01-14T21:33:20.170161"
+  },
+  {
+    "config_id": 42,
+    "config": {
+      "id": 42,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.0001,
+      "batch_size": 256,
+      "dropout": 0.0
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "SimpleNN.__init__() got an unexpected keyword argument 'hidden_dims'",
+    "timestamp": "2026-01-14T21:33:20.287437"
+  },
+  {
+    "config_id": 43,
+    "config": {
+      "id": 43,
+      "hidden_dims": [
+        128,
+        256,
+        512
+      ],
+      "learning_rate": 0.0005,
+      "batch_size": 512,
+      "dropout": 0.1
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "SimpleNN.__init__() got an unexpected keyword argument 'hidden_dims'",
+    "timestamp": "2026-01-14T21:33:20.443582"
+  },
+  {
+    "config_id": 44,
+    "config": {
+      "id": 44,
+      "hidden_dims": [
+        128,
+        256,
+        512
+      ],
+      "learning_rate": 0.003,
+      "batch_size": 512,
+      "dropout": 0.1
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "SimpleNN.__init__() got an unexpected keyword argument 'hidden_dims'",
+    "timestamp": "2026-01-14T21:33:20.561267"
+  },
+  {
+    "config_id": 45,
+    "config": {
+      "id": 45,
+      "hidden_dims": [
+        64,
+        128,
+        256
+      ],
+      "learning_rate": 0.001,
+      "batch_size": 128,
+      "dropout": 0.0
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "SimpleNN.__init__() got an unexpected keyword argument 'hidden_dims'",
+    "timestamp": "2026-01-14T21:33:20.681975"
+  },
+  {
+    "config_id": 46,
+    "config": {
+      "id": 46,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.001,
+      "batch_size": 256,
+      "dropout": 0.3
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "SimpleNN.__init__() got an unexpected keyword argument 'hidden_dims'",
+    "timestamp": "2026-01-14T21:33:20.821602"
+  },
+  {
+    "config_id": 47,
+    "config": {
+      "id": 47,
+      "hidden_dims": [
+        64,
+        128,
+        256
+      ],
+      "learning_rate": 0.001,
+      "batch_size": 64,
+      "dropout": 0.0
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "SimpleNN.__init__() got an unexpected keyword argument 'hidden_dims'",
+    "timestamp": "2026-01-14T21:33:20.944274"
+  },
+  {
+    "config_id": 48,
+    "config": {
+      "id": 48,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.001,
+      "batch_size": 256,
+      "dropout": 0.0
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "SimpleNN.__init__() got an unexpected keyword argument 'hidden_dims'",
+    "timestamp": "2026-01-14T21:33:21.083902"
+  },
+  {
+    "config_id": 49,
+    "config": {
+      "id": 49,
+      "hidden_dims": [
+        128,
+        256,
+        512
+      ],
+      "learning_rate": 0.0003,
+      "batch_size": 128,
+      "dropout": 0.3
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "SimpleNN.__init__() got an unexpected keyword argument 'hidden_dims'",
+    "timestamp": "2026-01-14T21:33:21.263419"
+  },
+  {
+    "config_id": 0,
+    "config": {
+      "id": 0,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.0001,
+      "batch_size": 256,
+      "dropout": 0.1
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.14364385604858398,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:34:56.337295"
+  },
+  {
+    "config_id": 1,
+    "config": {
+      "id": 1,
+      "hidden_dims": [
+        128,
+        256,
+        512
+      ],
+      "learning_rate": 0.0003,
+      "batch_size": 64,
+      "dropout": 0.0
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.003992557525634766,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:34:56.519679"
+  },
+  {
+    "config_id": 2,
+    "config": {
+      "id": 2,
+      "hidden_dims": [
+        64,
+        128,
+        256
+      ],
+      "learning_rate": 0.0001,
+      "batch_size": 64,
+      "dropout": 0.0
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.002988576889038086,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:34:56.645972"
+  },
+  {
+    "config_id": 3,
+    "config": {
+      "id": 3,
+      "hidden_dims": [
+        128,
+        256,
+        512
+      ],
+      "learning_rate": 0.0003,
+      "batch_size": 64,
+      "dropout": 0.1
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.002995014190673828,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:34:56.770379"
+  },
+  {
+    "config_id": 4,
+    "config": {
+      "id": 4,
+      "hidden_dims": [
+        64,
+        128,
+        256
+      ],
+      "learning_rate": 0.0003,
+      "batch_size": 512,
+      "dropout": 0.2
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0029935836791992188,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:34:56.889330"
+  },
+  {
+    "config_id": 5,
+    "config": {
+      "id": 5,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.0003,
+      "batch_size": 512,
+      "dropout": 0.2
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.009977340698242188,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:34:57.016649"
+  },
+  {
+    "config_id": 6,
+    "config": {
+      "id": 6,
+      "hidden_dims": [
+        512,
+        1024,
+        2048
+      ],
+      "learning_rate": 0.0003,
+      "batch_size": 128,
+      "dropout": 0.2
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.02693009376525879,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:34:57.157598"
+  },
+  {
+    "config_id": 7,
+    "config": {
+      "id": 7,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.0001,
+      "batch_size": 512,
+      "dropout": 0.0
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.009007453918457031,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:34:57.284643"
+  },
+  {
+    "config_id": 8,
+    "config": {
+      "id": 8,
+      "hidden_dims": [
+        512,
+        1024,
+        2048
+      ],
+      "learning_rate": 0.0005,
+      "batch_size": 256,
+      "dropout": 0.0
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.025930404663085938,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:34:57.437214"
+  },
+  {
+    "config_id": 9,
+    "config": {
+      "id": 9,
+      "hidden_dims": [
+        64,
+        128,
+        256
+      ],
+      "learning_rate": 0.003,
+      "batch_size": 64,
+      "dropout": 0.3
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.002991199493408203,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:34:57.555660"
+  },
+  {
+    "config_id": 10,
+    "config": {
+      "id": 10,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.003,
+      "batch_size": 256,
+      "dropout": 0.2
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.008947610855102539,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:34:57.687283"
+  },
+  {
+    "config_id": 11,
+    "config": {
+      "id": 11,
+      "hidden_dims": [
+        128,
+        256,
+        512
+      ],
+      "learning_rate": 0.0001,
+      "batch_size": 64,
+      "dropout": 0.1
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.01296544075012207,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:34:57.837402"
+  },
+  {
+    "config_id": 12,
+    "config": {
+      "id": 12,
+      "hidden_dims": [
+        512,
+        1024,
+        2048
+      ],
+      "learning_rate": 0.0001,
+      "batch_size": 128,
+      "dropout": 0.0
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.027897119522094727,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:34:57.999966"
+  },
+  {
+    "config_id": 13,
+    "config": {
+      "id": 13,
+      "hidden_dims": [
+        64,
+        128,
+        256
+      ],
+      "learning_rate": 0.0005,
+      "batch_size": 512,
+      "dropout": 0.2
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.002991914749145508,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:34:58.116654"
+  },
+  {
+    "config_id": 14,
+    "config": {
+      "id": 14,
+      "hidden_dims": [
+        128,
+        256,
+        512
+      ],
+      "learning_rate": 0.0005,
+      "batch_size": 256,
+      "dropout": 0.1
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.004977703094482422,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:34:58.247305"
+  },
+  {
+    "config_id": 15,
+    "config": {
+      "id": 15,
+      "hidden_dims": [
+        512,
+        1024,
+        2048
+      ],
+      "learning_rate": 0.0001,
+      "batch_size": 128,
+      "dropout": 0.1
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.023906946182250977,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:34:58.388980"
+  },
+  {
+    "config_id": 16,
+    "config": {
+      "id": 16,
+      "hidden_dims": [
+        128,
+        256,
+        512
+      ],
+      "learning_rate": 0.001,
+      "batch_size": 512,
+      "dropout": 0.2
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.003983259201049805,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:34:58.515929"
+  },
+  {
+    "config_id": 17,
+    "config": {
+      "id": 17,
+      "hidden_dims": [
+        128,
+        256,
+        512
+      ],
+      "learning_rate": 0.0005,
+      "batch_size": 64,
+      "dropout": 0.1
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.003991365432739258,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:34:58.643586"
+  },
+  {
+    "config_id": 18,
+    "config": {
+      "id": 18,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.0005,
+      "batch_size": 512,
+      "dropout": 0.2
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.009007930755615234,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:34:58.786765"
+  },
+  {
+    "config_id": 19,
+    "config": {
+      "id": 19,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.0003,
+      "batch_size": 256,
+      "dropout": 0.1
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.008009910583496094,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:34:58.913621"
+  },
+  {
+    "config_id": 20,
+    "config": {
+      "id": 20,
+      "hidden_dims": [
+        64,
+        128,
+        256
+      ],
+      "learning_rate": 0.001,
+      "batch_size": 512,
+      "dropout": 0.1
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.003020763397216797,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:34:59.033301"
+  },
+  {
+    "config_id": 21,
+    "config": {
+      "id": 21,
+      "hidden_dims": [
+        512,
+        1024,
+        2048
+      ],
+      "learning_rate": 0.0003,
+      "batch_size": 128,
+      "dropout": 0.2
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.03390955924987793,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:34:59.219775"
+  },
+  {
+    "config_id": 22,
+    "config": {
+      "id": 22,
+      "hidden_dims": [
+        64,
+        128,
+        256
+      ],
+      "learning_rate": 0.003,
+      "batch_size": 512,
+      "dropout": 0.2
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0029921531677246094,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:34:59.347432"
+  },
+  {
+    "config_id": 23,
+    "config": {
+      "id": 23,
+      "hidden_dims": [
+        128,
+        256,
+        512
+      ],
+      "learning_rate": 0.0003,
+      "batch_size": 512,
+      "dropout": 0.0
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.003988981246948242,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:34:59.479079"
+  },
+  {
+    "config_id": 24,
+    "config": {
+      "id": 24,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.0001,
+      "batch_size": 128,
+      "dropout": 0.1
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.009005308151245117,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:34:59.609759"
+  },
+  {
+    "config_id": 25,
+    "config": {
+      "id": 25,
+      "hidden_dims": [
+        64,
+        128,
+        256
+      ],
+      "learning_rate": 0.003,
+      "batch_size": 64,
+      "dropout": 0.3
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0029947757720947266,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:34:59.728119"
+  },
+  {
+    "config_id": 26,
+    "config": {
+      "id": 26,
+      "hidden_dims": [
+        64,
+        128,
+        256
+      ],
+      "learning_rate": 0.003,
+      "batch_size": 512,
+      "dropout": 0.2
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0019974708557128906,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:34:59.849853"
+  },
+  {
+    "config_id": 27,
+    "config": {
+      "id": 27,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.0001,
+      "batch_size": 256,
+      "dropout": 0.2
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.00797724723815918,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:34:59.980508"
+  },
+  {
+    "config_id": 28,
+    "config": {
+      "id": 28,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.0005,
+      "batch_size": 512,
+      "dropout": 0.1
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.00897526741027832,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:35:00.124925"
+  },
+  {
+    "config_id": 29,
+    "config": {
+      "id": 29,
+      "hidden_dims": [
+        64,
+        128,
+        256
+      ],
+      "learning_rate": 0.0001,
+      "batch_size": 256,
+      "dropout": 0.1
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0039844512939453125,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:35:00.258567"
+  },
+  {
+    "config_id": 30,
+    "config": {
+      "id": 30,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.0005,
+      "batch_size": 128,
+      "dropout": 0.1
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.007978439331054688,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:35:00.386161"
+  },
+  {
+    "config_id": 31,
+    "config": {
+      "id": 31,
+      "hidden_dims": [
+        512,
+        1024,
+        2048
+      ],
+      "learning_rate": 0.0003,
+      "batch_size": 64,
+      "dropout": 0.2
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0259549617767334,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:35:00.533543"
+  },
+  {
+    "config_id": 32,
+    "config": {
+      "id": 32,
+      "hidden_dims": [
+        64,
+        128,
+        256
+      ],
+      "learning_rate": 0.0001,
+      "batch_size": 64,
+      "dropout": 0.2
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.00498652458190918,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:35:00.698103"
+  },
+  {
+    "config_id": 33,
+    "config": {
+      "id": 33,
+      "hidden_dims": [
+        512,
+        1024,
+        2048
+      ],
+      "learning_rate": 0.0003,
+      "batch_size": 64,
+      "dropout": 0.1
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.024445295333862305,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:35:00.873929"
+  },
+  {
+    "config_id": 34,
+    "config": {
+      "id": 34,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.0001,
+      "batch_size": 512,
+      "dropout": 0.0
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.007980823516845703,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:35:01.001639"
+  },
+  {
+    "config_id": 35,
+    "config": {
+      "id": 35,
+      "hidden_dims": [
+        128,
+        256,
+        512
+      ],
+      "learning_rate": 0.0003,
+      "batch_size": 512,
+      "dropout": 0.1
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0039598941802978516,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:35:01.123316"
+  },
+  {
+    "config_id": 36,
+    "config": {
+      "id": 36,
+      "hidden_dims": [
+        512,
+        1024,
+        2048
+      ],
+      "learning_rate": 0.003,
+      "batch_size": 512,
+      "dropout": 0.1
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.03889822959899902,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:35:01.280854"
+  },
+  {
+    "config_id": 37,
+    "config": {
+      "id": 37,
+      "hidden_dims": [
+        128,
+        256,
+        512
+      ],
+      "learning_rate": 0.0005,
+      "batch_size": 512,
+      "dropout": 0.2
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0030231475830078125,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:35:01.401987"
+  },
+  {
+    "config_id": 38,
+    "config": {
+      "id": 38,
+      "hidden_dims": [
+        64,
+        128,
+        256
+      ],
+      "learning_rate": 0.003,
+      "batch_size": 512,
+      "dropout": 0.0
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0030176639556884766,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:35:01.519487"
+  },
+  {
+    "config_id": 39,
+    "config": {
+      "id": 39,
+      "hidden_dims": [
+        128,
+        256,
+        512
+      ],
+      "learning_rate": 0.0003,
+      "batch_size": 64,
+      "dropout": 0.2
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0039598941802978516,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:35:01.645648"
+  },
+  {
+    "config_id": 40,
+    "config": {
+      "id": 40,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.003,
+      "batch_size": 128,
+      "dropout": 0.1
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.00994563102722168,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:35:01.767327"
+  },
+  {
+    "config_id": 41,
+    "config": {
+      "id": 41,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.0001,
+      "batch_size": 64,
+      "dropout": 0.1
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.008974790573120117,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:35:01.901994"
+  },
+  {
+    "config_id": 42,
+    "config": {
+      "id": 42,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.0001,
+      "batch_size": 256,
+      "dropout": 0.0
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.008017539978027344,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:35:02.022733"
+  },
+  {
+    "config_id": 43,
+    "config": {
+      "id": 43,
+      "hidden_dims": [
+        128,
+        256,
+        512
+      ],
+      "learning_rate": 0.0005,
+      "batch_size": 512,
+      "dropout": 0.1
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.005984783172607422,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:35:02.193240"
+  },
+  {
+    "config_id": 44,
+    "config": {
+      "id": 44,
+      "hidden_dims": [
+        128,
+        256,
+        512
+      ],
+      "learning_rate": 0.003,
+      "batch_size": 512,
+      "dropout": 0.1
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.003991842269897461,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:35:02.320454"
+  },
+  {
+    "config_id": 45,
+    "config": {
+      "id": 45,
+      "hidden_dims": [
+        64,
+        128,
+        256
+      ],
+      "learning_rate": 0.001,
+      "batch_size": 128,
+      "dropout": 0.0
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.001993894577026367,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:35:02.448111"
+  },
+  {
+    "config_id": 46,
+    "config": {
+      "id": 46,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.001,
+      "batch_size": 256,
+      "dropout": 0.3
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.00897359848022461,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:35:02.573810"
+  },
+  {
+    "config_id": 47,
+    "config": {
+      "id": 47,
+      "hidden_dims": [
+        64,
+        128,
+        256
+      ],
+      "learning_rate": 0.001,
+      "batch_size": 64,
+      "dropout": 0.0
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.002992391586303711,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:35:02.746509"
+  },
+  {
+    "config_id": 48,
+    "config": {
+      "id": 48,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.001,
+      "batch_size": 256,
+      "dropout": 0.0
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.006981372833251953,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:35:02.870202"
+  },
+  {
+    "config_id": 49,
+    "config": {
+      "id": 49,
+      "hidden_dims": [
+        128,
+        256,
+        512
+      ],
+      "learning_rate": 0.0003,
+      "batch_size": 128,
+      "dropout": 0.3
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.003992319107055664,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:35:02.996123"
+  },
+  {
+    "config_id": 0,
+    "config": {
+      "id": 0,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.0001,
+      "batch_size": 256,
+      "dropout": 0.1
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.031914710998535156,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:37:32.175806"
+  },
+  {
+    "config_id": 1,
+    "config": {
+      "id": 1,
+      "hidden_dims": [
+        128,
+        256,
+        512
+      ],
+      "learning_rate": 0.0003,
+      "batch_size": 64,
+      "dropout": 0.0
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0039899349212646484,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:37:32.361950"
+  },
+  {
+    "config_id": 2,
+    "config": {
+      "id": 2,
+      "hidden_dims": [
+        64,
+        128,
+        256
+      ],
+      "learning_rate": 0.0001,
+      "batch_size": 64,
+      "dropout": 0.0
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0029926300048828125,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:37:32.494591"
+  },
+  {
+    "config_id": 3,
+    "config": {
+      "id": 3,
+      "hidden_dims": [
+        128,
+        256,
+        512
+      ],
+      "learning_rate": 0.0003,
+      "batch_size": 64,
+      "dropout": 0.1
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.003969907760620117,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:37:32.614523"
+  },
+  {
+    "config_id": 4,
+    "config": {
+      "id": 4,
+      "hidden_dims": [
+        64,
+        128,
+        256
+      ],
+      "learning_rate": 0.0003,
+      "batch_size": 512,
+      "dropout": 0.2
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0029954910278320312,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:37:32.740054"
+  },
+  {
+    "config_id": 5,
+    "config": {
+      "id": 5,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.0003,
+      "batch_size": 512,
+      "dropout": 0.2
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.008975028991699219,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:37:32.882164"
+  },
+  {
+    "config_id": 6,
+    "config": {
+      "id": 6,
+      "hidden_dims": [
+        512,
+        1024,
+        2048
+      ],
+      "learning_rate": 0.0003,
+      "batch_size": 128,
+      "dropout": 0.2
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.026935100555419922,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:37:33.051703"
+  },
+  {
+    "config_id": 7,
+    "config": {
+      "id": 7,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.0001,
+      "batch_size": 512,
+      "dropout": 0.0
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.00997304916381836,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:37:33.214284"
+  },
+  {
+    "config_id": 8,
+    "config": {
+      "id": 8,
+      "hidden_dims": [
+        512,
+        1024,
+        2048
+      ],
+      "learning_rate": 0.0005,
+      "batch_size": 256,
+      "dropout": 0.0
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.02627110481262207,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:37:33.362198"
+  },
+  {
+    "config_id": 9,
+    "config": {
+      "id": 9,
+      "hidden_dims": [
+        64,
+        128,
+        256
+      ],
+      "learning_rate": 0.003,
+      "batch_size": 64,
+      "dropout": 0.3
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.002994060516357422,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:37:33.480798"
+  },
+  {
+    "config_id": 10,
+    "config": {
+      "id": 10,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.003,
+      "batch_size": 256,
+      "dropout": 0.2
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.008975505828857422,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:37:33.608723"
+  },
+  {
+    "config_id": 11,
+    "config": {
+      "id": 11,
+      "hidden_dims": [
+        128,
+        256,
+        512
+      ],
+      "learning_rate": 0.0001,
+      "batch_size": 64,
+      "dropout": 0.1
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0049896240234375,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:37:33.728350"
+  },
+  {
+    "config_id": 12,
+    "config": {
+      "id": 12,
+      "hidden_dims": [
+        512,
+        1024,
+        2048
+      ],
+      "learning_rate": 0.0001,
+      "batch_size": 128,
+      "dropout": 0.0
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.026961803436279297,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:37:33.878208"
+  },
+  {
+    "config_id": 13,
+    "config": {
+      "id": 13,
+      "hidden_dims": [
+        64,
+        128,
+        256
+      ],
+      "learning_rate": 0.0005,
+      "batch_size": 512,
+      "dropout": 0.2
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.003974437713623047,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:37:33.997183"
+  },
+  {
+    "config_id": 14,
+    "config": {
+      "id": 14,
+      "hidden_dims": [
+        128,
+        256,
+        512
+      ],
+      "learning_rate": 0.0005,
+      "batch_size": 256,
+      "dropout": 0.1
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.004639625549316406,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:37:34.161380"
+  },
+  {
+    "config_id": 15,
+    "config": {
+      "id": 15,
+      "hidden_dims": [
+        512,
+        1024,
+        2048
+      ],
+      "learning_rate": 0.0001,
+      "batch_size": 128,
+      "dropout": 0.1
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.023952007293701172,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:37:34.305158"
+  },
+  {
+    "config_id": 16,
+    "config": {
+      "id": 16,
+      "hidden_dims": [
+        128,
+        256,
+        512
+      ],
+      "learning_rate": 0.001,
+      "batch_size": 512,
+      "dropout": 0.2
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.003989696502685547,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:37:34.429546"
+  },
+  {
+    "config_id": 17,
+    "config": {
+      "id": 17,
+      "hidden_dims": [
+        128,
+        256,
+        512
+      ],
+      "learning_rate": 0.0005,
+      "batch_size": 64,
+      "dropout": 0.1
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.003984212875366211,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:37:34.550221"
+  },
+  {
+    "config_id": 18,
+    "config": {
+      "id": 18,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.0005,
+      "batch_size": 512,
+      "dropout": 0.2
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.009974002838134766,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:37:34.679877"
+  },
+  {
+    "config_id": 19,
+    "config": {
+      "id": 19,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.0003,
+      "batch_size": 256,
+      "dropout": 0.1
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.00800633430480957,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:37:34.804849"
+  },
+  {
+    "config_id": 20,
+    "config": {
+      "id": 20,
+      "hidden_dims": [
+        64,
+        128,
+        256
+      ],
+      "learning_rate": 0.001,
+      "batch_size": 512,
+      "dropout": 0.1
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.002960681915283203,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:37:34.931480"
+  },
+  {
+    "config_id": 21,
+    "config": {
+      "id": 21,
+      "hidden_dims": [
+        512,
+        1024,
+        2048
+      ],
+      "learning_rate": 0.0003,
+      "batch_size": 128,
+      "dropout": 0.2
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.029848814010620117,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:37:35.078719"
+  },
+  {
+    "config_id": 22,
+    "config": {
+      "id": 22,
+      "hidden_dims": [
+        64,
+        128,
+        256
+      ],
+      "learning_rate": 0.003,
+      "batch_size": 512,
+      "dropout": 0.2
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0029954910278320312,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:37:35.197379"
+  },
+  {
+    "config_id": 23,
+    "config": {
+      "id": 23,
+      "hidden_dims": [
+        128,
+        256,
+        512
+      ],
+      "learning_rate": 0.0003,
+      "batch_size": 512,
+      "dropout": 0.0
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.005985260009765625,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:37:35.328652"
+  },
+  {
+    "config_id": 24,
+    "config": {
+      "id": 24,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.0001,
+      "batch_size": 128,
+      "dropout": 0.1
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.009001970291137695,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:37:35.456343"
+  },
+  {
+    "config_id": 25,
+    "config": {
+      "id": 25,
+      "hidden_dims": [
+        64,
+        128,
+        256
+      ],
+      "learning_rate": 0.003,
+      "batch_size": 64,
+      "dropout": 0.3
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0029931068420410156,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:37:35.575871"
+  },
+  {
+    "config_id": 26,
+    "config": {
+      "id": 26,
+      "hidden_dims": [
+        64,
+        128,
+        256
+      ],
+      "learning_rate": 0.003,
+      "batch_size": 512,
+      "dropout": 0.2
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0029909610748291016,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:37:35.700327"
+  },
+  {
+    "config_id": 27,
+    "config": {
+      "id": 27,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.0001,
+      "batch_size": 256,
+      "dropout": 0.2
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.00997614860534668,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:37:35.826274"
+  },
+  {
+    "config_id": 28,
+    "config": {
+      "id": 28,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.0005,
+      "batch_size": 512,
+      "dropout": 0.1
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.008007526397705078,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:37:35.956975"
+  },
+  {
+    "config_id": 29,
+    "config": {
+      "id": 29,
+      "hidden_dims": [
+        64,
+        128,
+        256
+      ],
+      "learning_rate": 0.0001,
+      "batch_size": 256,
+      "dropout": 0.1
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.004004478454589844,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:37:36.078652"
+  },
+  {
+    "config_id": 30,
+    "config": {
+      "id": 30,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.0005,
+      "batch_size": 128,
+      "dropout": 0.1
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.008977174758911133,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:37:36.209272"
+  },
+  {
+    "config_id": 31,
+    "config": {
+      "id": 31,
+      "hidden_dims": [
+        512,
+        1024,
+        2048
+      ],
+      "learning_rate": 0.0003,
+      "batch_size": 64,
+      "dropout": 0.2
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.02560281753540039,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:37:36.358472"
+  },
+  {
+    "config_id": 32,
+    "config": {
+      "id": 32,
+      "hidden_dims": [
+        64,
+        128,
+        256
+      ],
+      "learning_rate": 0.0001,
+      "batch_size": 64,
+      "dropout": 0.2
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0029931068420410156,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:37:36.482136"
+  },
+  {
+    "config_id": 33,
+    "config": {
+      "id": 33,
+      "hidden_dims": [
+        512,
+        1024,
+        2048
+      ],
+      "learning_rate": 0.0003,
+      "batch_size": 64,
+      "dropout": 0.1
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.02592945098876953,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:37:36.635044"
+  },
+  {
+    "config_id": 34,
+    "config": {
+      "id": 34,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.0001,
+      "batch_size": 512,
+      "dropout": 0.0
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.009008407592773438,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:37:36.797365"
+  },
+  {
+    "config_id": 35,
+    "config": {
+      "id": 35,
+      "hidden_dims": [
+        128,
+        256,
+        512
+      ],
+      "learning_rate": 0.0003,
+      "batch_size": 512,
+      "dropout": 0.1
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0049893856048583984,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:37:36.928805"
+  },
+  {
+    "config_id": 36,
+    "config": {
+      "id": 36,
+      "hidden_dims": [
+        512,
+        1024,
+        2048
+      ],
+      "learning_rate": 0.003,
+      "batch_size": 512,
+      "dropout": 0.1
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.026906967163085938,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:37:37.079402"
+  },
+  {
+    "config_id": 37,
+    "config": {
+      "id": 37,
+      "hidden_dims": [
+        128,
+        256,
+        512
+      ],
+      "learning_rate": 0.0005,
+      "batch_size": 512,
+      "dropout": 0.2
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.004988193511962891,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:37:37.208061"
+  },
+  {
+    "config_id": 38,
+    "config": {
+      "id": 38,
+      "hidden_dims": [
+        64,
+        128,
+        256
+      ],
+      "learning_rate": 0.003,
+      "batch_size": 512,
+      "dropout": 0.0
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.003988981246948242,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:37:37.342698"
+  },
+  {
+    "config_id": 39,
+    "config": {
+      "id": 39,
+      "hidden_dims": [
+        128,
+        256,
+        512
+      ],
+      "learning_rate": 0.0003,
+      "batch_size": 64,
+      "dropout": 0.2
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.003989696502685547,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:37:37.466394"
+  },
+  {
+    "config_id": 40,
+    "config": {
+      "id": 40,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.003,
+      "batch_size": 128,
+      "dropout": 0.1
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.008981704711914062,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:37:37.600037"
+  },
+  {
+    "config_id": 41,
+    "config": {
+      "id": 41,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.0001,
+      "batch_size": 64,
+      "dropout": 0.1
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.009973764419555664,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:37:37.729691"
+  },
+  {
+    "config_id": 42,
+    "config": {
+      "id": 42,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.0001,
+      "batch_size": 256,
+      "dropout": 0.0
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.008977890014648438,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:37:37.863990"
+  },
+  {
+    "config_id": 43,
+    "config": {
+      "id": 43,
+      "hidden_dims": [
+        128,
+        256,
+        512
+      ],
+      "learning_rate": 0.0005,
+      "batch_size": 512,
+      "dropout": 0.1
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.003988742828369141,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:37:37.987918"
+  },
+  {
+    "config_id": 44,
+    "config": {
+      "id": 44,
+      "hidden_dims": [
+        128,
+        256,
+        512
+      ],
+      "learning_rate": 0.003,
+      "batch_size": 512,
+      "dropout": 0.1
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.003992319107055664,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:37:38.119069"
+  },
+  {
+    "config_id": 45,
+    "config": {
+      "id": 45,
+      "hidden_dims": [
+        64,
+        128,
+        256
+      ],
+      "learning_rate": 0.001,
+      "batch_size": 128,
+      "dropout": 0.0
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.00396275520324707,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:37:38.241761"
+  },
+  {
+    "config_id": 46,
+    "config": {
+      "id": 46,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.001,
+      "batch_size": 256,
+      "dropout": 0.3
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.008945941925048828,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:37:38.378087"
+  },
+  {
+    "config_id": 47,
+    "config": {
+      "id": 47,
+      "hidden_dims": [
+        64,
+        128,
+        256
+      ],
+      "learning_rate": 0.001,
+      "batch_size": 64,
+      "dropout": 0.0
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.0029938220977783203,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:37:38.499339"
+  },
+  {
+    "config_id": 48,
+    "config": {
+      "id": 48,
+      "hidden_dims": [
+        256,
+        512,
+        1024
+      ],
+      "learning_rate": 0.001,
+      "batch_size": 256,
+      "dropout": 0.0
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.009005308151245117,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:37:38.665923"
+  },
+  {
+    "config_id": 49,
+    "config": {
+      "id": 49,
+      "hidden_dims": [
+        128,
+        256,
+        512
+      ],
+      "learning_rate": 0.0003,
+      "batch_size": 128,
+      "dropout": 0.3
+    },
+    "val_accuracy": null,
+    "test_accuracy": null,
+    "training_time_sec": 0.003989696502685547,
+    "final_loss": null,
+    "model_path": null,
+    "status": "failed",
+    "error": "'hidden_dim'",
+    "timestamp": "2026-01-14T21:37:38.787841"
+  }
+]

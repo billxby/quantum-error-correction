@@ -323,31 +323,36 @@ class SimpleNNModel(torch.nn.Module):
     Does NOT use graph structure - serves as a baseline comparison for GNN decoders.
     """
 
-    def __init__(self, in_channels: int, hidden_dim: int = 256, num_layers: int = 4):
+    def __init__(self, in_channels: int, hidden_dims: tuple = (256, 512, 1024), dropout: float = 0.0):
         """
         Initialize SimpleNNModel.
 
         Args:
             in_channels: Number of input features (number of detectors in syndrome)
-            hidden_dim: Base hidden dimension (will scale up in layers)
-            num_layers: Not used directly, kept for API consistency
+            hidden_dims: Tuple of hidden layer dimensions (e.g., (256, 512, 1024))
+            dropout: Dropout probability between layers (0.0 = no dropout)
         """
         super().__init__()
         self.in_channels = in_channels
-        self.hidden_dim = hidden_dim
-        self.num_layers = num_layers
+        self.hidden_dims = hidden_dims
+        self.dropout = dropout
 
-        # Layers matching the reference implementation
-        self.layers = torch.nn.Sequential(
-            torch.nn.Linear(in_channels, 256),
-            torch.nn.SiLU(),
-            torch.nn.Linear(256, 512),
-            torch.nn.SiLU(),
-            torch.nn.Linear(512, 1024),
-            torch.nn.SiLU(),
-            torch.nn.Linear(1024, 1),
-            torch.nn.Sigmoid()
-        )
+        # Build layers dynamically based on hidden_dims
+        layers = []
+        prev_dim = in_channels
+
+        for hidden_dim in hidden_dims:
+            layers.append(torch.nn.Linear(prev_dim, hidden_dim))
+            layers.append(torch.nn.SiLU())
+            if dropout > 0:
+                layers.append(torch.nn.Dropout(dropout))
+            prev_dim = hidden_dim
+
+        # Output layer
+        layers.append(torch.nn.Linear(prev_dim, 1))
+        layers.append(torch.nn.Sigmoid())
+
+        self.layers = torch.nn.Sequential(*layers)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
@@ -381,8 +386,8 @@ class SimpleNN:
     def __init__(self,
                  nickname: str = "simple_nn",
                  in_channels: int = None,
-                 hidden_dim: int = 256,
-                 num_layers: int = 4,
+                 hidden_dims: tuple = (256, 512, 1024),
+                 dropout: float = 0.0,
                  device: torch.device = None,
                  base_path: Path = None,
                  seed: int = None):
@@ -392,8 +397,8 @@ class SimpleNN:
         Args:
             nickname: Human-readable name for this model
             in_channels: Number of input features (detectors). If None, must be set before training.
-            hidden_dim: Hidden dimension size
-            num_layers: Number of layers (for API consistency)
+            hidden_dims: Tuple of hidden layer dimensions (e.g., (256, 512, 1024))
+            dropout: Dropout probability between layers (0.0 = no dropout)
             device: Torch device (defaults to CUDA if available)
             base_path: Base path for model storage (defaults to current directory)
             seed: Random seed for reproducibility
@@ -408,8 +413,8 @@ class SimpleNN:
         # Store config for saving/loading
         self._config = {
             'in_channels': in_channels,
-            'hidden_dim': hidden_dim,
-            'num_layers': num_layers,
+            'hidden_dims': hidden_dims,
+            'dropout': dropout,
             'seed': seed
         }
 
@@ -424,7 +429,7 @@ class SimpleNN:
 
         # Initialize model (only if in_channels is known)
         if in_channels is not None:
-            self.model = SimpleNNModel(in_channels, hidden_dim, num_layers).to(self.device)
+            self.model = SimpleNNModel(in_channels, hidden_dims, dropout).to(self.device)
         else:
             self.model = None
 
@@ -490,8 +495,8 @@ class SimpleNN:
             self._config['in_channels'] = num_detectors
             self.model = SimpleNNModel(
                 num_detectors,
-                self._config['hidden_dim'],
-                self._config['num_layers']
+                self._config['hidden_dims'],
+                self._config['dropout']
             ).to(self.device)
             if verbose:
                 print(f"Model initialized for d={d} with {num_detectors} detectors")
@@ -568,6 +573,105 @@ class SimpleNN:
 
         if verbose:
             print(f"\nTraining complete!")
+
+        return epoch_losses
+
+    def train_from_data(self,
+                        detections: torch.Tensor,
+                        labels: torch.Tensor,
+                        epochs: int = 10,
+                        batch_size: int = 256,
+                        lr: float = 1e-3,
+                        verbose: bool = True) -> list:
+        """
+        Train the model on pre-loaded syndrome data (for hyperparameter tuning).
+
+        Args:
+            detections: Tensor of shape [N, num_detectors] - syndrome measurements
+            labels: Tensor of shape [N] - logical error labels (0 or 1)
+            epochs: Number of training epochs
+            batch_size: Batch size for training
+            lr: Learning rate
+            verbose: Print training progress
+
+        Returns:
+            List of loss values per epoch
+        """
+        num_samples = len(labels)
+        num_detectors = detections.shape[1]
+
+        # Initialize model if needed
+        if self.model is None or self._config['in_channels'] != num_detectors:
+            self._config['in_channels'] = num_detectors
+            self.model = SimpleNNModel(
+                num_detectors,
+                self._config['hidden_dims'],
+                self._config['dropout']
+            ).to(self.device)
+            if verbose:
+                print(f"Model initialized with {num_detectors} detectors")
+
+        # Announce training start
+        if verbose:
+            print(f"\n{'='*50}")
+            print(f"Training: {self}")
+            print(f"{'='*50}")
+            print(f"Epochs: {epochs} | Batch size: {batch_size} | LR: {lr}")
+            print(f"Training samples: {num_samples}")
+
+        # Setup training
+        self.model.train()
+        optimizer = torch.optim.Adam(self.model.parameters(), lr=lr)
+        loss_fn = torch.nn.BCELoss()
+
+        epoch_losses = []
+        num_batches = num_samples // batch_size
+        total_batches = num_batches * epochs
+
+        pbar = tqdm(total=total_batches, desc="Training", disable=not verbose)
+
+        for epoch in range(epochs):
+            epoch_loss = 0.0
+            running_avg_acc = 0.0
+
+            for batch_idx in range(num_batches):
+                # Get batch
+                start_idx = batch_idx * batch_size
+                end_idx = start_idx + batch_size
+                X = detections[start_idx:end_idx]
+                y = labels[start_idx:end_idx].unsqueeze(1)
+
+                # Forward pass
+                pred = self.model(X)
+                loss = loss_fn(pred, y)
+
+                # Compute accuracy
+                acc = ((pred > 0.5).float() == y).float().mean().item()
+                running_avg_acc = acc * 0.1 + running_avg_acc * 0.9 if running_avg_acc else acc
+
+                # Backward pass
+                optimizer.zero_grad()
+                loss.backward()
+                optimizer.step()
+
+                epoch_loss += loss.item()
+                pbar.update(1)
+
+                # Update progress bar
+                if batch_idx % 100 == 0:
+                    pbar.set_postfix({
+                        'epoch': f'{epoch+1}/{epochs}',
+                        'acc': f'{running_avg_acc:.4f}',
+                        'loss': f'{loss.item():.4f}'
+                    })
+
+            avg_epoch_loss = epoch_loss / num_batches
+            epoch_losses.append(avg_epoch_loss)
+
+        pbar.close()
+
+        if verbose:
+            print(f"\nTraining complete! Final loss: {epoch_losses[-1]:.4f}")
 
         return epoch_losses
 
@@ -763,7 +867,8 @@ class SimpleNN:
         in_ch = self._config['in_channels'] if self._config['in_channels'] else "dynamic"
         return (f"SimpleNN(nickname='{self.nickname}', "
                 f"in_channels={in_ch}, "
-                f"hidden_dim={self._config['hidden_dim']}"
+                f"hidden_dims={self._config['hidden_dims']}, "
+                f"dropout={self._config['dropout']}"
                 f"{loaded_info})")
 
 
