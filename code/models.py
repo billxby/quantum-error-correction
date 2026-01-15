@@ -26,6 +26,9 @@ from datetime import datetime
 from pathlib import Path
 from tqdm import tqdm
 import json
+import tempfile
+import shutil
+import os
 
 
 # ============================================================
@@ -742,6 +745,26 @@ def visualize_sparse_graph(graph: Data, title: str = "Sparse Graph Visualization
 # DATASET CACHE
 # ============================================================
 
+def _save_to_gdrive(data, path):
+    """
+    Save data to path using temp file to avoid Google Drive sync conflicts.
+    
+    Google Drive's sync process can interfere with large file writes, causing
+    corruption. This function writes to a local temp file first, then moves
+    the completed file to the target path in one atomic operation.
+    """
+    temp_path = None
+    try:
+        with tempfile.NamedTemporaryFile(delete=False, suffix='.pt') as tmp:
+            temp_path = tmp.name
+        torch.save(data, temp_path)
+        shutil.move(temp_path, path)
+    except Exception:
+        if temp_path and os.path.exists(temp_path):
+            os.remove(temp_path)
+        raise
+
+
 class DatasetCache:
     """
     Cache manager for pre-generated PyG graph datasets.
@@ -870,20 +893,8 @@ class DatasetCache:
         if not self.graphs:
             raise ValueError("No graphs to save. Call generate() first.")
 
-        # Save graphs
-        data_path = self.datasets_dir / f"{name}.pt"
-        torch.save(self.graphs, data_path)
-
-        # Save metadata
-        meta_path = self.datasets_dir / f"{name}.json"
-        with open(meta_path, 'w') as f:
-            json.dump(self.config, f, indent=2)
-
-        print(f"Dataset saved: {data_path}")
-        print(f"  Metadata: {meta_path}")
-        print(f"  Samples: {len(self.graphs):,}")
-
-        # Save array format to nn_datasets/ (if detections available)
+        # Save array format FIRST (smaller, faster, contains original data)
+        # This ensures arrays are saved even if graph saving fails
         if self.detections is not None:
             nn_datasets_dir = self.datasets_dir.parent / "nn_datasets"
             nn_datasets_dir.mkdir(parents=True, exist_ok=True)
@@ -898,8 +909,21 @@ class DatasetCache:
                 'generated_at': self.config['generated_at'],
             }
             array_path = nn_datasets_dir / f"{name}_array.pt"
-            torch.save(array_data, array_path)
-            print(f"  Array dataset: {array_path}")
+            _save_to_gdrive(array_data, array_path)
+            print(f"Array dataset saved: {array_path}")
+
+        # Save graphs (larger file, takes longer)
+        data_path = self.datasets_dir / f"{name}.pt"
+        _save_to_gdrive(self.graphs, data_path)
+
+        # Save metadata
+        meta_path = self.datasets_dir / f"{name}.json"
+        with open(meta_path, 'w') as f:
+            json.dump(self.config, f, indent=2)
+
+        print(f"Graph dataset saved: {data_path}")
+        print(f"  Metadata: {meta_path}")
+        print(f"  Samples: {len(self.graphs):,}")
 
         return data_path
 
