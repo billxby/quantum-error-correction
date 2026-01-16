@@ -1,0 +1,2 @@
+experiment_name,distances,num_distances,total_samples,epochs,batch_size,learning_rate,hidden_dim,num_layers,aggr,dropout,final_loss,train_accuracy,val_accuracy,test_accuracy,training_time_minutes,total_parameters,device,gpu_name,timestamp
+d9,[9],1,1000000,50,256,0.0005,128,5,max,0.0,0.2153485308122635,0.8942,0.85098,0.8501,419.40716766119004,142593,cpu,,2026-01-16T12:59:43.351254
