@@ -88,5 +88,23 @@
     "status": "failed",
     "error": "No baseline dataset found for d7 in /content/drive/MyDrive/Research/QEC/quantum-error-correction/quantum-error-correction/code/nn_datasets.\nDatasets ending with '_1M' will be ignored. Please provide d7_baseline.pt or d7_baseline.json in /content/drive/MyDrive/Research/QEC/quantum-error-correction/quantum-error-correction/code/nn_datasets.",
     "timestamp": "2026-01-17T04:25:14.415055"
+  },
+  {
+    "distance": 3,
+    "status": "failed",
+    "error": "name 'train_with_logging' is not defined",
+    "timestamp": "2026-01-17T04:29:48.566102"
+  },
+  {
+    "distance": 5,
+    "status": "failed",
+    "error": "name 'train_with_logging' is not defined",
+    "timestamp": "2026-01-17T04:29:54.399411"
+  },
+  {
+    "distance": 7,
+    "status": "failed",
+    "error": "name 'train_with_logging' is not defined",
+    "timestamp": "2026-01-17T04:30:07.679543"
   }
 ]
