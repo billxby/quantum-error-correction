@@ -626,15 +626,14 @@ class SimpleNN:
 
         epoch_losses = []
         num_batches = num_samples // batch_size
-        total_batches = num_batches * epochs
-
-        pbar = tqdm(total=total_batches, desc="Training", disable=not verbose)
 
         for epoch in range(epochs):
             epoch_loss = 0.0
             running_avg_acc = 0.0
 
-            for batch_idx in range(num_batches):
+            pbar = tqdm(range(num_batches), desc=f"Epoch {epoch+1}/{epochs}", disable=not verbose)
+
+            for batch_idx in pbar:
                 # Get batch
                 start_idx = batch_idx * batch_size
                 end_idx = start_idx + batch_size
@@ -655,20 +654,16 @@ class SimpleNN:
                 optimizer.step()
 
                 epoch_loss += loss.item()
-                pbar.update(1)
 
-                # Update progress bar
-                if batch_idx % 100 == 0:
+                # Update progress bar more frequently
+                if batch_idx % 10 == 0:
                     pbar.set_postfix({
-                        'epoch': f'{epoch+1}/{epochs}',
-                        'acc': f'{running_avg_acc:.4f}',
-                        'loss': f'{loss.item():.4f}'
+                        'loss': f'{loss.item():.4f}',
+                        'acc': f'{running_avg_acc:.4f}'
                     })
 
             avg_epoch_loss = epoch_loss / num_batches
             epoch_losses.append(avg_epoch_loss)
-
-        pbar.close()
 
         if verbose:
             print(f"\nTraining complete! Final loss: {epoch_losses[-1]:.4f}")
@@ -868,6 +863,367 @@ class SimpleNN:
         return (f"SimpleNN(nickname='{self.nickname}', "
                 f"in_channels={in_ch}, "
                 f"hidden_dims={self._config['hidden_dims']}, "
+                f"dropout={self._config['dropout']}"
+                f"{loaded_info})")
+
+
+# ============================================================
+# DEEPSETS MODEL (variable-size NN baseline)
+# ============================================================
+
+class DeepSetsModel(torch.nn.Module):
+    """
+    DeepSets architecture for variable-size detector arrays.
+
+    Architecture: phi (per-element MLP) → pool → rho (classifier MLP)
+
+    This model handles variable-size inputs natively through permutation-invariant
+    aggregation, making it suitable for extrapolation across different code distances.
+
+    Reference: Zaheer et al., "Deep Sets" (NeurIPS 2017)
+    """
+
+    def __init__(self, in_features: int = 1, phi_hidden: tuple = (128, 128),
+                 rho_hidden: tuple = (256, 128), pool: str = 'mean', dropout: float = 0.0):
+        """
+        Initialize DeepSetsModel.
+
+        Args:
+            in_features: Number of input features per detector (typically 1)
+            phi_hidden: Tuple of hidden layer dimensions for phi network (per-detector encoder)
+            rho_hidden: Tuple of hidden layer dimensions for rho network (post-pool classifier)
+            pool: Aggregation method - 'mean' or 'sum'
+            dropout: Dropout probability between layers (0.0 = no dropout)
+        """
+        super().__init__()
+        self.in_features = in_features
+        self.phi_hidden = phi_hidden
+        self.rho_hidden = rho_hidden
+        self.pool_type = pool
+        self.dropout = dropout
+
+        # Phi network: per-detector MLP (shared weights across all detectors)
+        phi_layers = []
+        prev_dim = in_features
+        for h in phi_hidden:
+            phi_layers.extend([
+                torch.nn.Linear(prev_dim, h),
+                torch.nn.ReLU(),
+            ])
+            if dropout > 0:
+                phi_layers.append(torch.nn.Dropout(dropout))
+            prev_dim = h
+        self.phi = torch.nn.Sequential(*phi_layers)
+        self.phi_out_dim = prev_dim
+
+        # Rho network: classifier after aggregation
+        rho_layers = []
+        prev_dim = self.phi_out_dim
+        for h in rho_hidden:
+            rho_layers.extend([
+                torch.nn.Linear(prev_dim, h),
+                torch.nn.ReLU(),
+            ])
+            if dropout > 0:
+                rho_layers.append(torch.nn.Dropout(dropout))
+            prev_dim = h
+        rho_layers.append(torch.nn.Linear(prev_dim, 1))
+        rho_layers.append(torch.nn.Sigmoid())
+        self.rho = torch.nn.Sequential(*rho_layers)
+
+    def forward(self, x: torch.Tensor, mask: torch.Tensor = None) -> torch.Tensor:
+        """
+        Forward pass with optional masking for padded batches.
+
+        Args:
+            x: [batch, N, in_features] detector values (N = num_detectors, varies by distance)
+            mask: [batch, N] boolean mask for valid detectors (True = valid, False = padding)
+
+        Returns:
+            [batch, 1] probability of logical error
+        """
+        # Apply phi to each detector independently
+        h = self.phi(x)  # [batch, N, phi_out_dim]
+
+        # Masked pooling
+        if mask is not None:
+            mask_expanded = mask.unsqueeze(-1)  # [batch, N, 1]
+            h = h * mask_expanded  # Zero out padded positions
+            if self.pool_type == 'mean':
+                # Mean over valid elements only
+                h = h.sum(dim=1) / mask_expanded.sum(dim=1).clamp(min=1)
+            else:  # sum
+                h = h.sum(dim=1)
+        else:
+            if self.pool_type == 'mean':
+                h = h.mean(dim=1)
+            else:
+                h = h.sum(dim=1)
+
+        # Apply rho classifier
+        return self.rho(h)
+
+
+class DeepSets:
+    """
+    DeepSets wrapper class with model lifecycle management.
+
+    Provides init, train, save, and load functionality with human-readable model tracking.
+    This decoder handles variable-size syndrome arrays natively through permutation-invariant
+    aggregation, making it suitable for training on mixed distances and extrapolating to larger ones.
+
+    Attributes:
+        nickname: Human-readable name for this model instance
+        model: The underlying DeepSetsModel
+        device: Torch device (cuda/cpu)
+        models_dir: Directory for saving/loading models
+        _loaded_from: Path of the loaded model (None if freshly initialized)
+    """
+
+    def __init__(self,
+                 nickname: str = "deepsets",
+                 phi_hidden: tuple = (128, 128),
+                 rho_hidden: tuple = (256, 128),
+                 pool: str = 'mean',
+                 dropout: float = 0.0,
+                 device: torch.device = None,
+                 base_path: Path = None,
+                 seed: int = 42):
+        """
+        Initialize a new DeepSets model.
+
+        Args:
+            nickname: Human-readable name for this model
+            phi_hidden: Tuple of hidden layer dimensions for phi network
+            rho_hidden: Tuple of hidden layer dimensions for rho network
+            pool: Aggregation method - 'mean' or 'sum'
+            dropout: Dropout probability between layers
+            device: Torch device (defaults to CUDA if available)
+            base_path: Base path for model storage (defaults to current directory)
+            seed: Random seed for reproducibility
+        """
+        self.nickname = nickname
+        self.device = device if device else torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self._loaded_from = None
+
+        # Set models directory
+        self.models_dir = (base_path or Path(".")) / "models" / "deepsets"
+        self.models_dir.mkdir(parents=True, exist_ok=True)
+
+        # Store config for saving/loading
+        self._config = {
+            'phi_hidden': phi_hidden,
+            'rho_hidden': rho_hidden,
+            'pool': pool,
+            'dropout': dropout,
+            'seed': seed
+        }
+
+        # Set random seeds for reproducibility
+        if seed is not None:
+            import random
+            torch.manual_seed(seed)
+            np.random.seed(seed)
+            random.seed(seed)
+            if torch.cuda.is_available():
+                torch.cuda.manual_seed_all(seed)
+
+        # Initialize model
+        self.model = DeepSetsModel(
+            in_features=1,
+            phi_hidden=phi_hidden,
+            rho_hidden=rho_hidden,
+            pool=pool,
+            dropout=dropout
+        ).to(self.device)
+
+        print(f"DeepSets initialized: {self}")
+
+    def train_from_data(self,
+                        detections: torch.Tensor,
+                        labels: torch.Tensor,
+                        masks: torch.Tensor = None,
+                        epochs: int = 10,
+                        batch_size: int = 64,
+                        lr: float = 1e-3,
+                        verbose: bool = True) -> list:
+        """
+        Train the model on syndrome data.
+
+        Args:
+            detections: Tensor of shape [N, num_detectors] - syndrome measurements
+                       For mixed distances, pad to max and provide masks
+            labels: Tensor of shape [N] - logical error labels (0 or 1)
+            masks: Optional tensor of shape [N, num_detectors] - True for valid detectors
+            epochs: Number of training epochs
+            batch_size: Batch size for training
+            lr: Learning rate
+            verbose: Print training progress
+
+        Returns:
+            List of loss values per epoch
+        """
+        num_samples = len(labels)
+
+        if verbose:
+            print(f"\n{'='*50}")
+            print(f"Training: {self}")
+            print(f"{'='*50}")
+            print(f"Epochs: {epochs} | Batch size: {batch_size} | LR: {lr}")
+            print(f"Training samples: {num_samples}")
+            print(f"Input shape: {detections.shape}")
+
+        # Move data to device
+        detections = detections.to(self.device)
+        labels = labels.to(self.device)
+        if masks is not None:
+            masks = masks.to(self.device)
+
+        # Setup training
+        self.model.train()
+        optimizer = torch.optim.Adam(self.model.parameters(), lr=lr)
+        criterion = torch.nn.BCELoss()
+
+        epoch_losses = []
+        num_batches = (num_samples + batch_size - 1) // batch_size
+
+        for epoch in range(epochs):
+            perm = torch.randperm(num_samples, device=self.device)
+            total_loss = 0
+            n_batches = 0
+            running_acc = 0.0
+
+            pbar = tqdm(range(0, num_samples, batch_size),
+                       desc=f"Epoch {epoch+1}/{epochs}",
+                       disable=not verbose)
+
+            for i in pbar:
+                idx = perm[i:i+batch_size]
+                X = detections[idx].unsqueeze(-1)  # [batch, N, 1]
+                y = labels[idx].unsqueeze(-1).float()
+                batch_mask = masks[idx] if masks is not None else None
+
+                optimizer.zero_grad()
+                pred = self.model(X, batch_mask)
+                loss = criterion(pred, y)
+                loss.backward()
+                optimizer.step()
+
+                # Track metrics
+                total_loss += loss.item()
+                n_batches += 1
+                acc = ((pred > 0.5).float() == y).float().mean().item()
+                running_acc = acc * 0.1 + running_acc * 0.9 if running_acc else acc
+
+                if i % (batch_size * 10) == 0:
+                    pbar.set_postfix({'loss': f'{loss.item():.4f}', 'acc': f'{running_acc:.4f}'})
+
+            avg_loss = total_loss / n_batches
+            epoch_losses.append(avg_loss)
+
+            if verbose:
+                print(f"Epoch {epoch+1}/{epochs} - Loss: {avg_loss:.4f}, Acc: {running_acc:.4f}")
+
+        if verbose:
+            print(f"\nTraining complete! Final loss: {epoch_losses[-1]:.4f}")
+
+        return epoch_losses
+
+    def predict(self, detections: torch.Tensor, mask: torch.Tensor = None) -> torch.Tensor:
+        """
+        Run inference on syndrome data.
+
+        Args:
+            detections: Tensor of shape [batch_size, num_detectors] or [num_detectors]
+            mask: Optional tensor of shape [batch_size, num_detectors] for valid detectors
+
+        Returns:
+            Predictions of shape [batch_size] (probabilities)
+        """
+        self.model.eval()
+        with torch.no_grad():
+            detections = detections.to(self.device)
+            if detections.dim() == 1:
+                detections = detections.unsqueeze(0)
+            if mask is not None:
+                mask = mask.to(self.device)
+                if mask.dim() == 1:
+                    mask = mask.unsqueeze(0)
+            X = detections.unsqueeze(-1)  # [batch, N, 1]
+            return self.model(X, mask).squeeze(-1)
+
+    def save(self, name: str) -> Path:
+        """
+        Save the model with a human-readable timestamp.
+
+        Args:
+            name: Base name for the saved model
+
+        Returns:
+            Path to the saved model file
+        """
+        timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        filename = f"{name}_{timestamp}.pt"
+        filepath = self.models_dir / filename
+
+        self.models_dir.mkdir(parents=True, exist_ok=True)
+
+        save_dict = {
+            'state_dict': self.model.state_dict(),
+            'config': self._config,
+            'nickname': self.nickname,
+            'timestamp': timestamp
+        }
+        torch.save(save_dict, filepath)
+
+        print(f"Model saved to: {filepath}")
+        return filepath
+
+    def load(self, filepath: str) -> 'DeepSets':
+        """
+        Load a saved model from disk.
+
+        Args:
+            filepath: Path to saved model file (relative to models/deepsets or absolute)
+
+        Returns:
+            self (for chaining)
+        """
+        path = Path(filepath)
+        if not path.exists():
+            path = self.models_dir / filepath
+
+        if not path.exists():
+            raise FileNotFoundError(f"Model file not found: {filepath}")
+
+        save_dict = torch.load(path, map_location=self.device, weights_only=False)
+
+        config = save_dict['config']
+        self._config = config
+        self.model = DeepSetsModel(
+            in_features=1,
+            phi_hidden=config['phi_hidden'],
+            rho_hidden=config['rho_hidden'],
+            pool=config['pool'],
+            dropout=config['dropout']
+        ).to(self.device)
+
+        self.model.load_state_dict(save_dict['state_dict'])
+        self.model.eval()
+
+        self._loaded_from = path.name
+        if 'nickname' in save_dict:
+            self.nickname = save_dict['nickname']
+
+        print(f"Model loaded: {self}")
+        return self
+
+    def __repr__(self) -> str:
+        loaded_info = f", loaded_from='{self._loaded_from}'" if self._loaded_from else ""
+        return (f"DeepSets(nickname='{self.nickname}', "
+                f"phi_hidden={self._config['phi_hidden']}, "
+                f"rho_hidden={self._config['rho_hidden']}, "
+                f"pool='{self._config['pool']}', "
                 f"dropout={self._config['dropout']}"
                 f"{loaded_info})")
 

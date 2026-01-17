@@ -1,0 +1,740 @@
+{
+  "seed": 42,
+  "n_configs": 50,
+  "generated_at": "2026-01-16T15:17:23.084163",
+  "search_space": {
+    "phi_hidden": [
+      "(64,)",
+      "(128,)",
+      "(128, 128)",
+      "(256, 128)"
+    ],
+    "rho_hidden": [
+      "(128,)",
+      "(256,)",
+      "(256, 128)",
+      "(512, 256)"
+    ],
+    "pool": [
+      "mean",
+      "sum"
+    ],
+    "learning_rate": [
+      "0.0001",
+      "0.0003",
+      "0.001"
+    ],
+    "batch_size": [
+      "32",
+      "64",
+      "128"
+    ],
+    "dropout": [
+      "0.0",
+      "0.1",
+      "0.2"
+    ]
+  },
+  "fixed_params": {
+    "epochs": 10,
+    "distance": 7
+  },
+  "configs": [
+    {
+      "id": 0,
+      "phi_hidden": [
+        64
+      ],
+      "rho_hidden": [
+        128
+      ],
+      "pool": "sum",
+      "learning_rate": 0.0001,
+      "batch_size": 32,
+      "dropout": 0.0
+    },
+    {
+      "id": 1,
+      "phi_hidden": [
+        64
+      ],
+      "rho_hidden": [
+        128
+      ],
+      "pool": "sum",
+      "learning_rate": 0.0001,
+      "batch_size": 32,
+      "dropout": 0.0
+    },
+    {
+      "id": 2,
+      "phi_hidden": [
+        128
+      ],
+      "rho_hidden": [
+        256
+      ],
+      "pool": "mean",
+      "learning_rate": 0.001,
+      "batch_size": 32,
+      "dropout": 0.2
+    },
+    {
+      "id": 3,
+      "phi_hidden": [
+        256,
+        128
+      ],
+      "rho_hidden": [
+        256
+      ],
+      "pool": "sum",
+      "learning_rate": 0.001,
+      "batch_size": 64,
+      "dropout": 0.0
+    },
+    {
+      "id": 4,
+      "phi_hidden": [
+        128
+      ],
+      "rho_hidden": [
+        512,
+        256
+      ],
+      "pool": "sum",
+      "learning_rate": 0.0003,
+      "batch_size": 32,
+      "dropout": 0.0
+    },
+    {
+      "id": 5,
+      "phi_hidden": [
+        128,
+        128
+      ],
+      "rho_hidden": [
+        128
+      ],
+      "pool": "mean",
+      "learning_rate": 0.0003,
+      "batch_size": 32,
+      "dropout": 0.1
+    },
+    {
+      "id": 6,
+      "phi_hidden": [
+        128,
+        128
+      ],
+      "rho_hidden": [
+        256,
+        128
+      ],
+      "pool": "mean",
+      "learning_rate": 0.001,
+      "batch_size": 64,
+      "dropout": 0.2
+    },
+    {
+      "id": 7,
+      "phi_hidden": [
+        64
+      ],
+      "rho_hidden": [
+        512,
+        256
+      ],
+      "pool": "mean",
+      "learning_rate": 0.001,
+      "batch_size": 64,
+      "dropout": 0.2
+    },
+    {
+      "id": 8,
+      "phi_hidden": [
+        128,
+        128
+      ],
+      "rho_hidden": [
+        256
+      ],
+      "pool": "mean",
+      "learning_rate": 0.0001,
+      "batch_size": 128,
+      "dropout": 0.0
+    },
+    {
+      "id": 9,
+      "phi_hidden": [
+        128,
+        128
+      ],
+      "rho_hidden": [
+        128
+      ],
+      "pool": "mean",
+      "learning_rate": 0.0001,
+      "batch_size": 64,
+      "dropout": 0.1
+    },
+    {
+      "id": 10,
+      "phi_hidden": [
+        256,
+        128
+      ],
+      "rho_hidden": [
+        256,
+        128
+      ],
+      "pool": "mean",
+      "learning_rate": 0.0003,
+      "batch_size": 64,
+      "dropout": 0.0
+    },
+    {
+      "id": 11,
+      "phi_hidden": [
+        128,
+        128
+      ],
+      "rho_hidden": [
+        128
+      ],
+      "pool": "mean",
+      "learning_rate": 0.001,
+      "batch_size": 128,
+      "dropout": 0.0
+    },
+    {
+      "id": 12,
+      "phi_hidden": [
+        128
+      ],
+      "rho_hidden": [
+        512,
+        256
+      ],
+      "pool": "sum",
+      "learning_rate": 0.0003,
+      "batch_size": 128,
+      "dropout": 0.2
+    },
+    {
+      "id": 13,
+      "phi_hidden": [
+        128
+      ],
+      "rho_hidden": [
+        256,
+        128
+      ],
+      "pool": "mean",
+      "learning_rate": 0.0001,
+      "batch_size": 32,
+      "dropout": 0.1
+    },
+    {
+      "id": 14,
+      "phi_hidden": [
+        256,
+        128
+      ],
+      "rho_hidden": [
+        256,
+        128
+      ],
+      "pool": "mean",
+      "learning_rate": 0.0001,
+      "batch_size": 128,
+      "dropout": 0.2
+    },
+    {
+      "id": 15,
+      "phi_hidden": [
+        128,
+        128
+      ],
+      "rho_hidden": [
+        256
+      ],
+      "pool": "sum",
+      "learning_rate": 0.0003,
+      "batch_size": 128,
+      "dropout": 0.1
+    },
+    {
+      "id": 16,
+      "phi_hidden": [
+        128
+      ],
+      "rho_hidden": [
+        256,
+        128
+      ],
+      "pool": "mean",
+      "learning_rate": 0.0001,
+      "batch_size": 128,
+      "dropout": 0.2
+    },
+    {
+      "id": 17,
+      "phi_hidden": [
+        128,
+        128
+      ],
+      "rho_hidden": [
+        512,
+        256
+      ],
+      "pool": "sum",
+      "learning_rate": 0.0003,
+      "batch_size": 32,
+      "dropout": 0.0
+    },
+    {
+      "id": 18,
+      "phi_hidden": [
+        256,
+        128
+      ],
+      "rho_hidden": [
+        128
+      ],
+      "pool": "mean",
+      "learning_rate": 0.0001,
+      "batch_size": 32,
+      "dropout": 0.2
+    },
+    {
+      "id": 19,
+      "phi_hidden": [
+        128
+      ],
+      "rho_hidden": [
+        512,
+        256
+      ],
+      "pool": "mean",
+      "learning_rate": 0.0003,
+      "batch_size": 64,
+      "dropout": 0.2
+    },
+    {
+      "id": 20,
+      "phi_hidden": [
+        256,
+        128
+      ],
+      "rho_hidden": [
+        256,
+        128
+      ],
+      "pool": "mean",
+      "learning_rate": 0.001,
+      "batch_size": 128,
+      "dropout": 0.0
+    },
+    {
+      "id": 21,
+      "phi_hidden": [
+        128,
+        128
+      ],
+      "rho_hidden": [
+        256,
+        128
+      ],
+      "pool": "mean",
+      "learning_rate": 0.0003,
+      "batch_size": 64,
+      "dropout": 0.0
+    },
+    {
+      "id": 22,
+      "phi_hidden": [
+        256,
+        128
+      ],
+      "rho_hidden": [
+        128
+      ],
+      "pool": "sum",
+      "learning_rate": 0.001,
+      "batch_size": 32,
+      "dropout": 0.2
+    },
+    {
+      "id": 23,
+      "phi_hidden": [
+        64
+      ],
+      "rho_hidden": [
+        256,
+        128
+      ],
+      "pool": "mean",
+      "learning_rate": 0.0001,
+      "batch_size": 64,
+      "dropout": 0.0
+    },
+    {
+      "id": 24,
+      "phi_hidden": [
+        64
+      ],
+      "rho_hidden": [
+        256,
+        128
+      ],
+      "pool": "sum",
+      "learning_rate": 0.0001,
+      "batch_size": 32,
+      "dropout": 0.1
+    },
+    {
+      "id": 25,
+      "phi_hidden": [
+        128,
+        128
+      ],
+      "rho_hidden": [
+        256
+      ],
+      "pool": "mean",
+      "learning_rate": 0.0001,
+      "batch_size": 128,
+      "dropout": 0.0
+    },
+    {
+      "id": 26,
+      "phi_hidden": [
+        64
+      ],
+      "rho_hidden": [
+        512,
+        256
+      ],
+      "pool": "mean",
+      "learning_rate": 0.001,
+      "batch_size": 32,
+      "dropout": 0.0
+    },
+    {
+      "id": 27,
+      "phi_hidden": [
+        256,
+        128
+      ],
+      "rho_hidden": [
+        256
+      ],
+      "pool": "sum",
+      "learning_rate": 0.001,
+      "batch_size": 128,
+      "dropout": 0.1
+    },
+    {
+      "id": 28,
+      "phi_hidden": [
+        128
+      ],
+      "rho_hidden": [
+        256
+      ],
+      "pool": "sum",
+      "learning_rate": 0.0003,
+      "batch_size": 128,
+      "dropout": 0.2
+    },
+    {
+      "id": 29,
+      "phi_hidden": [
+        128,
+        128
+      ],
+      "rho_hidden": [
+        512,
+        256
+      ],
+      "pool": "sum",
+      "learning_rate": 0.0001,
+      "batch_size": 32,
+      "dropout": 0.0
+    },
+    {
+      "id": 30,
+      "phi_hidden": [
+        64
+      ],
+      "rho_hidden": [
+        256,
+        128
+      ],
+      "pool": "mean",
+      "learning_rate": 0.001,
+      "batch_size": 128,
+      "dropout": 0.0
+    },
+    {
+      "id": 31,
+      "phi_hidden": [
+        128
+      ],
+      "rho_hidden": [
+        128
+      ],
+      "pool": "mean",
+      "learning_rate": 0.001,
+      "batch_size": 128,
+      "dropout": 0.0
+    },
+    {
+      "id": 32,
+      "phi_hidden": [
+        128
+      ],
+      "rho_hidden": [
+        128
+      ],
+      "pool": "mean",
+      "learning_rate": 0.0003,
+      "batch_size": 32,
+      "dropout": 0.2
+    },
+    {
+      "id": 33,
+      "phi_hidden": [
+        128
+      ],
+      "rho_hidden": [
+        256,
+        128
+      ],
+      "pool": "sum",
+      "learning_rate": 0.0001,
+      "batch_size": 128,
+      "dropout": 0.0
+    },
+    {
+      "id": 34,
+      "phi_hidden": [
+        256,
+        128
+      ],
+      "rho_hidden": [
+        256
+      ],
+      "pool": "sum",
+      "learning_rate": 0.0003,
+      "batch_size": 32,
+      "dropout": 0.0
+    },
+    {
+      "id": 35,
+      "phi_hidden": [
+        64
+      ],
+      "rho_hidden": [
+        512,
+        256
+      ],
+      "pool": "sum",
+      "learning_rate": 0.0003,
+      "batch_size": 64,
+      "dropout": 0.1
+    },
+    {
+      "id": 36,
+      "phi_hidden": [
+        64
+      ],
+      "rho_hidden": [
+        128
+      ],
+      "pool": "mean",
+      "learning_rate": 0.0003,
+      "batch_size": 128,
+      "dropout": 0.1
+    },
+    {
+      "id": 37,
+      "phi_hidden": [
+        64
+      ],
+      "rho_hidden": [
+        256
+      ],
+      "pool": "mean",
+      "learning_rate": 0.0001,
+      "batch_size": 128,
+      "dropout": 0.1
+    },
+    {
+      "id": 38,
+      "phi_hidden": [
+        128
+      ],
+      "rho_hidden": [
+        512,
+        256
+      ],
+      "pool": "mean",
+      "learning_rate": 0.0003,
+      "batch_size": 64,
+      "dropout": 0.0
+    },
+    {
+      "id": 39,
+      "phi_hidden": [
+        64
+      ],
+      "rho_hidden": [
+        512,
+        256
+      ],
+      "pool": "mean",
+      "learning_rate": 0.0001,
+      "batch_size": 128,
+      "dropout": 0.2
+    },
+    {
+      "id": 40,
+      "phi_hidden": [
+        64
+      ],
+      "rho_hidden": [
+        128
+      ],
+      "pool": "mean",
+      "learning_rate": 0.0001,
+      "batch_size": 64,
+      "dropout": 0.1
+    },
+    {
+      "id": 41,
+      "phi_hidden": [
+        256,
+        128
+      ],
+      "rho_hidden": [
+        256
+      ],
+      "pool": "sum",
+      "learning_rate": 0.0001,
+      "batch_size": 32,
+      "dropout": 0.1
+    },
+    {
+      "id": 42,
+      "phi_hidden": [
+        64
+      ],
+      "rho_hidden": [
+        512,
+        256
+      ],
+      "pool": "sum",
+      "learning_rate": 0.0003,
+      "batch_size": 64,
+      "dropout": 0.1
+    },
+    {
+      "id": 43,
+      "phi_hidden": [
+        256,
+        128
+      ],
+      "rho_hidden": [
+        256
+      ],
+      "pool": "mean",
+      "learning_rate": 0.0003,
+      "batch_size": 32,
+      "dropout": 0.0
+    },
+    {
+      "id": 44,
+      "phi_hidden": [
+        64
+      ],
+      "rho_hidden": [
+        256,
+        128
+      ],
+      "pool": "mean",
+      "learning_rate": 0.0001,
+      "batch_size": 128,
+      "dropout": 0.1
+    },
+    {
+      "id": 45,
+      "phi_hidden": [
+        128
+      ],
+      "rho_hidden": [
+        128
+      ],
+      "pool": "mean",
+      "learning_rate": 0.0001,
+      "batch_size": 32,
+      "dropout": 0.2
+    },
+    {
+      "id": 46,
+      "phi_hidden": [
+        64
+      ],
+      "rho_hidden": [
+        256
+      ],
+      "pool": "sum",
+      "learning_rate": 0.0001,
+      "batch_size": 128,
+      "dropout": 0.0
+    },
+    {
+      "id": 47,
+      "phi_hidden": [
+        64
+      ],
+      "rho_hidden": [
+        128
+      ],
+      "pool": "sum",
+      "learning_rate": 0.001,
+      "batch_size": 128,
+      "dropout": 0.2
+    },
+    {
+      "id": 48,
+      "phi_hidden": [
+        128,
+        128
+      ],
+      "rho_hidden": [
+        256,
+        128
+      ],
+      "pool": "mean",
+      "learning_rate": 0.001,
+      "batch_size": 128,
+      "dropout": 0.1
+    },
+    {
+      "id": 49,
+      "phi_hidden": [
+        128
+      ],
+      "rho_hidden": [
+        256,
+        128
+      ],
+      "pool": "sum",
+      "learning_rate": 0.0001,
+      "batch_size": 128,
+      "dropout": 0.2
+    }
+  ]
+}

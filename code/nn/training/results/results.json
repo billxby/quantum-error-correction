@@ -1,0 +1,123 @@
+[
+  {
+    "distance": 3,
+    "num_detectors": 24,
+    "hyperparams": {
+      "hidden_dims": [
+        512,
+        1024,
+        2048
+      ],
+      "learning_rate": 0.0003,
+      "batch_size": 64,
+      "dropout": 0.1
+    },
+    "status": "completed",
+    "val_accuracy": 0.98681,
+    "test_accuracy": 0.9868,
+    "final_loss": 0.03784141746578273,
+    "training_time_seconds": 585.1593129634857,
+    "total_samples": 1000000,
+    "epochs": 10,
+    "model_path": "..\\..\\nn\\training\\models\\d3_specialist.pt",
+    "timestamp": "2026-01-16T18:03:28.438193"
+  },
+  {
+    "distance": 5,
+    "num_detectors": 120,
+    "hyperparams": {
+      "hidden_dims": [
+        512,
+        1024,
+        2048
+      ],
+      "learning_rate": 0.0003,
+      "batch_size": 64,
+      "dropout": 0.1
+    },
+    "status": "completed",
+    "val_accuracy": 0.96554,
+    "test_accuracy": 0.96727,
+    "final_loss": 0.06347365421746858,
+    "training_time_seconds": 588.5057504177094,
+    "total_samples": 1000000,
+    "epochs": 10,
+    "model_path": "..\\..\\nn\\training\\models\\d5_specialist.pt",
+    "timestamp": "2026-01-16T18:13:17.117478"
+  },
+  {
+    "distance": 7,
+    "num_detectors": 336,
+    "hyperparams": {
+      "hidden_dims": [
+        512,
+        1024,
+        2048
+      ],
+      "learning_rate": 0.0003,
+      "batch_size": 64,
+      "dropout": 0.1
+    },
+    "status": "completed",
+    "val_accuracy": 0.87339,
+    "test_accuracy": 0.87239,
+    "final_loss": 0.2426100468593836,
+    "training_time_seconds": 593.6712365150452,
+    "total_samples": 1000000,
+    "epochs": 10,
+    "model_path": "..\\..\\nn\\training\\models\\d7_specialist.pt",
+    "timestamp": "2026-01-16T18:23:10.970261"
+  },
+  {
+    "distance": 9,
+    "num_detectors": 720,
+    "hyperparams": {
+      "hidden_dims": [
+        512,
+        1024,
+        2048
+      ],
+      "learning_rate": 0.0003,
+      "batch_size": 64,
+      "dropout": 0.1
+    },
+    "status": "completed",
+    "val_accuracy": 0.64983,
+    "test_accuracy": 0.64984,
+    "final_loss": 0.6470796352481842,
+    "training_time_seconds": 638.8095724582672,
+    "total_samples": 1000000,
+    "epochs": 10,
+    "model_path": "..\\..\\nn\\training\\models\\d9_specialist.pt",
+    "timestamp": "2026-01-16T18:33:49.981231"
+  },
+  {
+    "distance": 11,
+    "num_detectors": 1320,
+    "hyperparams": {
+      "hidden_dims": [
+        512,
+        1024,
+        2048
+      ],
+      "learning_rate": 0.0003,
+      "batch_size": 64,
+      "dropout": 0.1
+    },
+    "status": "completed",
+    "val_accuracy": 0.39635,
+    "test_accuracy": 0.39624,
+    "final_loss": 60.205625,
+    "training_time_seconds": 734.7415328025818,
+    "total_samples": 1000000,
+    "epochs": 10,
+    "model_path": "..\\..\\nn\\training\\models\\d11_specialist.pt",
+    "timestamp": "2026-01-16T18:46:05.417348"
+  },
+  {
+    "distance": 13,
+    "status": "failed",
+    "error": "CUDA out of memory. Tried to allocate 8.14 GiB. GPU 0 has a total capacty of 8.00 GiB of which 6.42 GiB is free. Of the allocated memory 521.06 MiB is allocated by PyTorch, and 54.94 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting max_split_size_mb to avoid fragmentation.  See documentation for Memory Management and PYTORCH_CUDA_ALLOC_CONF",
+    "timestamp": "2026-01-16T20:05:08.291961"
+  }
+]

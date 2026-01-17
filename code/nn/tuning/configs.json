@@ -1,7 +1,7 @@
 {
   "seed": 42,
   "n_configs": 50,
-  "generated_at": "2026-01-14T21:19:20.961416",
+  "generated_at": "2026-01-14T21:49:42.971887",
   "search_space": {
     "hidden_dims": [
       "(256, 512, 1024)",
@@ -30,7 +30,7 @@
     ]
   },
   "fixed_params": {
-    "epochs": 50,
+    "epochs": 10,
     "distance": 7
   },
   "configs": [
