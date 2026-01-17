@@ -58,5 +58,97 @@
     "status": "failed",
     "error": "No baseline dataset found for d11 in ..\\..\\datasets\\flat.\nDatasets ending with '_1M' will be ignored. Please provide d11_baseline.pt or d11_baseline.json in ..\\..\\datasets\\flat.",
     "timestamp": "2026-01-16T22:53:22.974265"
+  },
+  {
+    "distance": 3,
+    "num_detectors": 24,
+    "hyperparams": {
+      "hidden_dims": [
+        512,
+        1024,
+        2048
+      ],
+      "learning_rate": 0.0003,
+      "batch_size": 64,
+      "dropout": 0.1
+    },
+    "status": "completed",
+    "val_accuracy": 0.98642,
+    "test_accuracy": 0.98581,
+    "final_loss": 0.03823550339492969,
+    "training_time_seconds": 887.6935288906097,
+    "total_samples": 1000000,
+    "epochs": 10,
+    "model_path": "..\\..\\nn\\training\\models\\d3_specialist.pt",
+    "epoch_metrics": {
+      "epoch": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "train_loss": [
+        0.0691911945265811,
+        0.04603035365230404,
+        0.04337009619147051,
+        0.041852656344645654,
+        0.0409168394799158,
+        0.04007620430114679,
+        0.039485698750005106,
+        0.039062696917187424,
+        0.038506940605076964,
+        0.03823550339492969
+      ],
+      "train_accuracy": [
+        0.9767225,
+        0.985035,
+        0.98599125,
+        0.986535,
+        0.98682125,
+        0.987075,
+        0.98737125,
+        0.98751,
+        0.98772625,
+        0.98786625
+      ],
+      "val_accuracy": [
+        0.98458,
+        0.98551,
+        0.98599,
+        0.98604,
+        0.98647,
+        0.98656,
+        0.98636,
+        0.98664,
+        0.9865,
+        0.98642
+      ],
+      "epoch_time_seconds": [
+        86.33426976203918,
+        81.29762029647827,
+        78.9720847606659,
+        82.42289638519287,
+        81.10596418380737,
+        83.13944602012634,
+        90.17761087417603,
+        105.70388770103455,
+        96.69036769866943,
+        100.36177945137024
+      ],
+      "total_training_time_seconds": 886.2069237232208
+    },
+    "timestamp": "2026-01-16T23:09:43.100271"
+  },
+  {
+    "distance": 3,
+    "status": "failed",
+    "error": "name 'epoch_losses' is not defined",
+    "timestamp": "2026-01-16T23:09:43.102264"
   }
 ]
