@@ -900,7 +900,7 @@
       "batch_size": 64,
       "dropout": 0.1
     },
-    "status": "completed",
+    "status": "wrongly completed",
     "val_accuracy": 0.57042,
     "test_accuracy": 0.56862,
     "final_loss": 0.647547167506218,
@@ -1680,7 +1680,7 @@
       "batch_size": 64,
       "dropout": 0.1
     },
-    "status": "completed",
+    "status": "wrongly completed",
     "val_accuracy": 0.64774,
     "test_accuracy": 0.64902,
     "final_loss": 0.6465811856174469,
@@ -2070,7 +2070,7 @@
       "batch_size": 64,
       "dropout": 0.1
     },
-    "status": "completed",
+    "status": "wrongly completed",
     "val_accuracy": 0.39805,
     "test_accuracy": 0.39631,
     "final_loss": 60.2735,
