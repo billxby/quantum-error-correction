@@ -19,6 +19,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import torch
 import torch.nn.functional as F
+from typing import Optional
 from torch_geometric.data import Data, Batch
 from torch_geometric.nn import MessagePassing, GATConv, GCNConv, SAGEConv, GINEConv
 from torch_geometric.utils import add_self_loops
@@ -1255,6 +1256,7 @@ class GCN:
               epochs: int = 10,
               batch_size: int = 64,
               lr: float = 1e-3,
+              max_grad_norm: Optional[float] = 1.0,
               verbose: bool = True) -> list:
         """
         Train the model on a list of PyG graphs.
@@ -1312,6 +1314,9 @@ class GCN:
                 loss = loss_fn(pred, y)
                 optimizer.zero_grad()
                 loss.backward()
+                grad_norm = None
+                if max_grad_norm is not None:
+                    grad_norm = torch.nn.utils.clip_grad_norm_(self.model.parameters(), max_grad_norm)
                 optimizer.step()
 
                 # Batch metrics
@@ -1332,11 +1337,14 @@ class GCN:
 
                 # Update display every 10 batches
                 if batch_count % 10 == 0:
-                    pbar.set_postfix({
+                    postfix = {
                         'epoch': f'{epoch+1}/{epochs}',
                         'loss': f'{running_loss:.4f}',
                         'acc': f'{running_acc:.1f}%'
-                    })
+                    }
+                    if grad_norm is not None:
+                        postfix['grad_norm'] = f'{float(grad_norm):.2f}'
+                    pbar.set_postfix(postfix)
 
             avg_loss = epoch_loss / len(loader)
             epoch_losses.append(avg_loss)
@@ -1596,6 +1604,7 @@ class GAT:
               epochs: int = 10,
               batch_size: int = 64,
               lr: float = 1e-3,
+              max_grad_norm: Optional[float] = 1.0,
               verbose: bool = True) -> list:
         """
         Train the model on a list of PyG graphs.
@@ -1653,6 +1662,9 @@ class GAT:
                 loss = loss_fn(pred, y)
                 optimizer.zero_grad()
                 loss.backward()
+                grad_norm = None
+                if max_grad_norm is not None:
+                    grad_norm = torch.nn.utils.clip_grad_norm_(self.model.parameters(), max_grad_norm)
                 optimizer.step()
 
                 # Batch metrics
@@ -1673,11 +1685,14 @@ class GAT:
 
                 # Update display every 10 batches
                 if batch_count % 10 == 0:
-                    pbar.set_postfix({
+                    postfix = {
                         'epoch': f'{epoch+1}/{epochs}',
                         'loss': f'{running_loss:.4f}',
                         'acc': f'{running_acc:.1f}%'
-                    })
+                    }
+                    if grad_norm is not None:
+                        postfix['grad_norm'] = f'{float(grad_norm):.2f}'
+                    pbar.set_postfix(postfix)
 
             avg_loss = epoch_loss / len(loader)
             epoch_losses.append(avg_loss)
@@ -2144,6 +2159,7 @@ class GraphSAGE:
               epochs: int = 10,
               batch_size: int = 64,
               lr: float = 1e-3,
+              max_grad_norm: Optional[float] = 1.0,
               verbose: bool = True) -> list:
         """
         Train the model on a list of PyG graphs.
@@ -2201,6 +2217,9 @@ class GraphSAGE:
                 loss = loss_fn(pred, y)
                 optimizer.zero_grad()
                 loss.backward()
+                grad_norm = None
+                if max_grad_norm is not None:
+                    grad_norm = torch.nn.utils.clip_grad_norm_(self.model.parameters(), max_grad_norm)
                 optimizer.step()
 
                 # Batch metrics
@@ -2221,11 +2240,14 @@ class GraphSAGE:
 
                 # Update display every 10 batches
                 if batch_count % 10 == 0:
-                    pbar.set_postfix({
+                    postfix = {
                         'epoch': f'{epoch+1}/{epochs}',
                         'loss': f'{running_loss:.4f}',
                         'acc': f'{running_acc:.1f}%'
-                    })
+                    }
+                    if grad_norm is not None:
+                        postfix['grad_norm'] = f'{float(grad_norm):.2f}'
+                    pbar.set_postfix(postfix)
 
             avg_loss = epoch_loss / len(loader)
             epoch_losses.append(avg_loss)
@@ -2502,6 +2524,7 @@ class GIN:
               epochs: int = 10,
               batch_size: int = 64,
               lr: float = 1e-3,
+              max_grad_norm: Optional[float] = 1.0,
               verbose: bool = True) -> list:
         """
         Train the model on a list of PyG graphs.
@@ -2559,6 +2582,9 @@ class GIN:
                 loss = loss_fn(pred, y)
                 optimizer.zero_grad()
                 loss.backward()
+                grad_norm = None
+                if max_grad_norm is not None:
+                    grad_norm = torch.nn.utils.clip_grad_norm_(self.model.parameters(), max_grad_norm)
                 optimizer.step()
 
                 # Batch metrics
@@ -2579,11 +2605,14 @@ class GIN:
 
                 # Update display every 10 batches
                 if batch_count % 10 == 0:
-                    pbar.set_postfix({
+                    postfix = {
                         'epoch': f'{epoch+1}/{epochs}',
                         'loss': f'{running_loss:.4f}',
                         'acc': f'{running_acc:.1f}%'
-                    })
+                    }
+                    if grad_norm is not None:
+                        postfix['grad_norm'] = f'{float(grad_norm):.2f}'
+                    pbar.set_postfix(postfix)
 
             avg_loss = epoch_loss / len(loader)
             epoch_losses.append(avg_loss)
