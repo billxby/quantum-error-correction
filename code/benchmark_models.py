@@ -19,6 +19,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import torch
 import torch.nn.functional as F
+from typing import Optional
 from torch_geometric.data import Data, Batch
 from torch_geometric.nn import MessagePassing, GATConv, GCNConv, SAGEConv, GINEConv
 from torch_geometric.utils import add_self_loops
@@ -465,6 +466,7 @@ class SimpleNN:
               lr: float = 1e-3,
               p_values: list = None,
               p_weights: list = None,
+              max_grad_norm: Optional[float] = 1.0,
               verbose: bool = True) -> list:
         """
         Train the model on surface code syndrome data.
@@ -554,16 +556,22 @@ class SimpleNN:
                 # Backward pass
                 optimizer.zero_grad()
                 loss.backward()
+                grad_norm = None
+                if max_grad_norm is not None:
+                    grad_norm = torch.nn.utils.clip_grad_norm_(self.model.parameters(), max_grad_norm)
                 optimizer.step()
 
                 epoch_loss += loss.item()
 
                 # Update progress bar
                 if batch_idx % 100 == 0:
-                    pbar.set_postfix({
+                    postfix = {
                         'acc': f'{running_avg_acc:.4f}',
                         'loss': f'{loss.item():.4f}'
-                    })
+                    }
+                    if grad_norm is not None:
+                        postfix['grad_norm'] = f'{float(grad_norm):.2f}'
+                    pbar.set_postfix(postfix)
 
             avg_epoch_loss = epoch_loss / num_batches
             epoch_losses.append(avg_epoch_loss)
@@ -582,6 +590,7 @@ class SimpleNN:
                         epochs: int = 10,
                         batch_size: int = 256,
                         lr: float = 1e-3,
+                        max_grad_norm: Optional[float] = 1.0,
                         verbose: bool = True) -> list:
         """
         Train the model on pre-loaded syndrome data (for hyperparameter tuning).
@@ -651,16 +660,22 @@ class SimpleNN:
                 # Backward pass
                 optimizer.zero_grad()
                 loss.backward()
+                grad_norm = None
+                if max_grad_norm is not None:
+                    grad_norm = torch.nn.utils.clip_grad_norm_(self.model.parameters(), max_grad_norm)
                 optimizer.step()
 
                 epoch_loss += loss.item()
 
                 # Update progress bar more frequently
                 if batch_idx % 10 == 0:
-                    pbar.set_postfix({
+                    postfix = {
                         'loss': f'{loss.item():.4f}',
                         'acc': f'{running_avg_acc:.4f}'
-                    })
+                    }
+                    if grad_norm is not None:
+                        postfix['grad_norm'] = f'{float(grad_norm):.2f}'
+                    pbar.set_postfix(postfix)
 
             avg_epoch_loss = epoch_loss / num_batches
             epoch_losses.append(avg_epoch_loss)
