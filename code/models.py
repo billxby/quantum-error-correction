@@ -2110,7 +2110,7 @@ class GraphSAGE:
         self._loaded_from = None
 
         # Set models directory based on base_path
-        self.models_dir = (base_path or Path(".")) / "models" / "gsage"
+        self.models_dir = (base_path or Path(".")) / "models" / "gsage" / "revised_training"
 
         # Store config for saving/loading
         self._config = {
