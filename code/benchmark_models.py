@@ -355,6 +355,17 @@ class SimpleNNModel(torch.nn.Module):
 
         self.layers = torch.nn.Sequential(*layers)
 
+        # Initialize weights for stability with SiLU
+        self._init_weights()
+
+    def _init_weights(self):
+        """Apply Kaiming initialization for stable gradients at large input dimensions."""
+        for m in self.modules():
+            if isinstance(m, torch.nn.Linear):
+                torch.nn.init.kaiming_normal_(m.weight, nonlinearity='relu')
+                if m.bias is not None:
+                    torch.nn.init.zeros_(m.bias)
+
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
         Forward pass.
