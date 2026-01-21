@@ -344,6 +344,7 @@ class SimpleNNModel(torch.nn.Module):
 
         for hidden_dim in hidden_dims:
             layers.append(torch.nn.Linear(prev_dim, hidden_dim))
+            layers.append(torch.nn.LayerNorm(hidden_dim))  # Stabilize activations
             layers.append(torch.nn.SiLU())
             if dropout > 0:
                 layers.append(torch.nn.Dropout(dropout))
