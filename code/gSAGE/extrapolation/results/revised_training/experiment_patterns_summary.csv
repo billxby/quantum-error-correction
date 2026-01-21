@@ -1,0 +1,46 @@
+experiment,split_name,varied_param,param_value,test_distance,accuracy
+A,a1_d3_00,d3_pct,0.0,9,80.43
+A,a1_d3_00,d3_pct,0.0,11,70.24000000000001
+A,a1_d3_00,d3_pct,0.0,13,63.57375
+A,a2_d3_10,d3_pct,10.0,9,79.15625
+A,a2_d3_10,d3_pct,10.0,11,68.53875000000001
+A,a2_d3_10,d3_pct,10.0,13,61.39
+A,a3_d3_20,d3_pct,20.0,9,80.25625000000001
+A,a3_d3_20,d3_pct,20.0,11,70.46125
+A,a3_d3_20,d3_pct,20.0,13,64.3375
+A,a4_d3_40,d3_pct,40.0,9,79.50124999999998
+A,a4_d3_40,d3_pct,40.0,11,69.62125
+A,a4_d3_40,d3_pct,40.0,13,63.06624999999999
+A,a5_d3_50,d3_pct,50.0,9,79.545
+A,a5_d3_50,d3_pct,50.0,11,69.15374999999999
+A,a5_d3_50,d3_pct,50.0,13,61.84499999999999
+B,b1_d5heavy,d7_pct,20.0,9,79.20125
+B,b1_d5heavy,d7_pct,20.0,11,69.41000000000001
+B,b1_d5heavy,d7_pct,20.0,13,62.845
+B,b2_d5more,d7_pct,35.0,9,80.12
+B,b2_d5more,d7_pct,35.0,11,70.38125
+B,b2_d5more,d7_pct,35.0,13,63.998749999999994
+B,b3_balanced,d7_pct,50.0,9,80.06625000000001
+B,b3_balanced,d7_pct,50.0,11,69.59875
+B,b3_balanced,d7_pct,50.0,13,62.37625000000001
+B,b4_d7more,d7_pct,65.0,9,81.01125
+B,b4_d7more,d7_pct,65.0,11,70.47875
+B,b4_d7more,d7_pct,65.0,13,63.3325
+B,b5_d7heavy,d7_pct,80.0,9,81.4025
+B,b5_d7heavy,d7_pct,80.0,11,70.1925
+B,b5_d7heavy,d7_pct,80.0,13,62.85375
+C,c1_only_d3,extreme_case,100% d=3,9,63.25999999999999
+C,c1_only_d3,extreme_case,100% d=3,11,58.25625000000001
+C,c1_only_d3,extreme_case,100% d=3,13,54.95375
+C,c2_only_d5,extreme_case,100% d=5,9,71.475
+C,c2_only_d5,extreme_case,100% d=5,11,62.629999999999995
+C,c2_only_d5,extreme_case,100% d=5,13,57.47625000000001
+C,c3_only_d7,extreme_case,100% d=7,9,81.05624999999999
+C,c3_only_d7,extreme_case,100% d=7,11,70.1275
+C,c3_only_d7,extreme_case,100% d=7,13,63.48875
+C,c4_no_d7,extreme_case,50/50 d3/d5,9,71.565
+C,c4_no_d7,extreme_case,50/50 d3/d5,11,62.87875
+C,c4_no_d7,extreme_case,50/50 d3/d5,13,57.061249999999994
+C,equal_333333,extreme_case,Equal (Control),9,79.23
+C,equal_333333,extreme_case,Equal (Control),11,68.62625
+C,equal_333333,extreme_case,Equal (Control),13,61.568749999999994
