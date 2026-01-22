@@ -1,0 +1,41 @@
+================================================================================
+NEURAL NETWORK vs GRAPH NEURAL NETWORK COMPARISON REPORT
+================================================================================
+Generated: 2026-01-22 13:48:38
+
+OVERALL STATISTICAL ANALYSIS
+--------------------------------------------------------------------------------
+Wilcoxon Signed-Rank Test:
+  Statistic: 0.0000
+  p-value: 0.000488
+  Significant (α=0.05): YES
+  Effect Size (Cohen's d): -2.6488 (large)
+
+PER-DISTANCE SUMMARY
+--------------------------------------------------------------------------------
+Distance d=9:
+  SimpleNN: 0.7496 ± 0.0000
+  GraphSAGE: 0.8745 ± 0.0000
+  Difference: +0.1249
+  p-value: 0.125000 (not significant)
+  Effect size: 0.0000
+
+Distance d=11:
+  SimpleNN: 0.6203 ± 0.0000
+  GraphSAGE: 0.8137 ± 0.0000
+  Difference: +0.1934
+  p-value: 0.125000 (not significant)
+  Effect size: 0.0000
+
+Distance d=13:
+  SimpleNN: 0.5704 ± 0.0000
+  GraphSAGE: 0.7661 ± 0.0000
+  Difference: +0.1957
+  p-value: 0.125000 (not significant)
+  Effect size: 0.0000
+
+FINAL VERDICT
+--------------------------------------------------------------------------------
+GraphSAGE achieved 0.8181 accuracy (mean ± std) vs SimpleNN's 0.6468 accuracy (mean ± std) across distances d=3 to d=13. The Wilcoxon signed-rank test showed this difference WAS statistically significant (p = 0.000488, effect size = -2.6488). However, SimpleNN achieved 50.95x faster inference throughput (182605 samples/s vs 3584 samples/s). For real-time QEC applications requiring low latency, SimpleNN is recommended based on the Pareto frontier analysis.
+
+================================================================================
