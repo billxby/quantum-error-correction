@@ -1,0 +1,247 @@
+{
+  "metadata": {
+    "timestamp": "2026-01-22T13:25:37.337431",
+    "distances": [
+      3,
+      5,
+      7,
+      9,
+      11,
+      13
+    ],
+    "test_samples_per_distance": 10000,
+    "num_benchmark_runs": 5,
+    "num_accuracy_runs": 4,
+    "significance_level": 0.05,
+    "seed": 42
+  },
+  "parameter_comparison": [
+    {
+      "distance": 9,
+      "simplenn_params": 3002881,
+      "graphsage_params": 142593,
+      "simplenn_size_mb": 34.38529872894287,
+      "graphsage_size_mb": 0.5631837844848633,
+      "param_ratio": 0.047485398189272235
+    },
+    {
+      "distance": 11,
+      "simplenn_params": 3310081,
+      "graphsage_params": 142593,
+      "simplenn_size_mb": 37.90098285675049,
+      "graphsage_size_mb": 1.6677980422973633,
+      "param_ratio": 0.043078402008893436
+    },
+    {
+      "distance": 13,
+      "simplenn_params": 3752449,
+      "graphsage_params": 142593,
+      "simplenn_size_mb": 42.96348285675049,
+      "graphsage_size_mb": 1.6677980422973633,
+      "param_ratio": 0.03799998347745699
+    }
+  ],
+  "accuracy_results": {
+    "9": {
+      "simplenn": {
+        "accuracy_mean": 0.7496,
+        "accuracy_std": 0.0,
+        "accuracy_ci_95": 0.0,
+        "f1_mean": 0.5925805401887406,
+        "f1_std": 0.0,
+        "precision_mean": 0.6761975492016339,
+        "recall_mean": 0.527367506516073
+      },
+      "graphsage": {
+        "accuracy_mean": 0.8745,
+        "accuracy_std": 0.0,
+        "accuracy_ci_95": 0.0,
+        "f1_mean": 0.8159014229133049,
+        "f1_std": 0.0,
+        "precision_mean": 0.8266944114149821,
+        "recall_mean": 0.8053866203301477
+      }
+    },
+    "11": {
+      "simplenn": {
+        "accuracy_mean": 0.6203,
+        "accuracy_std": 0.0,
+        "accuracy_ci_95": 0.0,
+        "f1_mean": 0.38728416975956115,
+        "f1_std": 0.0,
+        "precision_mean": 0.5529953917050692,
+        "recall_mean": 0.29798857710454435
+      },
+      "graphsage": {
+        "accuracy_mean": 0.8137,
+        "accuracy_std": 0.0,
+        "accuracy_ci_95": 0.0,
+        "f1_mean": 0.7616732761929128,
+        "f1_std": 0.0,
+        "precision_mean": 0.7854881266490765,
+        "recall_mean": 0.7392599950335237
+      }
+    },
+    "13": {
+      "simplenn": {
+        "accuracy_mean": 0.5704,
+        "accuracy_std": 0.0,
+        "accuracy_ci_95": 0.0,
+        "f1_mean": 0.3695333137657763,
+        "f1_std": 0.0,
+        "precision_mean": 0.5050140393100682,
+        "recall_mean": 0.2913677389493173
+      },
+      "graphsage": {
+        "accuracy_mean": 0.7661,
+        "accuracy_std": 0.0,
+        "accuracy_ci_95": 0.0,
+        "f1_mean": 0.7213817748659915,
+        "f1_std": 0.0,
+        "precision_mean": 0.7432498772704959,
+        "recall_mean": 0.7007637121036797
+      }
+    }
+  },
+  "model_info": {
+    "simplenn": {
+      "9": {
+        "distance": 9,
+        "num_detectors": 720,
+        "num_parameters": 3002881,
+        "model_size_mb": 34.38529872894287,
+        "model_path": "..\\..\\nn\\training\\models\\revised_training\\d9_specialist.pt",
+        "hyperparams": {
+          "hidden_dims": [
+            512,
+            1024,
+            2048
+          ],
+          "learning_rate": 0.0003,
+          "batch_size": 64,
+          "dropout": 0.1
+        }
+      },
+      "11": {
+        "distance": 11,
+        "num_detectors": 1320,
+        "num_parameters": 3310081,
+        "model_size_mb": 37.90098285675049,
+        "model_path": "..\\..\\nn\\training\\models\\revised_training\\d11_specialist.pt",
+        "hyperparams": {
+          "hidden_dims": [
+            512,
+            1024,
+            2048
+          ],
+          "learning_rate": 0.0003,
+          "batch_size": 64,
+          "dropout": 0.1
+        }
+      },
+      "13": {
+        "distance": 13,
+        "num_detectors": 2184,
+        "num_parameters": 3752449,
+        "model_size_mb": 42.96348285675049,
+        "model_path": "..\\..\\nn\\training\\models\\revised_training\\d13_specialist.pt",
+        "hyperparams": {
+          "hidden_dims": [
+            512,
+            1024,
+            2048
+          ],
+          "learning_rate": 0.0003,
+          "batch_size": 64,
+          "dropout": 0.1
+        }
+      }
+    },
+    "graphsage": {
+      "3": {
+        "distance": 3,
+        "num_parameters": 142593,
+        "model_size_mb": 0.5631837844848633,
+        "model_path": "..\\..\\gSAGE\\distances\\models\\revised_training\\d3.pt",
+        "config": {
+          "in_channels": 5,
+          "hidden_dim": 128,
+          "num_layers": 5,
+          "dropout": 0.0,
+          "aggr": "max",
+          "seed": 42
+        }
+      },
+      "5": {
+        "distance": 5,
+        "num_parameters": 142593,
+        "model_size_mb": 0.5631837844848633,
+        "model_path": "..\\..\\gSAGE\\distances\\models\\revised_training\\d5.pt",
+        "config": {
+          "in_channels": 5,
+          "hidden_dim": 128,
+          "num_layers": 5,
+          "dropout": 0.0,
+          "aggr": "max",
+          "seed": 42
+        }
+      },
+      "7": {
+        "distance": 7,
+        "num_parameters": 142593,
+        "model_size_mb": 0.5631837844848633,
+        "model_path": "..\\..\\gSAGE\\distances\\models\\revised_training\\d7.pt",
+        "config": {
+          "in_channels": 5,
+          "hidden_dim": 128,
+          "num_layers": 5,
+          "dropout": 0.0,
+          "aggr": "max",
+          "seed": 42
+        }
+      },
+      "9": {
+        "distance": 9,
+        "num_parameters": 142593,
+        "model_size_mb": 0.5631837844848633,
+        "model_path": "..\\..\\gSAGE\\distances\\models\\revised_training\\d9.pt",
+        "config": {
+          "in_channels": 5,
+          "hidden_dim": 128,
+          "num_layers": 5,
+          "dropout": 0.0,
+          "aggr": "max",
+          "seed": 42
+        }
+      },
+      "11": {
+        "distance": 11,
+        "num_parameters": 142593,
+        "model_size_mb": 1.6677980422973633,
+        "model_path": "..\\..\\gSAGE\\distances\\models\\revised_training\\d11.pt",
+        "config": {
+          "in_channels": 5,
+          "hidden_dim": 128,
+          "num_layers": 5,
+          "dropout": 0.0,
+          "aggr": "max",
+          "seed": 42
+        }
+      },
+      "13": {
+        "distance": 13,
+        "num_parameters": 142593,
+        "model_size_mb": 1.6677980422973633,
+        "model_path": "..\\..\\gSAGE\\distances\\models\\revised_training\\d13.pt",
+        "config": {
+          "in_channels": 5,
+          "hidden_dim": 128,
+          "num_layers": 5,
+          "dropout": 0.0,
+          "aggr": "max",
+          "seed": 42
+        }
+      }
+    }
+  }
+}

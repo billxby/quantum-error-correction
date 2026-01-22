@@ -1,0 +1,77 @@
+{
+  "9": {
+    "wilcoxon": {
+      "test": "Wilcoxon signed-rank",
+      "statistic": 0.0,
+      "p_value": 0.125,
+      "significant": false,
+      "effect_size_r": 0.7670602721762732,
+      "interpretation": "large"
+    },
+    "mcnemar": {
+      "test": "McNemar's",
+      "statistic": 653.589592950063,
+      "p_value": 0.0,
+      "significant": true,
+      "discordant_pairs": 2383,
+      "simplenn_wrong_only": 1816,
+      "graphsage_wrong_only": 567
+    },
+    "cohens_d": 0.0,
+    "effect_size_interpretation": "small"
+  },
+  "11": {
+    "wilcoxon": {
+      "test": "Wilcoxon signed-rank",
+      "statistic": 0.0,
+      "p_value": 0.125,
+      "significant": false,
+      "effect_size_r": 0.7670602721762732,
+      "interpretation": "large"
+    },
+    "mcnemar": {
+      "test": "McNemar's",
+      "statistic": 1043.7120111731845,
+      "p_value": 0.0,
+      "significant": true,
+      "discordant_pairs": 3580,
+      "simplenn_wrong_only": 2757,
+      "graphsage_wrong_only": 823
+    },
+    "cohens_d": 0.0,
+    "effect_size_interpretation": "small"
+  },
+  "13": {
+    "wilcoxon": {
+      "test": "Wilcoxon signed-rank",
+      "statistic": 0.0,
+      "p_value": 0.125,
+      "significant": false,
+      "effect_size_r": 0.7670602721762732,
+      "interpretation": "large"
+    },
+    "mcnemar": {
+      "test": "McNemar's",
+      "statistic": 903.4087367178277,
+      "p_value": 0.0,
+      "significant": true,
+      "discordant_pairs": 4235,
+      "simplenn_wrong_only": 3096,
+      "graphsage_wrong_only": 1139
+    },
+    "cohens_d": 0.0,
+    "effect_size_interpretation": "small"
+  },
+  "overall": {
+    "wilcoxon": {
+      "test": "Wilcoxon signed-rank",
+      "statistic": 0.0,
+      "p_value": 0.00048828125,
+      "significant": true,
+      "effect_size_r": 1.0066402466013578,
+      "interpretation": "large"
+    },
+    "cohens_d": -2.6488172908651717,
+    "effect_size_interpretation": "large"
+  }
+}
