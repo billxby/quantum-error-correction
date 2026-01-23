@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "timestamp": "2026-01-22T13:25:37.337431",
+    "timestamp": "2026-01-22T19:34:04.083884",
     "distances": [
       3,
       5,
@@ -16,6 +16,30 @@
     "seed": 42
   },
   "parameter_comparison": [
+    {
+      "distance": 3,
+      "simplenn_params": 2646529,
+      "graphsage_params": 142593,
+      "simplenn_size_mb": 30.30717372894287,
+      "graphsage_size_mb": 0.5631837844848633,
+      "param_ratio": 0.053879250898063086
+    },
+    {
+      "distance": 5,
+      "simplenn_params": 2695681,
+      "graphsage_params": 142593,
+      "simplenn_size_mb": 30.86967372894287,
+      "graphsage_size_mb": 0.5631837844848633,
+      "param_ratio": 0.05289683757091436
+    },
+    {
+      "distance": 7,
+      "simplenn_params": 2806273,
+      "graphsage_params": 142593,
+      "simplenn_size_mb": 32.13529872894287,
+      "graphsage_size_mb": 0.5631837844848633,
+      "param_ratio": 0.050812233877459534
+    },
     {
       "distance": 9,
       "simplenn_params": 3002881,
@@ -42,69 +66,180 @@
     }
   ],
   "accuracy_results": {
-    "9": {
+    "3": {
       "simplenn": {
-        "accuracy_mean": 0.7496,
+        "accuracy_mean": 0.9878,
         "accuracy_std": 0.0,
         "accuracy_ci_95": 0.0,
-        "f1_mean": 0.5925805401887406,
+        "f1_mean": 0.9284037558685445,
         "f1_std": 0.0,
-        "precision_mean": 0.6761975492016339,
-        "recall_mean": 0.527367506516073
+        "precision_mean": 0.9349881796690307,
+        "recall_mean": 0.921911421911422
       },
       "graphsage": {
-        "accuracy_mean": 0.8745,
+        "accuracy_mean": 0.9881,
         "accuracy_std": 0.0,
         "accuracy_ci_95": 0.0,
-        "f1_mean": 0.8159014229133049,
+        "f1_mean": 0.9297935103244837,
         "f1_std": 0.0,
-        "precision_mean": 0.8266944114149821,
-        "recall_mean": 0.8053866203301477
+        "precision_mean": 0.9414575866188769,
+        "recall_mean": 0.9184149184149184
+      }
+    },
+    "5": {
+      "simplenn": {
+        "accuracy_mean": 0.9721,
+        "accuracy_std": 0.0,
+        "accuracy_ci_95": 0.0,
+        "f1_mean": 0.9241641750475672,
+        "f1_std": 0.0,
+        "precision_mean": 0.9309967141292442,
+        "recall_mean": 0.9174311926605505
+      },
+      "graphsage": {
+        "accuracy_mean": 0.9664,
+        "accuracy_std": 0.0,
+        "accuracy_ci_95": 0.0,
+        "f1_mean": 0.9076415612974161,
+        "f1_std": 0.0,
+        "precision_mean": 0.9249299719887956,
+        "recall_mean": 0.8909875876956287
+      }
+    },
+    "7": {
+      "simplenn": {
+        "accuracy_mean": 0.8981,
+        "accuracy_std": 0.0,
+        "accuracy_ci_95": 0.0,
+        "f1_mean": 0.8129932097632593,
+        "f1_std": 0.0,
+        "precision_mean": 0.8320811419984974,
+        "recall_mean": 0.7947613921779692
+      },
+      "graphsage": {
+        "accuracy_mean": 0.9222,
+        "accuracy_std": 0.0,
+        "accuracy_ci_95": 0.0,
+        "f1_mean": 0.8565634218289085,
+        "f1_std": 0.0,
+        "precision_mean": 0.8809252938945772,
+        "recall_mean": 0.8335127377108001
+      }
+    },
+    "9": {
+      "simplenn": {
+        "accuracy_mean": 0.7474,
+        "accuracy_std": 0.0,
+        "accuracy_ci_95": 0.0,
+        "f1_mean": 0.5931056701030927,
+        "f1_std": 0.0,
+        "precision_mean": 0.6923655509590071,
+        "recall_mean": 0.5187376725838264
+      },
+      "graphsage": {
+        "accuracy_mean": 0.8713,
+        "accuracy_std": 0.0,
+        "accuracy_ci_95": 0.0,
+        "f1_mean": 0.8155367636519995,
+        "f1_std": 0.0,
+        "precision_mean": 0.8299299883313885,
+        "recall_mean": 0.8016342631727247
       }
     },
     "11": {
       "simplenn": {
-        "accuracy_mean": 0.6203,
+        "accuracy_mean": 0.6358,
         "accuracy_std": 0.0,
         "accuracy_ci_95": 0.0,
-        "f1_mean": 0.38728416975956115,
+        "f1_mean": 0.4165331624479334,
         "f1_std": 0.0,
-        "precision_mean": 0.5529953917050692,
-        "recall_mean": 0.29798857710454435
+        "precision_mean": 0.5701754385964912,
+        "recall_mean": 0.3281171125694094
       },
       "graphsage": {
-        "accuracy_mean": 0.8137,
+        "accuracy_mean": 0.8226,
         "accuracy_std": 0.0,
         "accuracy_ci_95": 0.0,
-        "f1_mean": 0.7616732761929128,
+        "f1_mean": 0.7744724129163488,
         "f1_std": 0.0,
-        "precision_mean": 0.7854881266490765,
-        "recall_mean": 0.7392599950335237
+        "precision_mean": 0.7802254098360656,
+        "recall_mean": 0.7688036345280161
       }
     },
     "13": {
       "simplenn": {
-        "accuracy_mean": 0.5704,
+        "accuracy_mean": 0.5755,
         "accuracy_std": 0.0,
         "accuracy_ci_95": 0.0,
-        "f1_mean": 0.3695333137657763,
+        "f1_mean": 0.3758270842523158,
         "f1_std": 0.0,
-        "precision_mean": 0.5050140393100682,
-        "recall_mean": 0.2913677389493173
+        "precision_mean": 0.5057380292837357,
+        "recall_mean": 0.299017313991577
       },
       "graphsage": {
-        "accuracy_mean": 0.7661,
+        "accuracy_mean": 0.7648,
         "accuracy_std": 0.0,
         "accuracy_ci_95": 0.0,
-        "f1_mean": 0.7213817748659915,
+        "f1_mean": 0.7163531114327062,
         "f1_std": 0.0,
-        "precision_mean": 0.7432498772704959,
-        "recall_mean": 0.7007637121036797
+        "precision_mean": 0.7391737182677949,
+        "recall_mean": 0.6948993916705662
       }
     }
   },
   "model_info": {
     "simplenn": {
+      "3": {
+        "distance": 3,
+        "num_detectors": 24,
+        "num_parameters": 2646529,
+        "model_size_mb": 30.30717372894287,
+        "model_path": "..\\..\\nn\\training\\models\\revised_training\\d3_specialist.pt",
+        "hyperparams": {
+          "hidden_dims": [
+            512,
+            1024,
+            2048
+          ],
+          "learning_rate": 0.0003,
+          "batch_size": 64,
+          "dropout": 0.1
+        }
+      },
+      "5": {
+        "distance": 5,
+        "num_detectors": 120,
+        "num_parameters": 2695681,
+        "model_size_mb": 30.86967372894287,
+        "model_path": "..\\..\\nn\\training\\models\\revised_training\\d5_specialist.pt",
+        "hyperparams": {
+          "hidden_dims": [
+            512,
+            1024,
+            2048
+          ],
+          "learning_rate": 0.0003,
+          "batch_size": 64,
+          "dropout": 0.1
+        }
+      },
+      "7": {
+        "distance": 7,
+        "num_detectors": 336,
+        "num_parameters": 2806273,
+        "model_size_mb": 32.13529872894287,
+        "model_path": "..\\..\\nn\\training\\models\\revised_training\\d7_specialist.pt",
+        "hyperparams": {
+          "hidden_dims": [
+            512,
+            1024,
+            2048
+          ],
+          "learning_rate": 0.0003,
+          "batch_size": 64,
+          "dropout": 0.1
+        }
+      },
       "9": {
         "distance": 9,
         "num_detectors": 720,
