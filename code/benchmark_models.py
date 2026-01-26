@@ -1187,15 +1187,22 @@ class DeepSets:
             counts = torch.zeros(batch_size, dtype=torch.long, device=self.device)
             return coords, counts
 
-        # Allocate output tensor
-        coords = torch.zeros(batch_size, max_fired, 3, device=self.device)
+        # VECTORIZED: Use advanced indexing to avoid Python for-loop
+        # Get all (batch_idx, detector_idx) pairs where detectors fired
+        batch_indices, detector_indices = fired_mask.nonzero(as_tuple=True)
 
-        # Fill in coordinates for each sample
-        for i in range(batch_size):
-            fired_indices = fired_mask[i].nonzero(as_tuple=True)[0]
-            n_fired = len(fired_indices)
-            if n_fired > 0:
-                coords[i, :n_fired] = detector_coords[fired_indices]
+        # Get coordinates for all fired detectors
+        fired_coords = detector_coords[detector_indices]  # [total_fired, 3]
+
+        # Compute position within each sample's fired list
+        # cumsum gives cumulative count, subtract 1 for 0-indexed position
+        cumsum = torch.zeros(batch_size + 1, dtype=torch.long, device=self.device)
+        cumsum[1:] = fired_counts.cumsum(dim=0)
+        positions = torch.arange(len(batch_indices), device=self.device) - cumsum[batch_indices]
+
+        # Allocate and scatter
+        coords = torch.zeros(batch_size, max_fired, 3, device=self.device)
+        coords[batch_indices, positions] = fired_coords
 
         return coords, fired_counts
 
