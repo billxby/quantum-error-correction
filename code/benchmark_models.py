@@ -20,9 +20,23 @@ import matplotlib.pyplot as plt
 import torch
 import torch.nn.functional as F
 from typing import Optional
-from torch_geometric.data import Data, Batch
-from torch_geometric.nn import MessagePassing, GATConv, GCNConv, SAGEConv, GINEConv
-from torch_geometric.utils import add_self_loops
+try:
+    from torch_geometric.data import Data, Batch
+    from torch_geometric.nn import MessagePassing, GATConv, GCNConv, SAGEConv, GINEConv
+    from torch_geometric.utils import add_self_loops
+    HAS_PYG = True
+except ImportError:
+    HAS_PYG = False
+    print("WARNING: torch_geometric not found. GNN models will not be available.")
+    # Dummy overrides to prevent NameError on class definitions
+    Data = object
+    Batch = object
+    MessagePassing = object
+    GATConv = object
+    GCNConv = object
+    SAGEConv = object
+    GINEConv = object
+    def add_self_loops(*args, **kwargs): return args[0], None
 from datetime import datetime
 from pathlib import Path
 from tqdm import tqdm
@@ -898,44 +912,72 @@ class SimpleNN:
 # DEEPSETS MODEL (coordinate-based, size-invariant)
 # ============================================================
 
+class FourierFeatures(torch.nn.Module):
+    """
+    Learned or fixed Fourier feature mapping for coordinates.
+    Maps input x to [sin(2*pi*B*x), cos(2*pi*B*x)].
+    Reference: "Fourier Features Let Networks Learn High Frequency Functions in Low Dimensional Domains" (Tancik et al., 2020)
+    """
+    def __init__(self, in_features: int, mapping_size: int, scale: float = 10.0, learnable: bool = False):
+        super().__init__()
+        self.in_features = in_features
+        self.mapping_size = mapping_size
+        # B matrix: [in_features, mapping_size // 2]
+        self.B = torch.nn.Parameter(torch.randn(in_features, mapping_size // 2) * scale, requires_grad=learnable)
+        self.out_dim = mapping_size
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        # x: [..., in_features]
+        # x @ B: [..., mapping_size//2]
+        xp = 2 * np.pi * (x @ self.B)
+        return torch.cat([torch.sin(xp), torch.cos(xp)], dim=-1)
+
 class DeepSetsModel(torch.nn.Module):
     """
     DeepSets architecture with coordinate-based features for surface code decoding.
 
-    This implementation converts fired detector indices to (x, y, t) spatial coordinates,
-    enabling size-invariant extrapolation across different code distances.
+    Enhanced Features:
+    - Fourier Feature Encoding: Maps (x,y,t) to high-dim space to resolve (0,0,0) ambiguity
+    - Null Token: Learnable embedding added to aggregation to represent "base state"
+    - Masking: Proper handling of variable-sized inputs
 
     Architecture:
-        1. Coordinate Mapping: detector index -> (x, y, t) normalized coordinates
-        2. Phi Network: MLP applied to each fired detector's coordinates
-        3. Aggregation: Sum or Mean pooling over all fired detectors
-        4. Rho Network: MLP classifier on the aggregated representation
-
-    Reference: Zaheer et al., "Deep Sets" (NeurIPS 2017)
+        1. Coordinate Mapping: (x, y, t) -> Fourier Features
+        2. Phi Network: MLP applied to each fired detector
+        3. Aggregation: Sum/Mean pooling + Null Token
+        4. Rho Network: MLP classifier
     """
 
     def __init__(self, in_features: int = 3, phi_hidden: tuple = (128, 128),
-                 rho_hidden: tuple = (256, 128), pool: str = 'sum', dropout: float = 0.0):
+                 rho_hidden: tuple = (256, 128), pool: str = 'sum', dropout: float = 0.0,
+                 use_fourier_features: bool = True, fourier_dim: int = 64, fourier_scale: float = 5.0):
         """
-        Initialize DeepSetsModel with coordinate-based features.
+        Initialize DeepSetsModel.
 
         Args:
-            in_features: Number of input features per fired detector (3 for x, y, t coordinates)
-            phi_hidden: Tuple of hidden layer dimensions for phi network
-            rho_hidden: Tuple of hidden layer dimensions for rho network
-            pool: Aggregation method - 'sum' (recommended) or 'mean'
-            dropout: Dropout probability between layers
+            in_features: Input dimension (3 for x,y,t)
+            phi_hidden: Phi MLP hidden dims
+            rho_hidden: Rho MLP hidden dims
+            pool: 'sum' or 'mean'
+            dropout: Dropout rate
+            use_fourier_features: Whether to use Fourier encoding
+            fourier_dim: Output dimension of Fourier features
+            fourier_scale: Scale factor for Gaussian random projection
         """
         super().__init__()
-        self.in_features = in_features
-        self.phi_hidden = phi_hidden
-        self.rho_hidden = rho_hidden
         self.pool_type = pool
-        self.dropout = dropout
+        self.use_fourier_features = use_fourier_features
 
-        # Phi network: per-detector coordinate encoder (shared weights)
+        # Fourier Features
+        if use_fourier_features:
+            self.fourier = FourierFeatures(in_features, fourier_dim, scale=fourier_scale)
+            phi_in_dim = fourier_dim
+        else:
+            phi_in_dim = in_features
+
+        # Phi Network
         phi_layers = []
-        prev_dim = in_features
+        prev_dim = phi_in_dim
         for h in phi_hidden:
             phi_layers.extend([
                 torch.nn.Linear(prev_dim, h),
@@ -948,7 +990,12 @@ class DeepSetsModel(torch.nn.Module):
         self.phi = torch.nn.Sequential(*phi_layers)
         self.phi_out_dim = prev_dim
 
-        # Rho network: classifier after aggregation
+        # Null Token (Learnable "bias" for aggregation)
+        # Added to the pooled vector. Helps stabilize training for empty syndromes and
+        # provides a learnable "default" state.
+        self.null_token = torch.nn.Parameter(torch.zeros(1, prev_dim))
+
+        # Rho Network
         rho_layers = []
         prev_dim = self.phi_out_dim
         for h in rho_hidden:
@@ -964,57 +1011,58 @@ class DeepSetsModel(torch.nn.Module):
         rho_layers.append(torch.nn.Sigmoid())
         self.rho = torch.nn.Sequential(*rho_layers)
 
-        # Initialize weights
         self._init_weights()
 
     def _init_weights(self):
-        """Apply Kaiming initialization for stable gradients."""
+        """Kaiming initialization."""
         for m in self.modules():
             if isinstance(m, torch.nn.Linear):
                 torch.nn.init.kaiming_normal_(m.weight, nonlinearity='relu')
                 if m.bias is not None:
                     torch.nn.init.zeros_(m.bias)
+        # Initialize null token with small random values
+        torch.nn.init.normal_(self.null_token, std=0.01)
 
     def forward(self, coords: torch.Tensor, counts: torch.Tensor = None) -> torch.Tensor:
         """
-        Forward pass on coordinate-based representations of fired detectors.
-
         Args:
-            coords: [batch, max_fired, 3] normalized (x, y, t) coordinates of fired detectors
-                   Padded samples should have (0, 0, 0) for unused slots
-            counts: [batch] number of actual fired detectors per sample (for masking)
-                   If None, assumes no padding (all coords are valid)
-
-        Returns:
-            [batch, 1] probability of logical error
+            coords: [batch, max_fired, 3] coordinates
+            counts: [batch] valid counts
         """
-        batch_size, max_fired, _ = coords.shape
-
-        # Apply phi to each fired detector's coordinates
-        h = self.phi(coords)  # [batch, max_fired, phi_out_dim]
-
-        # Create mask if counts provided
-        if counts is not None:
-            # Create mask: [batch, max_fired]
-            arange = torch.arange(max_fired, device=coords.device).unsqueeze(0)  # [1, max_fired]
-            mask = arange < counts.unsqueeze(1)  # [batch, max_fired]
-            mask_expanded = mask.unsqueeze(-1).float()  # [batch, max_fired, 1]
-
-            # Masked aggregation
-            h = h * mask_expanded  # Zero out padded positions
-            if self.pool_type == 'mean':
-                h = h.sum(dim=1) / counts.unsqueeze(-1).clamp(min=1).float()
-            else:  # sum
-                h = h.sum(dim=1)
+        # 1. Feature Encoding
+        if self.use_fourier_features:
+            x = self.fourier(coords)  # [batch, max, fourier_dim]
         else:
-            # No masking - aggregate all
-            if self.pool_type == 'mean':
-                h = h.mean(dim=1)
-            else:
-                h = h.sum(dim=1)
+            x = coords
 
-        # Apply rho classifier
-        return self.rho(h)
+        # 2. Phi Network
+        h = self.phi(x)  # [batch, max, phi_dim]
+
+        # 3. Masking & Aggregation
+        if counts is not None:
+            batch_size, max_fired, _ = coords.shape
+            mask = torch.arange(max_fired, device=coords.device).unsqueeze(0) < counts.unsqueeze(1)
+            mask_expanded = mask.unsqueeze(-1).float()
+
+            h = h * mask_expanded  # Zero out padded items
+
+            if self.pool_type == 'mean':
+                # Avoid division by zero
+                denom = counts.unsqueeze(-1).float().clamp(min=1.0)
+                pooled = h.sum(dim=1) / denom
+                # If count is 0, pooled is 0 (correct, as h is zeroed)
+            else:
+                pooled = h.sum(dim=1)
+        else:
+            pooled = h.sum(dim=1) if self.pool_type == 'sum' else h.mean(dim=1)
+
+        # 4. Add Null Token
+        # This provides a bias that the network can rely on, especially when pooled is 0 (empty syndrome)
+        # Broadcasting adds [1, dim] to [batch, dim]
+        pooled = pooled + self.null_token
+
+        # 5. Rho Network
+        return self.rho(pooled)
 
 
 class DeepSets:
@@ -1042,32 +1090,19 @@ class DeepSets:
                  rho_hidden: tuple = (256, 128),
                  pool: str = 'sum',
                  dropout: float = 0.0,
+                 use_fourier_features: bool = True,
+                 fourier_dim: int = 64,
                  device: torch.device = None,
                  base_path: Path = None,
                  seed: int = 42):
-        """
-        Initialize a new DeepSets model with coordinate-based features.
-
-        Args:
-            nickname: Human-readable name for this model
-            phi_hidden: Tuple of hidden layer dimensions for phi network
-            rho_hidden: Tuple of hidden layer dimensions for rho network
-            pool: Aggregation method - 'sum' (recommended) or 'mean'
-            dropout: Dropout probability between layers
-            device: Torch device (defaults to CUDA if available)
-            base_path: Base path for model storage
-            seed: Random seed for reproducibility
-        """
+        """Initialize DeepSets with optional Fourier Features."""
         self.nickname = nickname
         self.device = device if device else torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self._loaded_from = None
         self.base_path = base_path or Path(".")
 
-        # Set models directory
         self.models_dir = self.base_path / "models" / "deepsets"
         self.models_dir.mkdir(parents=True, exist_ok=True)
-
-        # Cache for detector coordinates per distance
         self.coord_cache = {}
 
         # Store config for saving/loading
@@ -1076,6 +1111,8 @@ class DeepSets:
             'rho_hidden': rho_hidden,
             'pool': pool,
             'dropout': dropout,
+            'use_fourier_features': use_fourier_features,
+            'fourier_dim': fourier_dim,
             'seed': seed
         }
 
@@ -1094,7 +1131,9 @@ class DeepSets:
             phi_hidden=phi_hidden,
             rho_hidden=rho_hidden,
             pool=pool,
-            dropout=dropout
+            dropout=dropout,
+            use_fourier_features=use_fourier_features,
+            fourier_dim=fourier_dim
         ).to(self.device)
 
         print(f"DeepSets initialized: {self}")
@@ -1389,13 +1428,43 @@ class DeepSets:
         print(f"Model loaded: {self}")
         return self
 
+    def check_coordinates(self, d: int):
+        """
+        Verify coordinate extraction for a given distance.
+        Prints statistics about the coordinates to check for validity and ambiguity.
+        """
+        print(f"\nChecking coordinates for d={d}...")
+        coords = self._get_detector_coordinates(d) # [num_detectors, 3]
+
+        print(f"  Num detectors: {len(coords)}")
+        print(f"  Shape: {coords.shape}")
+
+        # Check range
+        min_vals = coords.min(dim=0)[0]
+        max_vals = coords.max(dim=0)[0]
+        print(f"  Range X: [{min_vals[0]:.4f}, {max_vals[0]:.4f}]")
+        print(f"  Range Y: [{min_vals[1]:.4f}, {max_vals[1]:.4f}]")
+        print(f"  Range T: [{min_vals[2]:.4f}, {max_vals[2]:.4f}]")
+
+        # Check for (0,0,0)
+        zeros = (coords.abs().sum(dim=1) < 1e-6)
+        num_zeros = zeros.sum().item()
+        if num_zeros > 0:
+            print(f"  WARNING: {num_zeros} detectors have (0,0,0) coordinates!")
+            print(f"  Indices: {zeros.nonzero(as_tuple=True)[0].tolist()}")
+        else:
+            print(f"  OK: No detectors at exactly (0,0,0).")
+
+        return coords
+
     def __repr__(self) -> str:
         loaded_info = f", loaded_from='{self._loaded_from}'" if self._loaded_from else ""
         return (f"DeepSets(nickname='{self.nickname}', "
                 f"phi_hidden={self._config['phi_hidden']}, "
                 f"rho_hidden={self._config['rho_hidden']}, "
                 f"pool='{self._config['pool']}', "
-                f"dropout={self._config['dropout']}"
+                f"dropout={self._config['dropout']}, "
+                f"fourier={self._config['use_fourier_features']}"
                 f"{loaded_info})")
 
 
