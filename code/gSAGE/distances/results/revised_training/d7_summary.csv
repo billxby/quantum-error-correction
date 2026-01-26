@@ -1,0 +1,2 @@
+experiment_name,distance,samples,epochs,batch_size,learning_rate,hidden_dim,num_layers,aggr,dropout,final_loss,train_accuracy,val_accuracy,test_accuracy,training_time_minutes,total_parameters,device,gpu_name,timestamp
+d7,7,1000000,50,256,0.0005,128,5,max,0.0,0.13320280456542968,0.9370225,0.922,0.0,206.85986469189325,0,cuda,NVIDIA GeForce RTX 5070 Ti,2026-01-21T19:01:24.526341

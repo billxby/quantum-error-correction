@@ -1,0 +1,62 @@
+================================================================================
+NEURAL NETWORK vs GRAPH NEURAL NETWORK COMPARISON REPORT
+================================================================================
+Generated: 2026-01-22 19:34:04
+
+OVERALL STATISTICAL ANALYSIS
+--------------------------------------------------------------------------------
+Wilcoxon Signed-Rank Test:
+  Statistic: 26.0000
+  p-value: 0.000380
+  Significant (α=0.05): YES
+  Effect Size (Cohen's d): -0.6697 (medium)
+
+PER-DISTANCE SUMMARY
+--------------------------------------------------------------------------------
+Distance d=3:
+  SimpleNN: 0.9878 ± 0.0000
+  GraphSAGE: 0.9881 ± 0.0000
+  Difference: +0.0003
+  p-value: 0.125000 (not significant)
+  Effect size: 0.0000
+
+Distance d=5:
+  SimpleNN: 0.9721 ± 0.0000
+  GraphSAGE: 0.9664 ± 0.0000
+  Difference: -0.0057
+  p-value: 0.125000 (not significant)
+  Effect size: 0.0000
+
+Distance d=7:
+  SimpleNN: 0.8981 ± 0.0000
+  GraphSAGE: 0.9222 ± 0.0000
+  Difference: +0.0241
+  p-value: 0.125000 (not significant)
+  Effect size: 0.0000
+
+Distance d=9:
+  SimpleNN: 0.7474 ± 0.0000
+  GraphSAGE: 0.8713 ± 0.0000
+  Difference: +0.1239
+  p-value: 0.125000 (not significant)
+  Effect size: 0.0000
+
+Distance d=11:
+  SimpleNN: 0.6358 ± 0.0000
+  GraphSAGE: 0.8226 ± 0.0000
+  Difference: +0.1868
+  p-value: 0.125000 (not significant)
+  Effect size: 0.0000
+
+Distance d=13:
+  SimpleNN: 0.5755 ± 0.0000
+  GraphSAGE: 0.7648 ± 0.0000
+  Difference: +0.1893
+  p-value: 0.125000 (not significant)
+  Effect size: 0.0000
+
+FINAL VERDICT
+--------------------------------------------------------------------------------
+GraphSAGE achieved 0.8892 accuracy (mean ± std) vs SimpleNN's 0.8028 accuracy (mean ± std) across distances d=3 to d=13. The Wilcoxon signed-rank test showed this difference WAS statistically significant (p = 0.000380, effect size = -0.6697). However, SimpleNN achieved 47.60x faster inference throughput (153066 samples/s vs 3216 samples/s). For real-time QEC applications requiring low latency, SimpleNN is recommended based on the Pareto frontier analysis.
+
+================================================================================

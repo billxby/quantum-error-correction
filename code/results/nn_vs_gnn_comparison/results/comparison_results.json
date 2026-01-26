@@ -1,0 +1,382 @@
+{
+  "metadata": {
+    "timestamp": "2026-01-22T19:34:04.083884",
+    "distances": [
+      3,
+      5,
+      7,
+      9,
+      11,
+      13
+    ],
+    "test_samples_per_distance": 10000,
+    "num_benchmark_runs": 5,
+    "num_accuracy_runs": 4,
+    "significance_level": 0.05,
+    "seed": 42
+  },
+  "parameter_comparison": [
+    {
+      "distance": 3,
+      "simplenn_params": 2646529,
+      "graphsage_params": 142593,
+      "simplenn_size_mb": 30.30717372894287,
+      "graphsage_size_mb": 0.5631837844848633,
+      "param_ratio": 0.053879250898063086
+    },
+    {
+      "distance": 5,
+      "simplenn_params": 2695681,
+      "graphsage_params": 142593,
+      "simplenn_size_mb": 30.86967372894287,
+      "graphsage_size_mb": 0.5631837844848633,
+      "param_ratio": 0.05289683757091436
+    },
+    {
+      "distance": 7,
+      "simplenn_params": 2806273,
+      "graphsage_params": 142593,
+      "simplenn_size_mb": 32.13529872894287,
+      "graphsage_size_mb": 0.5631837844848633,
+      "param_ratio": 0.050812233877459534
+    },
+    {
+      "distance": 9,
+      "simplenn_params": 3002881,
+      "graphsage_params": 142593,
+      "simplenn_size_mb": 34.38529872894287,
+      "graphsage_size_mb": 0.5631837844848633,
+      "param_ratio": 0.047485398189272235
+    },
+    {
+      "distance": 11,
+      "simplenn_params": 3310081,
+      "graphsage_params": 142593,
+      "simplenn_size_mb": 37.90098285675049,
+      "graphsage_size_mb": 1.6677980422973633,
+      "param_ratio": 0.043078402008893436
+    },
+    {
+      "distance": 13,
+      "simplenn_params": 3752449,
+      "graphsage_params": 142593,
+      "simplenn_size_mb": 42.96348285675049,
+      "graphsage_size_mb": 1.6677980422973633,
+      "param_ratio": 0.03799998347745699
+    }
+  ],
+  "accuracy_results": {
+    "3": {
+      "simplenn": {
+        "accuracy_mean": 0.9878,
+        "accuracy_std": 0.0,
+        "accuracy_ci_95": 0.0,
+        "f1_mean": 0.9284037558685445,
+        "f1_std": 0.0,
+        "precision_mean": 0.9349881796690307,
+        "recall_mean": 0.921911421911422
+      },
+      "graphsage": {
+        "accuracy_mean": 0.9881,
+        "accuracy_std": 0.0,
+        "accuracy_ci_95": 0.0,
+        "f1_mean": 0.9297935103244837,
+        "f1_std": 0.0,
+        "precision_mean": 0.9414575866188769,
+        "recall_mean": 0.9184149184149184
+      }
+    },
+    "5": {
+      "simplenn": {
+        "accuracy_mean": 0.9721,
+        "accuracy_std": 0.0,
+        "accuracy_ci_95": 0.0,
+        "f1_mean": 0.9241641750475672,
+        "f1_std": 0.0,
+        "precision_mean": 0.9309967141292442,
+        "recall_mean": 0.9174311926605505
+      },
+      "graphsage": {
+        "accuracy_mean": 0.9664,
+        "accuracy_std": 0.0,
+        "accuracy_ci_95": 0.0,
+        "f1_mean": 0.9076415612974161,
+        "f1_std": 0.0,
+        "precision_mean": 0.9249299719887956,
+        "recall_mean": 0.8909875876956287
+      }
+    },
+    "7": {
+      "simplenn": {
+        "accuracy_mean": 0.8981,
+        "accuracy_std": 0.0,
+        "accuracy_ci_95": 0.0,
+        "f1_mean": 0.8129932097632593,
+        "f1_std": 0.0,
+        "precision_mean": 0.8320811419984974,
+        "recall_mean": 0.7947613921779692
+      },
+      "graphsage": {
+        "accuracy_mean": 0.9222,
+        "accuracy_std": 0.0,
+        "accuracy_ci_95": 0.0,
+        "f1_mean": 0.8565634218289085,
+        "f1_std": 0.0,
+        "precision_mean": 0.8809252938945772,
+        "recall_mean": 0.8335127377108001
+      }
+    },
+    "9": {
+      "simplenn": {
+        "accuracy_mean": 0.7474,
+        "accuracy_std": 0.0,
+        "accuracy_ci_95": 0.0,
+        "f1_mean": 0.5931056701030927,
+        "f1_std": 0.0,
+        "precision_mean": 0.6923655509590071,
+        "recall_mean": 0.5187376725838264
+      },
+      "graphsage": {
+        "accuracy_mean": 0.8713,
+        "accuracy_std": 0.0,
+        "accuracy_ci_95": 0.0,
+        "f1_mean": 0.8155367636519995,
+        "f1_std": 0.0,
+        "precision_mean": 0.8299299883313885,
+        "recall_mean": 0.8016342631727247
+      }
+    },
+    "11": {
+      "simplenn": {
+        "accuracy_mean": 0.6358,
+        "accuracy_std": 0.0,
+        "accuracy_ci_95": 0.0,
+        "f1_mean": 0.4165331624479334,
+        "f1_std": 0.0,
+        "precision_mean": 0.5701754385964912,
+        "recall_mean": 0.3281171125694094
+      },
+      "graphsage": {
+        "accuracy_mean": 0.8226,
+        "accuracy_std": 0.0,
+        "accuracy_ci_95": 0.0,
+        "f1_mean": 0.7744724129163488,
+        "f1_std": 0.0,
+        "precision_mean": 0.7802254098360656,
+        "recall_mean": 0.7688036345280161
+      }
+    },
+    "13": {
+      "simplenn": {
+        "accuracy_mean": 0.5755,
+        "accuracy_std": 0.0,
+        "accuracy_ci_95": 0.0,
+        "f1_mean": 0.3758270842523158,
+        "f1_std": 0.0,
+        "precision_mean": 0.5057380292837357,
+        "recall_mean": 0.299017313991577
+      },
+      "graphsage": {
+        "accuracy_mean": 0.7648,
+        "accuracy_std": 0.0,
+        "accuracy_ci_95": 0.0,
+        "f1_mean": 0.7163531114327062,
+        "f1_std": 0.0,
+        "precision_mean": 0.7391737182677949,
+        "recall_mean": 0.6948993916705662
+      }
+    }
+  },
+  "model_info": {
+    "simplenn": {
+      "3": {
+        "distance": 3,
+        "num_detectors": 24,
+        "num_parameters": 2646529,
+        "model_size_mb": 30.30717372894287,
+        "model_path": "..\\..\\nn\\training\\models\\revised_training\\d3_specialist.pt",
+        "hyperparams": {
+          "hidden_dims": [
+            512,
+            1024,
+            2048
+          ],
+          "learning_rate": 0.0003,
+          "batch_size": 64,
+          "dropout": 0.1
+        }
+      },
+      "5": {
+        "distance": 5,
+        "num_detectors": 120,
+        "num_parameters": 2695681,
+        "model_size_mb": 30.86967372894287,
+        "model_path": "..\\..\\nn\\training\\models\\revised_training\\d5_specialist.pt",
+        "hyperparams": {
+          "hidden_dims": [
+            512,
+            1024,
+            2048
+          ],
+          "learning_rate": 0.0003,
+          "batch_size": 64,
+          "dropout": 0.1
+        }
+      },
+      "7": {
+        "distance": 7,
+        "num_detectors": 336,
+        "num_parameters": 2806273,
+        "model_size_mb": 32.13529872894287,
+        "model_path": "..\\..\\nn\\training\\models\\revised_training\\d7_specialist.pt",
+        "hyperparams": {
+          "hidden_dims": [
+            512,
+            1024,
+            2048
+          ],
+          "learning_rate": 0.0003,
+          "batch_size": 64,
+          "dropout": 0.1
+        }
+      },
+      "9": {
+        "distance": 9,
+        "num_detectors": 720,
+        "num_parameters": 3002881,
+        "model_size_mb": 34.38529872894287,
+        "model_path": "..\\..\\nn\\training\\models\\revised_training\\d9_specialist.pt",
+        "hyperparams": {
+          "hidden_dims": [
+            512,
+            1024,
+            2048
+          ],
+          "learning_rate": 0.0003,
+          "batch_size": 64,
+          "dropout": 0.1
+        }
+      },
+      "11": {
+        "distance": 11,
+        "num_detectors": 1320,
+        "num_parameters": 3310081,
+        "model_size_mb": 37.90098285675049,
+        "model_path": "..\\..\\nn\\training\\models\\revised_training\\d11_specialist.pt",
+        "hyperparams": {
+          "hidden_dims": [
+            512,
+            1024,
+            2048
+          ],
+          "learning_rate": 0.0003,
+          "batch_size": 64,
+          "dropout": 0.1
+        }
+      },
+      "13": {
+        "distance": 13,
+        "num_detectors": 2184,
+        "num_parameters": 3752449,
+        "model_size_mb": 42.96348285675049,
+        "model_path": "..\\..\\nn\\training\\models\\revised_training\\d13_specialist.pt",
+        "hyperparams": {
+          "hidden_dims": [
+            512,
+            1024,
+            2048
+          ],
+          "learning_rate": 0.0003,
+          "batch_size": 64,
+          "dropout": 0.1
+        }
+      }
+    },
+    "graphsage": {
+      "3": {
+        "distance": 3,
+        "num_parameters": 142593,
+        "model_size_mb": 0.5631837844848633,
+        "model_path": "..\\..\\gSAGE\\distances\\models\\revised_training\\d3.pt",
+        "config": {
+          "in_channels": 5,
+          "hidden_dim": 128,
+          "num_layers": 5,
+          "dropout": 0.0,
+          "aggr": "max",
+          "seed": 42
+        }
+      },
+      "5": {
+        "distance": 5,
+        "num_parameters": 142593,
+        "model_size_mb": 0.5631837844848633,
+        "model_path": "..\\..\\gSAGE\\distances\\models\\revised_training\\d5.pt",
+        "config": {
+          "in_channels": 5,
+          "hidden_dim": 128,
+          "num_layers": 5,
+          "dropout": 0.0,
+          "aggr": "max",
+          "seed": 42
+        }
+      },
+      "7": {
+        "distance": 7,
+        "num_parameters": 142593,
+        "model_size_mb": 0.5631837844848633,
+        "model_path": "..\\..\\gSAGE\\distances\\models\\revised_training\\d7.pt",
+        "config": {
+          "in_channels": 5,
+          "hidden_dim": 128,
+          "num_layers": 5,
+          "dropout": 0.0,
+          "aggr": "max",
+          "seed": 42
+        }
+      },
+      "9": {
+        "distance": 9,
+        "num_parameters": 142593,
+        "model_size_mb": 0.5631837844848633,
+        "model_path": "..\\..\\gSAGE\\distances\\models\\revised_training\\d9.pt",
+        "config": {
+          "in_channels": 5,
+          "hidden_dim": 128,
+          "num_layers": 5,
+          "dropout": 0.0,
+          "aggr": "max",
+          "seed": 42
+        }
+      },
+      "11": {
+        "distance": 11,
+        "num_parameters": 142593,
+        "model_size_mb": 1.6677980422973633,
+        "model_path": "..\\..\\gSAGE\\distances\\models\\revised_training\\d11.pt",
+        "config": {
+          "in_channels": 5,
+          "hidden_dim": 128,
+          "num_layers": 5,
+          "dropout": 0.0,
+          "aggr": "max",
+          "seed": 42
+        }
+      },
+      "13": {
+        "distance": 13,
+        "num_parameters": 142593,
+        "model_size_mb": 1.6677980422973633,
+        "model_path": "..\\..\\gSAGE\\distances\\models\\revised_training\\d13.pt",
+        "config": {
+          "in_channels": 5,
+          "hidden_dim": 128,
+          "num_layers": 5,
+          "dropout": 0.0,
+          "aggr": "max",
+          "seed": 42
+        }
+      }
+    }
+  }
+}
