@@ -1,0 +1,27 @@
+{
+  "config_id": "dummy_test",
+  "model_params": {
+    "phi_hidden": [
+      64,
+      64
+    ],
+    "rho_hidden": [
+      64,
+      64
+    ],
+    "pool": "sum",
+    "dropout": 0.0,
+    "hidden_dim": 64,
+    "num_layers": 2,
+    "aggr": "mean"
+  },
+  "training_params": {
+    "learning_rate": 0.001,
+    "batch_size": 32,
+    "epochs": 2
+  },
+  "performance": {
+    "val_accuracy": 0.5,
+    "test_accuracy": 0.5
+  }
+}
