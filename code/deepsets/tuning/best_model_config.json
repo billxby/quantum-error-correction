@@ -1,0 +1,13 @@
+{
+  "model_params": {
+    "phi_hidden": [128, 128],
+    "rho_hidden": [256, 128],
+    "pool": "sum",
+    "dropout": 0.0
+  },
+  "training_params": {
+    "learning_rate": 0.0005,
+    "epochs": 50,
+    "batch_size": 256
+  }
+}
