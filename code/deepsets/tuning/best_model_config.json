@@ -1,0 +1,25 @@
+{
+  "config_id": 30,
+  "model_params": {
+    "phi_hidden": [
+      128,
+      128
+    ],
+    "rho_hidden": [
+      128,
+      64
+    ],
+    "pool": "mean",
+    "dropout": 0.0
+  },
+  "training_params": {
+    "learning_rate": 0.001,
+    "epochs": 10,
+    "batch_size": 256
+  },
+  "performance": {
+    "val_accuracy": 0.86062,
+    "test_accuracy": 0.85866
+  },
+  "timestamp": "2026-01-26T05:46:36.521491"
+}

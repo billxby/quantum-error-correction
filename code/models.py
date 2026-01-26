@@ -1158,6 +1158,11 @@ class GCNModel(torch.nn.Module):
         edge_weight = data.edge_attr.view(-1) if hasattr(data, 'edge_attr') and data.edge_attr is not None else None
         batch = data.batch if hasattr(data, 'batch') and data.batch is not None else torch.zeros(x.size(0), dtype=torch.long, device=x.device)
 
+        # Handle empty graphs (no fired detectors) - return default prediction
+        num_graphs = int(data.num_graphs) if hasattr(data, 'num_graphs') else (int(batch.max().item()) + 1 if x.size(0) > 0 else 1)
+        if x.size(0) == 0:
+            return torch.full((num_graphs, 1), 0.5, device=data.x.device if hasattr(data.x, 'device') else 'cpu')
+
         # Apply GCN layers with batch normalization and activation
         for conv, bn in zip(self.convs, self.bns):
             x = conv(x, edge_index, edge_weight)
@@ -1165,7 +1170,7 @@ class GCNModel(torch.nn.Module):
             x = F.silu(x)
 
         # Global mean pooling: aggregate node features to graph-level (optimized)
-        x_pooled = global_mean_pool(x, batch)
+        x_pooled = global_mean_pool(x, batch, size=num_graphs)
 
         # Classification layers
         x = self.fc1(x_pooled)
@@ -1488,6 +1493,11 @@ class GATModel(torch.nn.Module):
 
         batch = data.batch if hasattr(data, 'batch') and data.batch is not None else torch.zeros(x.size(0), dtype=torch.long, device=x.device)
 
+        # Handle empty graphs (no fired detectors) - return default prediction
+        num_graphs = int(data.num_graphs) if hasattr(data, 'num_graphs') else (int(batch.max().item()) + 1 if x.size(0) > 0 else 1)
+        if x.size(0) == 0:
+            return torch.full((num_graphs, 1), 0.5, device=data.x.device if hasattr(data.x, 'device') else 'cpu')
+
         # Apply GAT layers with batch normalization and activation
         for conv, bn in zip(self.convs, self.bns):
             x = conv(x, edge_index, edge_attr=edge_weight)
@@ -1495,7 +1505,7 @@ class GATModel(torch.nn.Module):
             x = F.silu(x)
 
         # Global mean pooling: aggregate node features to graph-level (optimized)
-        x_pooled = global_mean_pool(x, batch)
+        x_pooled = global_mean_pool(x, batch, size=num_graphs)
 
         # Classification layers
         x = self.fc1(x_pooled)
@@ -2022,6 +2032,11 @@ class GraphSAGEModel(torch.nn.Module):
         edge_weight = data.edge_attr.view(-1) if hasattr(data, 'edge_attr') and data.edge_attr is not None else None
         batch = data.batch if hasattr(data, 'batch') and data.batch is not None else torch.zeros(x.size(0), dtype=torch.long, device=x.device)
 
+        # Handle empty graphs (no fired detectors) - return default prediction
+        num_graphs = int(data.num_graphs) if hasattr(data, 'num_graphs') else (int(batch.max().item()) + 1 if x.size(0) > 0 else 1)
+        if x.size(0) == 0:
+            return torch.full((num_graphs, 1), 0.5, device=data.x.device if hasattr(data.x, 'device') else 'cpu')
+
         # Apply WeightedSAGEConv layers with batch normalization, activation, and dropout
         for conv, bn in zip(self.convs, self.bns):
             x = conv(x, edge_index, edge_weight)
@@ -2030,7 +2045,7 @@ class GraphSAGEModel(torch.nn.Module):
             x = self.dropout(x)
 
         # Global mean pooling: aggregate node features to graph-level (optimized)
-        x_pooled = global_mean_pool(x, batch)
+        x_pooled = global_mean_pool(x, batch, size=num_graphs)
 
         # Classification layers
         x = self.fc1(x_pooled)
@@ -2382,6 +2397,11 @@ class GINModel(torch.nn.Module):
 
         batch = data.batch if hasattr(data, 'batch') and data.batch is not None else torch.zeros(x.size(0), dtype=torch.long, device=x.device)
 
+        # Handle empty graphs (no fired detectors) - return default prediction
+        num_graphs = int(data.num_graphs) if hasattr(data, 'num_graphs') else (int(batch.max().item()) + 1 if x.size(0) > 0 else 1)
+        if x.size(0) == 0:
+            return torch.full((num_graphs, 1), 0.5, device=data.x.device if hasattr(data.x, 'device') else 'cpu')
+
         # Apply GINEConv layers with batch normalization and activation
         for conv, bn in zip(self.convs, self.bns):
             x = conv(x, edge_index, edge_attr)
@@ -2389,7 +2409,7 @@ class GINModel(torch.nn.Module):
             x = F.silu(x)
 
         # Global mean pooling: aggregate node features to graph-level (optimized)
-        x_pooled = global_mean_pool(x, batch)
+        x_pooled = global_mean_pool(x, batch, size=num_graphs)
 
         # Classification layers
         x = self.fc1(x_pooled)

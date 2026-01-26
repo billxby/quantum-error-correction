@@ -10,12 +10,12 @@
     },
     "mcnemar": {
       "test": "McNemar's",
-      "statistic": 0.17307692307692307,
-      "p_value": 0.6773916019262775,
+      "statistic": 0.46296296296296297,
+      "p_value": 0.49624247444426284,
       "significant": false,
-      "discordant_pairs": 52,
+      "discordant_pairs": 54,
       "simplenn_wrong_only": 24,
-      "graphsage_wrong_only": 28
+      "graphsage_wrong_only": 30
     },
     "cohens_d": 0.0,
     "effect_size_interpretation": "small"
@@ -31,12 +31,12 @@
     },
     "mcnemar": {
       "test": "McNemar's",
-      "statistic": 17.045454545454547,
-      "p_value": 3.649562942653617e-05,
+      "statistic": 3.8892045454545454,
+      "p_value": 0.04859743569452535,
       "significant": true,
-      "discordant_pairs": 330,
-      "simplenn_wrong_only": 127,
-      "graphsage_wrong_only": 203
+      "discordant_pairs": 352,
+      "simplenn_wrong_only": 157,
+      "graphsage_wrong_only": 195
     },
     "cohens_d": 0.0,
     "effect_size_interpretation": "small"
@@ -52,12 +52,12 @@
     },
     "mcnemar": {
       "test": "McNemar's",
-      "statistic": 71.84306220095694,
-      "p_value": 0.0,
+      "statistic": 57.944859813084115,
+      "p_value": 2.6978419498391304e-14,
       "significant": true,
-      "discordant_pairs": 1045,
+      "discordant_pairs": 1070,
       "simplenn_wrong_only": 660,
-      "graphsage_wrong_only": 385
+      "graphsage_wrong_only": 410
     },
     "cohens_d": 0.0,
     "effect_size_interpretation": "small"
@@ -73,12 +73,12 @@
     },
     "mcnemar": {
       "test": "McNemar's",
-      "statistic": 585.8075750979539,
+      "statistic": 692.9281859692819,
       "p_value": 0.0,
       "significant": true,
-      "discordant_pairs": 2297,
-      "simplenn_wrong_only": 1729,
-      "graphsage_wrong_only": 568
+      "discordant_pairs": 2409,
+      "simplenn_wrong_only": 1851,
+      "graphsage_wrong_only": 558
     },
     "cohens_d": 0.0,
     "effect_size_interpretation": "small"
@@ -94,12 +94,12 @@
     },
     "mcnemar": {
       "test": "McNemar's",
-      "statistic": 955.7402891976184,
+      "statistic": 899.7555985623445,
       "p_value": 0.0,
       "significant": true,
-      "discordant_pairs": 3527,
-      "simplenn_wrong_only": 2682,
-      "graphsage_wrong_only": 845
+      "discordant_pairs": 3617,
+      "simplenn_wrong_only": 2711,
+      "graphsage_wrong_only": 906
     },
     "cohens_d": 0.0,
     "effect_size_interpretation": "small"
@@ -115,12 +115,12 @@
     },
     "mcnemar": {
       "test": "McNemar's",
-      "statistic": 936.2701499531396,
+      "statistic": 779.6408163265306,
       "p_value": 0.0,
       "significant": true,
-      "discordant_pairs": 4268,
-      "simplenn_wrong_only": 3134,
-      "graphsage_wrong_only": 1134
+      "discordant_pairs": 4165,
+      "simplenn_wrong_only": 2984,
+      "graphsage_wrong_only": 1181
     },
     "cohens_d": 0.0,
     "effect_size_interpretation": "small"
@@ -134,7 +134,7 @@
       "effect_size_r": 0.6669061855835571,
       "interpretation": "large"
     },
-    "cohens_d": -0.6681519507163116,
+    "cohens_d": -0.6550725596673955,
     "effect_size_interpretation": "medium"
   }
 }

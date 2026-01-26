@@ -1,5 +1,5 @@
 test_type,statistic,p_value,significant,effect_size_r,cohens_d,interpretation,n_observations
-pooled,36.0,0.0010863237249992383,True,0.6669061855835571,-0.6681519507163116,medium,24
+pooled,36.0,0.0010863237249992383,True,0.6669061855835571,-0.6550725596673955,medium,24
 distance_3,0.0,0.125,False,0.7670602721762732,0.0,small,4
 distance_5,0.0,0.125,False,0.7670602721762732,0.0,small,4
 distance_7,0.0,0.125,False,0.7670602721762732,0.0,small,4
