@@ -20,9 +20,23 @@ import matplotlib.pyplot as plt
 import torch
 import torch.nn.functional as F
 from typing import Optional
-from torch_geometric.data import Data, Batch
-from torch_geometric.nn import MessagePassing, GATConv, GCNConv, SAGEConv, GINEConv
-from torch_geometric.utils import add_self_loops
+try:
+    from torch_geometric.data import Data, Batch
+    from torch_geometric.nn import MessagePassing, GATConv, GCNConv, SAGEConv, GINEConv
+    from torch_geometric.utils import add_self_loops
+    HAS_PYG = True
+except ImportError:
+    HAS_PYG = False
+    print("WARNING: torch_geometric not found. GNN models will not be available.")
+    # Dummy overrides to prevent NameError on class definitions
+    Data = object
+    Batch = object
+    MessagePassing = object
+    GATConv = object
+    GCNConv = object
+    SAGEConv = object
+    GINEConv = object
+    def add_self_loops(*args, **kwargs): return args[0], None
 from datetime import datetime
 from pathlib import Path
 from tqdm import tqdm
@@ -895,47 +909,80 @@ class SimpleNN:
 
 
 # ============================================================
-# DEEPSETS MODEL (variable-size NN baseline)
+# DEEPSETS MODEL (coordinate-based, size-invariant)
 # ============================================================
+
+class FourierFeatures(torch.nn.Module):
+    """
+    Learned or fixed Fourier feature mapping for coordinates.
+    Maps input x to [sin(2*pi*B*x), cos(2*pi*B*x)].
+    Reference: "Fourier Features Let Networks Learn High Frequency Functions in Low Dimensional Domains" (Tancik et al., 2020)
+    """
+    def __init__(self, in_features: int, mapping_size: int, scale: float = 10.0, learnable: bool = False):
+        super().__init__()
+        self.in_features = in_features
+        self.mapping_size = mapping_size
+        # B matrix: [in_features, mapping_size // 2]
+        self.B = torch.nn.Parameter(torch.randn(in_features, mapping_size // 2) * scale, requires_grad=learnable)
+        self.out_dim = mapping_size
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        # x: [..., in_features]
+        # x @ B: [..., mapping_size//2]
+        xp = 2 * np.pi * (x @ self.B)
+        return torch.cat([torch.sin(xp), torch.cos(xp)], dim=-1)
 
 class DeepSetsModel(torch.nn.Module):
     """
-    DeepSets architecture for variable-size detector arrays.
+    DeepSets architecture with coordinate-based features for surface code decoding.
 
-    Architecture: phi (per-element MLP) → pool → rho (classifier MLP)
+    Enhanced Features:
+    - Fourier Feature Encoding: Maps (x,y,t) to high-dim space to resolve (0,0,0) ambiguity
+    - Null Token: Learnable embedding added to aggregation to represent "base state"
+    - Masking: Proper handling of variable-sized inputs
 
-    This model handles variable-size inputs natively through permutation-invariant
-    aggregation, making it suitable for extrapolation across different code distances.
-
-    Reference: Zaheer et al., "Deep Sets" (NeurIPS 2017)
+    Architecture:
+        1. Coordinate Mapping: (x, y, t) -> Fourier Features
+        2. Phi Network: MLP applied to each fired detector
+        3. Aggregation: Sum/Mean pooling + Null Token
+        4. Rho Network: MLP classifier
     """
 
-    def __init__(self, in_features: int = 1, phi_hidden: tuple = (128, 128),
-                 rho_hidden: tuple = (256, 128), pool: str = 'mean', dropout: float = 0.0):
+    def __init__(self, in_features: int = 3, phi_hidden: tuple = (128, 128),
+                 rho_hidden: tuple = (256, 128), pool: str = 'sum', dropout: float = 0.0,
+                 use_fourier_features: bool = True, fourier_dim: int = 64, fourier_scale: float = 5.0):
         """
         Initialize DeepSetsModel.
 
         Args:
-            in_features: Number of input features per detector (typically 1)
-            phi_hidden: Tuple of hidden layer dimensions for phi network (per-detector encoder)
-            rho_hidden: Tuple of hidden layer dimensions for rho network (post-pool classifier)
-            pool: Aggregation method - 'mean' or 'sum'
-            dropout: Dropout probability between layers (0.0 = no dropout)
+            in_features: Input dimension (3 for x,y,t)
+            phi_hidden: Phi MLP hidden dims
+            rho_hidden: Rho MLP hidden dims
+            pool: 'sum' or 'mean'
+            dropout: Dropout rate
+            use_fourier_features: Whether to use Fourier encoding
+            fourier_dim: Output dimension of Fourier features
+            fourier_scale: Scale factor for Gaussian random projection
         """
         super().__init__()
-        self.in_features = in_features
-        self.phi_hidden = phi_hidden
-        self.rho_hidden = rho_hidden
         self.pool_type = pool
-        self.dropout = dropout
+        self.use_fourier_features = use_fourier_features
 
-        # Phi network: per-detector MLP (shared weights across all detectors)
+        # Fourier Features
+        if use_fourier_features:
+            self.fourier = FourierFeatures(in_features, fourier_dim, scale=fourier_scale)
+            phi_in_dim = fourier_dim
+        else:
+            phi_in_dim = in_features
+
+        # Phi Network
         phi_layers = []
-        prev_dim = in_features
+        prev_dim = phi_in_dim
         for h in phi_hidden:
             phi_layers.extend([
                 torch.nn.Linear(prev_dim, h),
-                torch.nn.ReLU(),
+                torch.nn.LayerNorm(h),
+                torch.nn.SiLU(),
             ])
             if dropout > 0:
                 phi_layers.append(torch.nn.Dropout(dropout))
@@ -943,13 +990,19 @@ class DeepSetsModel(torch.nn.Module):
         self.phi = torch.nn.Sequential(*phi_layers)
         self.phi_out_dim = prev_dim
 
-        # Rho network: classifier after aggregation
+        # Null Token (Learnable "bias" for aggregation)
+        # Added to the pooled vector. Helps stabilize training for empty syndromes and
+        # provides a learnable "default" state.
+        self.null_token = torch.nn.Parameter(torch.zeros(1, prev_dim))
+
+        # Rho Network
         rho_layers = []
         prev_dim = self.phi_out_dim
         for h in rho_hidden:
             rho_layers.extend([
                 torch.nn.Linear(prev_dim, h),
-                torch.nn.ReLU(),
+                torch.nn.LayerNorm(h),
+                torch.nn.SiLU(),
             ])
             if dropout > 0:
                 rho_layers.append(torch.nn.Dropout(dropout))
@@ -958,84 +1011,99 @@ class DeepSetsModel(torch.nn.Module):
         rho_layers.append(torch.nn.Sigmoid())
         self.rho = torch.nn.Sequential(*rho_layers)
 
-    def forward(self, x: torch.Tensor, mask: torch.Tensor = None) -> torch.Tensor:
-        """
-        Forward pass with optional masking for padded batches.
+        self._init_weights()
 
+    def _init_weights(self):
+        """Kaiming initialization."""
+        for m in self.modules():
+            if isinstance(m, torch.nn.Linear):
+                torch.nn.init.kaiming_normal_(m.weight, nonlinearity='relu')
+                if m.bias is not None:
+                    torch.nn.init.zeros_(m.bias)
+        # Initialize null token with small random values
+        torch.nn.init.normal_(self.null_token, std=0.01)
+
+    def forward(self, coords: torch.Tensor, counts: torch.Tensor = None) -> torch.Tensor:
+        """
         Args:
-            x: [batch, N, in_features] detector values (N = num_detectors, varies by distance)
-            mask: [batch, N] boolean mask for valid detectors (True = valid, False = padding)
-
-        Returns:
-            [batch, 1] probability of logical error
+            coords: [batch, max_fired, 3] coordinates
+            counts: [batch] valid counts
         """
-        # Apply phi to each detector independently
-        h = self.phi(x)  # [batch, N, phi_out_dim]
-
-        # Masked pooling
-        if mask is not None:
-            mask_expanded = mask.unsqueeze(-1)  # [batch, N, 1]
-            h = h * mask_expanded  # Zero out padded positions
-            if self.pool_type == 'mean':
-                # Mean over valid elements only
-                h = h.sum(dim=1) / mask_expanded.sum(dim=1).clamp(min=1)
-            else:  # sum
-                h = h.sum(dim=1)
+        # 1. Feature Encoding
+        if self.use_fourier_features:
+            x = self.fourier(coords)  # [batch, max, fourier_dim]
         else:
-            if self.pool_type == 'mean':
-                h = h.mean(dim=1)
-            else:
-                h = h.sum(dim=1)
+            x = coords
 
-        # Apply rho classifier
-        return self.rho(h)
+        # 2. Phi Network
+        h = self.phi(x)  # [batch, max, phi_dim]
+
+        # 3. Masking & Aggregation
+        if counts is not None:
+            batch_size, max_fired, _ = coords.shape
+            mask = torch.arange(max_fired, device=coords.device).unsqueeze(0) < counts.unsqueeze(1)
+            mask_expanded = mask.unsqueeze(-1).float()
+
+            h = h * mask_expanded  # Zero out padded items
+
+            if self.pool_type == 'mean':
+                # Avoid division by zero
+                denom = counts.unsqueeze(-1).float().clamp(min=1.0)
+                pooled = h.sum(dim=1) / denom
+                # If count is 0, pooled is 0 (correct, as h is zeroed)
+            else:
+                pooled = h.sum(dim=1)
+        else:
+            pooled = h.sum(dim=1) if self.pool_type == 'sum' else h.mean(dim=1)
+
+        # 4. Add Null Token
+        # This provides a bias that the network can rely on, especially when pooled is 0 (empty syndrome)
+        # Broadcasting adds [1, dim] to [batch, dim]
+        pooled = pooled + self.null_token
+
+        # 5. Rho Network
+        return self.rho(pooled)
 
 
 class DeepSets:
     """
-    DeepSets wrapper class with model lifecycle management.
+    DeepSets wrapper with coordinate-based feature extraction for surface code decoding.
 
-    Provides init, train, save, and load functionality with human-readable model tracking.
-    This decoder handles variable-size syndrome arrays natively through permutation-invariant
-    aggregation, making it suitable for training on mixed distances and extrapolating to larger ones.
+    This decoder converts dense syndrome arrays into (x, y, t) coordinate representations
+    of fired detectors, enabling size-invariant training and extrapolation across code distances.
+
+    Key Features:
+        - Coordinate caching: Computes detector coordinates once per distance
+        - Variable-size handling: Works with any code distance without retraining
+        - Extrapolation: Models trained on d=3,5,7 can predict on d=9,11
 
     Attributes:
         nickname: Human-readable name for this model instance
         model: The underlying DeepSetsModel
         device: Torch device (cuda/cpu)
-        models_dir: Directory for saving/loading models
-        _loaded_from: Path of the loaded model (None if freshly initialized)
+        coord_cache: Cached detector coordinates per distance {d: tensor}
     """
 
     def __init__(self,
                  nickname: str = "deepsets",
                  phi_hidden: tuple = (128, 128),
                  rho_hidden: tuple = (256, 128),
-                 pool: str = 'mean',
+                 pool: str = 'sum',
                  dropout: float = 0.0,
+                 use_fourier_features: bool = True,
+                 fourier_dim: int = 64,
                  device: torch.device = None,
                  base_path: Path = None,
                  seed: int = 42):
-        """
-        Initialize a new DeepSets model.
-
-        Args:
-            nickname: Human-readable name for this model
-            phi_hidden: Tuple of hidden layer dimensions for phi network
-            rho_hidden: Tuple of hidden layer dimensions for rho network
-            pool: Aggregation method - 'mean' or 'sum'
-            dropout: Dropout probability between layers
-            device: Torch device (defaults to CUDA if available)
-            base_path: Base path for model storage (defaults to current directory)
-            seed: Random seed for reproducibility
-        """
+        """Initialize DeepSets with optional Fourier Features."""
         self.nickname = nickname
         self.device = device if device else torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self._loaded_from = None
+        self.base_path = base_path or Path(".")
 
-        # Set models directory
-        self.models_dir = (base_path or Path(".")) / "models" / "deepsets"
+        self.models_dir = self.base_path / "models" / "deepsets"
         self.models_dir.mkdir(parents=True, exist_ok=True)
+        self.coord_cache = {}
 
         # Store config for saving/loading
         self._config = {
@@ -1043,6 +1111,8 @@ class DeepSets:
             'rho_hidden': rho_hidden,
             'pool': pool,
             'dropout': dropout,
+            'use_fourier_features': use_fourier_features,
+            'fourier_dim': fourier_dim,
             'seed': seed
         }
 
@@ -1055,36 +1125,147 @@ class DeepSets:
             if torch.cuda.is_available():
                 torch.cuda.manual_seed_all(seed)
 
-        # Initialize model
+        # Initialize model with 3 input features (x, y, t coordinates)
         self.model = DeepSetsModel(
-            in_features=1,
+            in_features=3,
             phi_hidden=phi_hidden,
             rho_hidden=rho_hidden,
             pool=pool,
-            dropout=dropout
+            dropout=dropout,
+            use_fourier_features=use_fourier_features,
+            fourier_dim=fourier_dim
         ).to(self.device)
 
         print(f"DeepSets initialized: {self}")
 
+    def _get_detector_coordinates(self, d: int) -> torch.Tensor:
+        """
+        Get normalized (x, y, t) coordinates for all detectors at distance d.
+
+        Uses stim circuit to extract detector coordinates and caches them.
+
+        Args:
+            d: Code distance
+
+        Returns:
+            Tensor of shape [num_detectors, 3] with normalized (x, y, t) coordinates
+        """
+        if d in self.coord_cache:
+            return self.coord_cache[d]
+
+        # Generate circuit to get detector info
+        circuit = stim.Circuit.generated(
+            "surface_code:rotated_memory_z",
+            rounds=d,
+            distance=d,
+            after_clifford_depolarization=0.001,
+        )
+
+        # Extract detector coordinates
+        num_detectors = circuit.num_detectors
+        coords = np.zeros((num_detectors, 3), dtype=np.float32)
+
+        # Get coordinates from the circuit's detector error model
+        dem = circuit.detector_error_model(decompose_errors=True)
+        for instruction in dem.flattened():
+            if instruction.type == "detector":
+                det_idx = int(instruction.targets_copy()[0].val)
+                if det_idx < num_detectors:
+                    coord_args = instruction.args_copy()
+                    if len(coord_args) >= 3:
+                        coords[det_idx] = coord_args[:3]
+                    elif len(coord_args) >= 2:
+                        coords[det_idx, :2] = coord_args[:2]
+
+        # Normalize coordinates to [0, 1] range for each dimension
+        for dim in range(3):
+            col = coords[:, dim]
+            min_val, max_val = col.min(), col.max()
+            if max_val > min_val:
+                coords[:, dim] = (col - min_val) / (max_val - min_val)
+
+        # Convert to tensor and cache
+        coord_tensor = torch.tensor(coords, dtype=torch.float32, device=self.device)
+        self.coord_cache[d] = coord_tensor
+
+        return coord_tensor
+
+    def _get_num_detectors(self, d: int) -> int:
+        """Get number of detectors for a given code distance."""
+        circuit = stim.Circuit.generated(
+            "surface_code:rotated_memory_z",
+            rounds=d,
+            distance=d,
+            after_clifford_depolarization=0.001,
+        )
+        return circuit.num_detectors
+
+    def _syndromes_to_coords(self, detections: torch.Tensor, d: int) -> tuple:
+        """
+        Convert dense syndrome vectors to coordinate representations.
+
+        Args:
+            detections: [batch, num_detectors] binary syndrome vectors
+            d: Code distance (used to get coordinate mapping)
+
+        Returns:
+            coords: [batch, max_fired, 3] coordinates of fired detectors
+            counts: [batch] number of fired detectors per sample
+        """
+        batch_size = detections.shape[0]
+        detector_coords = self._get_detector_coordinates(d)  # [num_detectors, 3]
+
+        # Count non-zero entries (handles both 0/1 binary and any non-zero values)
+        fired_mask = detections > 0.5  # Binary threshold
+        fired_counts = fired_mask.sum(dim=1).long()  # [batch]
+        max_fired = max(int(fired_counts.max().item()), 1)  # At least 1 to avoid empty tensor
+
+        if fired_counts.sum() == 0:
+            # No detectors fired - return dummy zeros
+            coords = torch.zeros(batch_size, 1, 3, device=self.device)
+            counts = torch.zeros(batch_size, dtype=torch.long, device=self.device)
+            return coords, counts
+
+        # VECTORIZED: Use advanced indexing to avoid Python for-loop
+        # Get all (batch_idx, detector_idx) pairs where detectors fired
+        batch_indices, detector_indices = fired_mask.nonzero(as_tuple=True)
+
+        # Get coordinates for all fired detectors
+        fired_coords = detector_coords[detector_indices]  # [total_fired, 3]
+
+        # Compute position within each sample's fired list
+        # cumsum gives cumulative count, subtract 1 for 0-indexed position
+        cumsum = torch.zeros(batch_size + 1, dtype=torch.long, device=self.device)
+        cumsum[1:] = fired_counts.cumsum(dim=0)
+        positions = torch.arange(len(batch_indices), device=self.device) - cumsum[batch_indices]
+
+        # Allocate and scatter
+        coords = torch.zeros(batch_size, max_fired, 3, device=self.device)
+        coords[batch_indices, positions] = fired_coords
+
+        return coords, fired_counts
+
+
     def train_from_data(self,
                         detections: torch.Tensor,
                         labels: torch.Tensor,
-                        masks: torch.Tensor = None,
+                        d: int,
                         epochs: int = 10,
                         batch_size: int = 64,
                         lr: float = 1e-3,
+                        max_grad_norm: float = 1.0,
                         verbose: bool = True) -> list:
         """
-        Train the model on syndrome data.
+        Train the model on syndrome data for a SINGLE distance.
 
         Args:
-            detections: Tensor of shape [N, num_detectors] - syndrome measurements
-                       For mixed distances, pad to max and provide masks
+            detections: Tensor of shape [N, num_detectors] - binary syndrome measurements
             labels: Tensor of shape [N] - logical error labels (0 or 1)
-            masks: Optional tensor of shape [N, num_detectors] - True for valid detectors
+            d: Code distance (required for coordinate mapping)
             epochs: Number of training epochs
             batch_size: Batch size for training
             lr: Learning rate
+            max_grad_norm: Gradient clipping threshold
             verbose: Print training progress
 
         Returns:
@@ -1093,18 +1274,18 @@ class DeepSets:
         num_samples = len(labels)
 
         if verbose:
-            print(f"\n{'='*50}")
+            print(f"\n{'='*60}")
             print(f"Training: {self}")
-            print(f"{'='*50}")
+            print(f"{'='*60}")
+            print(f"Distance: d={d} | Samples: {num_samples}")
             print(f"Epochs: {epochs} | Batch size: {batch_size} | LR: {lr}")
-            print(f"Training samples: {num_samples}")
-            print(f"Input shape: {detections.shape}")
 
         # Move data to device
-        detections = detections.to(self.device)
-        labels = labels.to(self.device)
-        if masks is not None:
-            masks = masks.to(self.device)
+        detections = detections.float().to(self.device)
+        labels = labels.float().to(self.device)
+
+        # Pre-compute coordinate cache
+        _ = self._get_detector_coordinates(d)
 
         # Setup training
         self.model.train()
@@ -1112,7 +1293,6 @@ class DeepSets:
         criterion = torch.nn.BCELoss()
 
         epoch_losses = []
-        num_batches = (num_samples + batch_size - 1) // batch_size
 
         for epoch in range(epochs):
             perm = torch.randperm(num_samples, device=self.device)
@@ -1122,30 +1302,36 @@ class DeepSets:
 
             pbar = tqdm(range(0, num_samples, batch_size),
                        desc=f"Epoch {epoch+1}/{epochs}",
-                       disable=not verbose)
+                       disable=not verbose,
+                       leave=False)
 
             for i in pbar:
                 idx = perm[i:i+batch_size]
-                X = detections[idx].unsqueeze(-1)  # [batch, N, 1]
-                y = labels[idx].unsqueeze(-1).float()
-                batch_mask = masks[idx] if masks is not None else None
+                batch_det = detections[idx]
+                batch_labels = labels[idx].unsqueeze(-1)
+
+                # Convert to coordinates
+                coords, counts = self._syndromes_to_coords(batch_det, d)
 
                 optimizer.zero_grad()
-                pred = self.model(X, batch_mask)
-                loss = criterion(pred, y)
+                pred = self.model(coords, counts)
+                loss = criterion(pred, batch_labels)
                 loss.backward()
+
+                if max_grad_norm is not None:
+                    torch.nn.utils.clip_grad_norm_(self.model.parameters(), max_grad_norm)
+
                 optimizer.step()
 
                 # Track metrics
                 total_loss += loss.item()
                 n_batches += 1
-                acc = ((pred > 0.5).float() == y).float().mean().item()
+                acc = ((pred > 0.5).float() == batch_labels).float().mean().item()
                 running_acc = acc * 0.1 + running_acc * 0.9 if running_acc else acc
 
-                if i % (batch_size * 10) == 0:
-                    pbar.set_postfix({'loss': f'{loss.item():.4f}', 'acc': f'{running_acc:.4f}'})
+                pbar.set_postfix({'loss': f'{loss.item():.4f}', 'acc': f'{running_acc:.4f}'})
 
-            avg_loss = total_loss / n_batches
+            avg_loss = total_loss / max(n_batches, 1)
             epoch_losses.append(avg_loss)
 
             if verbose:
@@ -1156,32 +1342,29 @@ class DeepSets:
 
         return epoch_losses
 
-    def predict(self, detections: torch.Tensor, mask: torch.Tensor = None) -> torch.Tensor:
+    def predict(self, detections: torch.Tensor, d: int) -> torch.Tensor:
         """
         Run inference on syndrome data.
 
         Args:
             detections: Tensor of shape [batch_size, num_detectors] or [num_detectors]
-            mask: Optional tensor of shape [batch_size, num_detectors] for valid detectors
+            d: Code distance (required for coordinate mapping)
 
         Returns:
             Predictions of shape [batch_size] (probabilities)
         """
         self.model.eval()
         with torch.no_grad():
-            detections = detections.to(self.device)
+            detections = detections.float().to(self.device)
             if detections.dim() == 1:
                 detections = detections.unsqueeze(0)
-            if mask is not None:
-                mask = mask.to(self.device)
-                if mask.dim() == 1:
-                    mask = mask.unsqueeze(0)
-            X = detections.unsqueeze(-1)  # [batch, N, 1]
-            return self.model(X, mask).squeeze(-1)
+
+            coords, counts = self._syndromes_to_coords(detections, d)
+            return self.model(coords, counts).squeeze(-1)
 
     def save(self, name: str) -> Path:
         """
-        Save the model with a human-readable timestamp.
+        Save the model.
 
         Args:
             name: Base name for the saved model
@@ -1211,7 +1394,7 @@ class DeepSets:
         Load a saved model from disk.
 
         Args:
-            filepath: Path to saved model file (relative to models/deepsets or absolute)
+            filepath: Path to saved model file
 
         Returns:
             self (for chaining)
@@ -1228,7 +1411,7 @@ class DeepSets:
         config = save_dict['config']
         self._config = config
         self.model = DeepSetsModel(
-            in_features=1,
+            in_features=3,
             phi_hidden=config['phi_hidden'],
             rho_hidden=config['rho_hidden'],
             pool=config['pool'],
@@ -1245,13 +1428,43 @@ class DeepSets:
         print(f"Model loaded: {self}")
         return self
 
+    def check_coordinates(self, d: int):
+        """
+        Verify coordinate extraction for a given distance.
+        Prints statistics about the coordinates to check for validity and ambiguity.
+        """
+        print(f"\nChecking coordinates for d={d}...")
+        coords = self._get_detector_coordinates(d) # [num_detectors, 3]
+
+        print(f"  Num detectors: {len(coords)}")
+        print(f"  Shape: {coords.shape}")
+
+        # Check range
+        min_vals = coords.min(dim=0)[0]
+        max_vals = coords.max(dim=0)[0]
+        print(f"  Range X: [{min_vals[0]:.4f}, {max_vals[0]:.4f}]")
+        print(f"  Range Y: [{min_vals[1]:.4f}, {max_vals[1]:.4f}]")
+        print(f"  Range T: [{min_vals[2]:.4f}, {max_vals[2]:.4f}]")
+
+        # Check for (0,0,0)
+        zeros = (coords.abs().sum(dim=1) < 1e-6)
+        num_zeros = zeros.sum().item()
+        if num_zeros > 0:
+            print(f"  WARNING: {num_zeros} detectors have (0,0,0) coordinates!")
+            print(f"  Indices: {zeros.nonzero(as_tuple=True)[0].tolist()}")
+        else:
+            print(f"  OK: No detectors at exactly (0,0,0).")
+
+        return coords
+
     def __repr__(self) -> str:
         loaded_info = f", loaded_from='{self._loaded_from}'" if self._loaded_from else ""
         return (f"DeepSets(nickname='{self.nickname}', "
                 f"phi_hidden={self._config['phi_hidden']}, "
                 f"rho_hidden={self._config['rho_hidden']}, "
                 f"pool='{self._config['pool']}', "
-                f"dropout={self._config['dropout']}"
+                f"dropout={self._config['dropout']}, "
+                f"fourier={self._config['use_fourier_features']}"
                 f"{loaded_info})")
 
 
