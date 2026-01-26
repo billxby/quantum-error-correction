@@ -1,0 +1,22 @@
+{
+  "test_distances": [
+    9,
+    11,
+    13
+  ],
+  "p_values": [
+    0.001,
+    0.002,
+    0.003,
+    0.004,
+    0.005,
+    0.006,
+    0.007,
+    0.008
+  ],
+  "samples_per_p": 10000,
+  "n_models_evaluated": 15,
+  "best_overall_split": "c1_only_d3",
+  "best_overall_accuracy": 0.5793125,
+  "timestamp": "2026-01-26T09:58:40.945432"
+}

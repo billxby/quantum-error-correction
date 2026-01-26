@@ -1,6 +1,7 @@
 requirements.txt
 /code/datasets/
 /code/nn_datasets/
+/code/deepsets/extrapolation/cache/
 
 # Windows
 desktop.ini
