@@ -1,62 +1,62 @@
 ================================================================================
 NEURAL NETWORK vs GRAPH NEURAL NETWORK COMPARISON REPORT
 ================================================================================
-Generated: 2026-01-22 19:34:04
+Generated: 2026-01-25 22:27:20
 
 OVERALL STATISTICAL ANALYSIS
 --------------------------------------------------------------------------------
 Wilcoxon Signed-Rank Test:
-  Statistic: 26.0000
-  p-value: 0.000380
+  Statistic: 36.0000
+  p-value: 0.001086
   Significant (α=0.05): YES
-  Effect Size (Cohen's d): -0.6697 (medium)
+  Effect Size (Cohen's d): -0.6682 (medium)
 
 PER-DISTANCE SUMMARY
 --------------------------------------------------------------------------------
 Distance d=3:
-  SimpleNN: 0.9878 ± 0.0000
-  GraphSAGE: 0.9881 ± 0.0000
-  Difference: +0.0003
+  SimpleNN: 0.9858 ± 0.0000
+  GraphSAGE: 0.9854 ± 0.0000
+  Difference: -0.0004
   p-value: 0.125000 (not significant)
   Effect size: 0.0000
 
 Distance d=5:
-  SimpleNN: 0.9721 ± 0.0000
-  GraphSAGE: 0.9664 ± 0.0000
-  Difference: -0.0057
+  SimpleNN: 0.9761 ± 0.0000
+  GraphSAGE: 0.9685 ± 0.0000
+  Difference: -0.0076
   p-value: 0.125000 (not significant)
   Effect size: 0.0000
 
 Distance d=7:
-  SimpleNN: 0.8981 ± 0.0000
-  GraphSAGE: 0.9222 ± 0.0000
-  Difference: +0.0241
+  SimpleNN: 0.8954 ± 0.0000
+  GraphSAGE: 0.9229 ± 0.0000
+  Difference: +0.0275
   p-value: 0.125000 (not significant)
   Effect size: 0.0000
 
 Distance d=9:
-  SimpleNN: 0.7474 ± 0.0000
-  GraphSAGE: 0.8713 ± 0.0000
-  Difference: +0.1239
+  SimpleNN: 0.7562 ± 0.0000
+  GraphSAGE: 0.8723 ± 0.0000
+  Difference: +0.1161
   p-value: 0.125000 (not significant)
   Effect size: 0.0000
 
 Distance d=11:
-  SimpleNN: 0.6358 ± 0.0000
-  GraphSAGE: 0.8226 ± 0.0000
-  Difference: +0.1868
+  SimpleNN: 0.6314 ± 0.0000
+  GraphSAGE: 0.8151 ± 0.0000
+  Difference: +0.1837
   p-value: 0.125000 (not significant)
   Effect size: 0.0000
 
 Distance d=13:
-  SimpleNN: 0.5755 ± 0.0000
-  GraphSAGE: 0.7648 ± 0.0000
-  Difference: +0.1893
+  SimpleNN: 0.5722 ± 0.0000
+  GraphSAGE: 0.7722 ± 0.0000
+  Difference: +0.2000
   p-value: 0.125000 (not significant)
   Effect size: 0.0000
 
 FINAL VERDICT
 --------------------------------------------------------------------------------
-GraphSAGE achieved 0.8892 accuracy (mean ± std) vs SimpleNN's 0.8028 accuracy (mean ± std) across distances d=3 to d=13. The Wilcoxon signed-rank test showed this difference WAS statistically significant (p = 0.000380, effect size = -0.6697). However, SimpleNN achieved 47.60x faster inference throughput (153066 samples/s vs 3216 samples/s). For real-time QEC applications requiring low latency, SimpleNN is recommended based on the Pareto frontier analysis.
+GraphSAGE achieved 0.8894 accuracy (mean ± std) vs SimpleNN's 0.8028 accuracy (mean ± std) across distances d=3 to d=13. The Wilcoxon signed-rank test showed this difference WAS statistically significant (p = 0.001086, effect size = -0.6682). However, SimpleNN achieved 54.00x faster inference throughput (212230 samples/s vs 3930 samples/s). For real-time QEC applications requiring low latency, SimpleNN is recommended based on the Pareto frontier analysis.
 
 ================================================================================
