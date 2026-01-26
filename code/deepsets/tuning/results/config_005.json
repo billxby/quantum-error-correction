@@ -1,0 +1,20 @@
+{
+  "config_id": 5,
+  "config": {
+    "phi_hidden": [
+      64,
+      64
+    ],
+    "rho_hidden": [
+      128
+    ],
+    "pool": "sum",
+    "lr": 0.0005
+  },
+  "val_accuracy": 0.8089,
+  "test_accuracy": 0.80712,
+  "final_loss": 0.34840860345363617,
+  "training_time_seconds": 265.949914932251,
+  "epochs": 10,
+  "timestamp": "2026-01-26T04:47:42.834529"
+}

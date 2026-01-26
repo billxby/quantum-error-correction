@@ -20,7 +20,7 @@ import matplotlib.pyplot as plt
 import torch
 import torch.nn.functional as F
 from torch_geometric.data import Data, Batch
-from torch_geometric.nn import MessagePassing, GATConv, GCNConv, SAGEConv, GINEConv
+from torch_geometric.nn import MessagePassing, GATConv, GCNConv, SAGEConv, GINEConv, global_mean_pool
 from torch_geometric.utils import add_self_loops
 from datetime import datetime
 from pathlib import Path
@@ -1164,13 +1164,8 @@ class GCNModel(torch.nn.Module):
             x = bn(x)
             x = F.silu(x)
 
-        # Global mean pooling: aggregate node features to graph-level
-        batch_size = int(data.num_graphs) if hasattr(data, 'num_graphs') else int(batch.max().item()) + 1
-        x_pooled = torch.zeros(batch_size, x.size(1), device=x.device)
-        for i in range(batch_size):
-            mask = (batch == i)
-            if mask.sum() > 0:
-                x_pooled[i] = x[mask].mean(dim=0)
+        # Global mean pooling: aggregate node features to graph-level (optimized)
+        x_pooled = global_mean_pool(x, batch)
 
         # Classification layers
         x = self.fc1(x_pooled)
@@ -1499,13 +1494,8 @@ class GATModel(torch.nn.Module):
             x = bn(x)
             x = F.silu(x)
 
-        # Global mean pooling: aggregate node features to graph-level
-        batch_size = int(data.num_graphs) if hasattr(data, 'num_graphs') else int(batch.max().item()) + 1
-        x_pooled = torch.zeros(batch_size, x.size(1), device=x.device)
-        for i in range(batch_size):
-            mask = (batch == i)
-            if mask.sum() > 0:
-                x_pooled[i] = x[mask].mean(dim=0)
+        # Global mean pooling: aggregate node features to graph-level (optimized)
+        x_pooled = global_mean_pool(x, batch)
 
         # Classification layers
         x = self.fc1(x_pooled)
@@ -2039,13 +2029,8 @@ class GraphSAGEModel(torch.nn.Module):
             x = F.silu(x)
             x = self.dropout(x)
 
-        # Global mean pooling: aggregate node features to graph-level
-        batch_size = int(data.num_graphs) if hasattr(data, 'num_graphs') else int(batch.max().item()) + 1
-        x_pooled = torch.zeros(batch_size, x.size(1), device=x.device)
-        for i in range(batch_size):
-            mask = (batch == i)
-            if mask.sum() > 0:
-                x_pooled[i] = x[mask].mean(dim=0)
+        # Global mean pooling: aggregate node features to graph-level (optimized)
+        x_pooled = global_mean_pool(x, batch)
 
         # Classification layers
         x = self.fc1(x_pooled)
@@ -2403,13 +2388,8 @@ class GINModel(torch.nn.Module):
             x = bn(x)
             x = F.silu(x)
 
-        # Global mean pooling: aggregate node features to graph-level
-        batch_size = int(data.num_graphs) if hasattr(data, 'num_graphs') else int(batch.max().item()) + 1
-        x_pooled = torch.zeros(batch_size, x.size(1), device=x.device)
-        for i in range(batch_size):
-            mask = (batch == i)
-            if mask.sum() > 0:
-                x_pooled[i] = x[mask].mean(dim=0)
+        # Global mean pooling: aggregate node features to graph-level (optimized)
+        x_pooled = global_mean_pool(x, batch)
 
         # Classification layers
         x = self.fc1(x_pooled)
