@@ -1176,12 +1176,13 @@ class DeepSets:
         batch_size = detections.shape[0]
         detector_coords = self._get_detector_coordinates(d)  # [num_detectors, 3]
 
-        # Find max number of fired detectors across batch for padding
-        fired_counts = detections.sum(dim=1).long()  # [batch]
-        max_fired = fired_counts.max().item()
+        # Count non-zero entries (handles both 0/1 binary and any non-zero values)
+        fired_mask = detections > 0.5  # Binary threshold
+        fired_counts = fired_mask.sum(dim=1).long()  # [batch]
+        max_fired = max(int(fired_counts.max().item()), 1)  # At least 1 to avoid empty tensor
 
-        if max_fired == 0:
-            # No detectors fired - return zeros
+        if fired_counts.sum() == 0:
+            # No detectors fired - return dummy zeros
             coords = torch.zeros(batch_size, 1, 3, device=self.device)
             counts = torch.zeros(batch_size, dtype=torch.long, device=self.device)
             return coords, counts
@@ -1191,12 +1192,13 @@ class DeepSets:
 
         # Fill in coordinates for each sample
         for i in range(batch_size):
-            fired_indices = detections[i].nonzero(as_tuple=True)[0]
+            fired_indices = fired_mask[i].nonzero(as_tuple=True)[0]
             n_fired = len(fired_indices)
             if n_fired > 0:
                 coords[i, :n_fired] = detector_coords[fired_indices]
 
         return coords, fired_counts
+
 
     def train_from_data(self,
                         detections: torch.Tensor,
