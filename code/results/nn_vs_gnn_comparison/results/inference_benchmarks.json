@@ -2,540 +2,540 @@
   "3": {
     "simplenn": {
       "1": {
-        "throughput_samples_per_sec": 3716.5381848392713,
-        "latency_per_sample_us": 269.0675973892212,
-        "mean_time_seconds": 2.690675973892212,
-        "std_time_seconds": 0.08475265529309572
+        "throughput_samples_per_sec": 781.1134483263284,
+        "latency_per_sample_us": 1280.2237653732302,
+        "mean_time_seconds": 12.8022376537323,
+        "std_time_seconds": 1.7017160707950378
       },
       "8": {
-        "throughput_samples_per_sec": 31850.167744208688,
-        "latency_per_sample_us": 31.397008895874027,
-        "mean_time_seconds": 0.31397008895874023,
-        "std_time_seconds": 0.019168253763497307
+        "throughput_samples_per_sec": 8086.63524919742,
+        "latency_per_sample_us": 123.66082668304443,
+        "mean_time_seconds": 1.2366082668304443,
+        "std_time_seconds": 0.11303799768940939
       },
       "16": {
-        "throughput_samples_per_sec": 59781.23421485021,
-        "latency_per_sample_us": 16.727657318115234,
-        "mean_time_seconds": 0.16727657318115235,
-        "std_time_seconds": 0.016750313038828044
+        "throughput_samples_per_sec": 17808.219294405764,
+        "latency_per_sample_us": 56.15384578704834,
+        "mean_time_seconds": 0.5615384578704834,
+        "std_time_seconds": 0.01256710758276017
       },
       "32": {
-        "throughput_samples_per_sec": 104875.95329182607,
-        "latency_per_sample_us": 9.535074234008789,
-        "mean_time_seconds": 0.09535074234008789,
-        "std_time_seconds": 0.008342502406126225
+        "throughput_samples_per_sec": 33776.883854917774,
+        "latency_per_sample_us": 29.606046676635746,
+        "mean_time_seconds": 0.29606046676635744,
+        "std_time_seconds": 0.01693670588791994
       },
       "64": {
-        "throughput_samples_per_sec": 205146.3848627223,
-        "latency_per_sample_us": 4.874567985534669,
-        "mean_time_seconds": 0.04874567985534668,
-        "std_time_seconds": 0.00406880702644143
+        "throughput_samples_per_sec": 44703.73717045641,
+        "latency_per_sample_us": 22.369494438171387,
+        "mean_time_seconds": 0.22369494438171386,
+        "std_time_seconds": 0.05719028800442
       },
       "128": {
-        "throughput_samples_per_sec": 476464.10647303524,
-        "latency_per_sample_us": 2.0987939834594727,
-        "mean_time_seconds": 0.020987939834594727,
-        "std_time_seconds": 0.0017651783471158374
+        "throughput_samples_per_sec": 119699.77340311985,
+        "latency_per_sample_us": 8.35423469543457,
+        "mean_time_seconds": 0.0835423469543457,
+        "std_time_seconds": 0.001601391478294296
       },
       "256": {
-        "throughput_samples_per_sec": 916210.9972301589,
-        "latency_per_sample_us": 1.091451644897461,
-        "mean_time_seconds": 0.01091451644897461,
-        "std_time_seconds": 0.0007592396792924076
+        "throughput_samples_per_sec": 182922.53613265065,
+        "latency_per_sample_us": 5.466794967651367,
+        "mean_time_seconds": 0.05466794967651367,
+        "std_time_seconds": 0.004565046816688023
       }
     },
     "graphsage": {
       "1": {
-        "throughput_samples_per_sec": 887.8103628543936,
-        "latency_per_sample_us": 1126.3666677474976,
-        "mean_time_seconds": 11.263666677474976,
-        "std_time_seconds": 0.20504840922921433
+        "throughput_samples_per_sec": 294.93571107999,
+        "latency_per_sample_us": 3390.5694103240967,
+        "mean_time_seconds": 33.90569410324097,
+        "std_time_seconds": 0.9481607351880742
       },
       "8": {
-        "throughput_samples_per_sec": 3863.456870863596,
-        "latency_per_sample_us": 258.8355541229248,
-        "mean_time_seconds": 2.588355541229248,
-        "std_time_seconds": 0.08957275164694756
+        "throughput_samples_per_sec": 1362.0652988478114,
+        "latency_per_sample_us": 734.1791915893555,
+        "mean_time_seconds": 7.3417919158935545,
+        "std_time_seconds": 0.2467013880995058
       },
       "16": {
-        "throughput_samples_per_sec": 7182.810372788239,
-        "latency_per_sample_us": 139.22127246856692,
-        "mean_time_seconds": 1.392212724685669,
-        "std_time_seconds": 0.04929074848996338
+        "throughput_samples_per_sec": 2451.1781335132305,
+        "latency_per_sample_us": 407.96708583831787,
+        "mean_time_seconds": 4.079670858383179,
+        "std_time_seconds": 0.21614631622237185
       },
       "32": {
-        "throughput_samples_per_sec": 13485.908761224822,
-        "latency_per_sample_us": 74.15147304534912,
-        "mean_time_seconds": 0.7415147304534913,
-        "std_time_seconds": 0.007974192642236819
+        "throughput_samples_per_sec": 4869.38750888535,
+        "latency_per_sample_us": 205.3646373748779,
+        "mean_time_seconds": 2.053646373748779,
+        "std_time_seconds": 0.0504106586493475
       },
       "64": {
-        "throughput_samples_per_sec": 22623.09165884391,
-        "latency_per_sample_us": 44.20262336730957,
-        "mean_time_seconds": 0.4420262336730957,
-        "std_time_seconds": 0.012388287576600342
+        "throughput_samples_per_sec": 7439.972518442575,
+        "latency_per_sample_us": 134.4090986251831,
+        "mean_time_seconds": 1.344090986251831,
+        "std_time_seconds": 0.11244765811412097
       },
       "128": {
-        "throughput_samples_per_sec": 34965.901963183926,
-        "latency_per_sample_us": 28.599290847778317,
-        "mean_time_seconds": 0.2859929084777832,
-        "std_time_seconds": 0.007232666256747161
+        "throughput_samples_per_sec": 12031.603244958424,
+        "latency_per_sample_us": 83.11444282531738,
+        "mean_time_seconds": 0.8311444282531738,
+        "std_time_seconds": 0.020854349503740113
       },
       "256": {
-        "throughput_samples_per_sec": 52333.80106761202,
-        "latency_per_sample_us": 19.10810947418213,
-        "mean_time_seconds": 0.19108109474182128,
-        "std_time_seconds": 0.005054688789639054
+        "throughput_samples_per_sec": 16995.12477058852,
+        "latency_per_sample_us": 58.84040355682372,
+        "mean_time_seconds": 0.5884040355682373,
+        "std_time_seconds": 0.014370904724611637
       }
     }
   },
   "5": {
     "simplenn": {
       "1": {
-        "throughput_samples_per_sec": 3843.07126696418,
-        "latency_per_sample_us": 260.2085494995117,
-        "mean_time_seconds": 2.602085494995117,
-        "std_time_seconds": 0.05585576150397242
+        "throughput_samples_per_sec": 1043.219770651052,
+        "latency_per_sample_us": 958.5707902908325,
+        "mean_time_seconds": 9.585707902908325,
+        "std_time_seconds": 2.147891016260001
       },
       "8": {
-        "throughput_samples_per_sec": 33237.03164262558,
-        "latency_per_sample_us": 30.086922645568848,
-        "mean_time_seconds": 0.3008692264556885,
-        "std_time_seconds": 0.007561825214679381
+        "throughput_samples_per_sec": 8265.384344045237,
+        "latency_per_sample_us": 120.98650932312012,
+        "mean_time_seconds": 1.2098650932312012,
+        "std_time_seconds": 0.21530495404111719
       },
       "16": {
-        "throughput_samples_per_sec": 52343.3625464835,
-        "latency_per_sample_us": 19.104619026184086,
-        "mean_time_seconds": 0.19104619026184083,
-        "std_time_seconds": 0.03718047468722952
+        "throughput_samples_per_sec": 20930.50667217587,
+        "latency_per_sample_us": 47.7771520614624,
+        "mean_time_seconds": 0.477771520614624,
+        "std_time_seconds": 0.028409655192175406
       },
       "32": {
-        "throughput_samples_per_sec": 113964.68926630427,
-        "latency_per_sample_us": 8.774647712707521,
-        "mean_time_seconds": 0.0877464771270752,
-        "std_time_seconds": 0.005257857141743053
+        "throughput_samples_per_sec": 42054.11332411164,
+        "latency_per_sample_us": 23.77888679504395,
+        "mean_time_seconds": 0.23778886795043946,
+        "std_time_seconds": 0.006809072164325965
       },
       "64": {
-        "throughput_samples_per_sec": 219393.52600623923,
-        "latency_per_sample_us": 4.558019638061524,
-        "mean_time_seconds": 0.04558019638061524,
-        "std_time_seconds": 0.0012183286569435463
+        "throughput_samples_per_sec": 72150.63492773418,
+        "latency_per_sample_us": 13.859891891479492,
+        "mean_time_seconds": 0.13859891891479492,
+        "std_time_seconds": 0.002896980895230454
       },
       "128": {
-        "throughput_samples_per_sec": 508823.5793641744,
-        "latency_per_sample_us": 1.9653177261352535,
-        "mean_time_seconds": 0.019653177261352538,
-        "std_time_seconds": 0.0005332104017045318
+        "throughput_samples_per_sec": 140188.5489564832,
+        "latency_per_sample_us": 7.1332502365112305,
+        "mean_time_seconds": 0.07133250236511231,
+        "std_time_seconds": 0.0008732368676047731
       },
       "256": {
-        "throughput_samples_per_sec": 747437.2636583636,
-        "latency_per_sample_us": 1.337904930114746,
-        "mean_time_seconds": 0.013379049301147462,
-        "std_time_seconds": 0.0020491348645339767
+        "throughput_samples_per_sec": 227883.43471618238,
+        "latency_per_sample_us": 4.388208389282226,
+        "mean_time_seconds": 0.04388208389282226,
+        "std_time_seconds": 0.0016686963966836916
       }
     },
     "graphsage": {
       "1": {
-        "throughput_samples_per_sec": 568.3403904603026,
-        "latency_per_sample_us": 1759.5089435577393,
-        "mean_time_seconds": 17.595089435577393,
-        "std_time_seconds": 0.10016938361505635
+        "throughput_samples_per_sec": 232.66838938557245,
+        "latency_per_sample_us": 4297.962446212769,
+        "mean_time_seconds": 42.97962446212769,
+        "std_time_seconds": 2.1104499642043844
       },
       "8": {
-        "throughput_samples_per_sec": 3706.0117509344764,
-        "latency_per_sample_us": 269.83184814453125,
-        "mean_time_seconds": 2.6983184814453125,
-        "std_time_seconds": 0.08277674647838616
+        "throughput_samples_per_sec": 1674.014194244291,
+        "latency_per_sample_us": 597.3664999008179,
+        "mean_time_seconds": 5.973664999008179,
+        "std_time_seconds": 0.11480732175769255
       },
       "16": {
-        "throughput_samples_per_sec": 7135.059645387721,
-        "latency_per_sample_us": 140.15299797058105,
-        "mean_time_seconds": 1.4015299797058105,
-        "std_time_seconds": 0.03856423515200739
+        "throughput_samples_per_sec": 3140.1517812698567,
+        "latency_per_sample_us": 318.45594406127935,
+        "mean_time_seconds": 3.184559440612793,
+        "std_time_seconds": 0.10438773685115912
       },
       "32": {
-        "throughput_samples_per_sec": 13197.547108115381,
-        "latency_per_sample_us": 75.77165603637695,
-        "mean_time_seconds": 0.7577165603637696,
-        "std_time_seconds": 0.008686140043981497
+        "throughput_samples_per_sec": 5729.403937386115,
+        "latency_per_sample_us": 174.5382261276245,
+        "mean_time_seconds": 1.745382261276245,
+        "std_time_seconds": 0.017987944709460413
       },
       "64": {
-        "throughput_samples_per_sec": 22419.357632003244,
-        "latency_per_sample_us": 44.60431098937988,
-        "mean_time_seconds": 0.4460431098937988,
-        "std_time_seconds": 0.012530184581196376
+        "throughput_samples_per_sec": 9465.433586539026,
+        "latency_per_sample_us": 105.64756393432617,
+        "mean_time_seconds": 1.0564756393432617,
+        "std_time_seconds": 0.008396966403464991
       },
       "128": {
-        "throughput_samples_per_sec": 33844.9571118481,
-        "latency_per_sample_us": 29.546499252319336,
-        "mean_time_seconds": 0.29546499252319336,
-        "std_time_seconds": 0.022708871661755805
+        "throughput_samples_per_sec": 14189.876010312591,
+        "latency_per_sample_us": 70.47277927398682,
+        "mean_time_seconds": 0.7047277927398682,
+        "std_time_seconds": 0.009387829880093505
       },
       "256": {
-        "throughput_samples_per_sec": 50732.31150332869,
-        "latency_per_sample_us": 19.7113037109375,
-        "mean_time_seconds": 0.197113037109375,
-        "std_time_seconds": 0.004580572416291325
+        "throughput_samples_per_sec": 19211.82798516152,
+        "latency_per_sample_us": 52.05126762390137,
+        "mean_time_seconds": 0.5205126762390136,
+        "std_time_seconds": 0.001847003841441704
       }
     }
   },
   "7": {
     "simplenn": {
       "1": {
-        "throughput_samples_per_sec": 3780.613062107978,
-        "latency_per_sample_us": 264.5073652267456,
-        "mean_time_seconds": 2.645073652267456,
-        "std_time_seconds": 0.08678467609026708
+        "throughput_samples_per_sec": 703.1639154011144,
+        "latency_per_sample_us": 1422.1435117721558,
+        "mean_time_seconds": 14.221435117721558,
+        "std_time_seconds": 0.1640314766761973
       },
       "8": {
-        "throughput_samples_per_sec": 33692.20346302472,
-        "latency_per_sample_us": 29.68045711517334,
-        "mean_time_seconds": 0.2968045711517334,
-        "std_time_seconds": 0.004735163613075203
+        "throughput_samples_per_sec": 5624.392226821922,
+        "latency_per_sample_us": 177.79698848724368,
+        "mean_time_seconds": 1.7779698848724366,
+        "std_time_seconds": 0.17888353933628826
       },
       "16": {
-        "throughput_samples_per_sec": 66224.54905361336,
-        "latency_per_sample_us": 15.100140571594238,
-        "mean_time_seconds": 0.1510014057159424,
-        "std_time_seconds": 0.002337748231218898
+        "throughput_samples_per_sec": 10642.409888107002,
+        "latency_per_sample_us": 93.96368026733398,
+        "mean_time_seconds": 0.9396368026733398,
+        "std_time_seconds": 0.007389322090613584
       },
       "32": {
-        "throughput_samples_per_sec": 116030.33500293511,
-        "latency_per_sample_us": 8.618435859680178,
-        "mean_time_seconds": 0.08618435859680176,
-        "std_time_seconds": 0.0012626891101414834
+        "throughput_samples_per_sec": 20283.56241361734,
+        "latency_per_sample_us": 49.30100440979004,
+        "mean_time_seconds": 0.4930100440979004,
+        "std_time_seconds": 0.0033120038922512885
       },
       "64": {
-        "throughput_samples_per_sec": 201879.2566530133,
-        "latency_per_sample_us": 4.953455924987793,
-        "mean_time_seconds": 0.04953455924987793,
-        "std_time_seconds": 0.0022374794605185123
+        "throughput_samples_per_sec": 35443.634424648866,
+        "latency_per_sample_us": 28.213810920715332,
+        "mean_time_seconds": 0.2821381092071533,
+        "std_time_seconds": 0.0026024580717163228
       },
       "128": {
-        "throughput_samples_per_sec": 420352.6537222666,
-        "latency_per_sample_us": 2.378954887390137,
-        "mean_time_seconds": 0.02378954887390137,
-        "std_time_seconds": 0.0011897547355570893
+        "throughput_samples_per_sec": 77805.05477308875,
+        "latency_per_sample_us": 12.852635383605957,
+        "mean_time_seconds": 0.12852635383605956,
+        "std_time_seconds": 0.0056710513850488295
       },
       "256": {
-        "throughput_samples_per_sec": 794309.5651119982,
-        "latency_per_sample_us": 1.258955001831055,
-        "mean_time_seconds": 0.012589550018310547,
-        "std_time_seconds": 0.0009480186200284215
+        "throughput_samples_per_sec": 112842.32275838319,
+        "latency_per_sample_us": 8.861923217773438,
+        "mean_time_seconds": 0.08861923217773438,
+        "std_time_seconds": 0.0023126190368682664
       }
     },
     "graphsage": {
       "1": {
-        "throughput_samples_per_sec": 505.71033512099314,
-        "latency_per_sample_us": 1977.4165773391721,
-        "mean_time_seconds": 19.774165773391722,
-        "std_time_seconds": 0.3157723019548477
+        "throughput_samples_per_sec": 229.57712864829472,
+        "latency_per_sample_us": 4355.834598541261,
+        "mean_time_seconds": 43.5583459854126,
+        "std_time_seconds": 0.32224264882215325
       },
       "8": {
-        "throughput_samples_per_sec": 3658.0871059804467,
-        "latency_per_sample_us": 273.3669185638428,
-        "mean_time_seconds": 2.7336691856384276,
-        "std_time_seconds": 0.05806181703013805
+        "throughput_samples_per_sec": 1680.4180660454992,
+        "latency_per_sample_us": 595.0900077819824,
+        "mean_time_seconds": 5.950900077819824,
+        "std_time_seconds": 0.0804409965545675
       },
       "16": {
-        "throughput_samples_per_sec": 7020.200711636748,
-        "latency_per_sample_us": 142.44606971740723,
-        "mean_time_seconds": 1.4244606971740723,
-        "std_time_seconds": 0.044351314994498466
+        "throughput_samples_per_sec": 3162.700680643182,
+        "latency_per_sample_us": 316.1854696273804,
+        "mean_time_seconds": 3.161854696273804,
+        "std_time_seconds": 0.023273648215369883
       },
       "32": {
-        "throughput_samples_per_sec": 12996.860714056633,
-        "latency_per_sample_us": 76.94165706634521,
-        "mean_time_seconds": 0.7694165706634521,
-        "std_time_seconds": 0.01144167424435767
+        "throughput_samples_per_sec": 5735.430450734965,
+        "latency_per_sample_us": 174.354829788208,
+        "mean_time_seconds": 1.74354829788208,
+        "std_time_seconds": 0.008118775883806762
       },
       "64": {
-        "throughput_samples_per_sec": 22425.223928556727,
-        "latency_per_sample_us": 44.59264278411865,
-        "mean_time_seconds": 0.4459264278411865,
-        "std_time_seconds": 0.007432727932205294
+        "throughput_samples_per_sec": 9040.017952855478,
+        "latency_per_sample_us": 110.61924934387207,
+        "mean_time_seconds": 1.1061924934387206,
+        "std_time_seconds": 0.08513714525355615
       },
       "128": {
-        "throughput_samples_per_sec": 34465.676925365115,
-        "latency_per_sample_us": 29.01437282562256,
-        "mean_time_seconds": 0.2901437282562256,
-        "std_time_seconds": 0.006388744251816822
+        "throughput_samples_per_sec": 14362.675584166507,
+        "latency_per_sample_us": 69.62491035461426,
+        "mean_time_seconds": 0.6962491035461426,
+        "std_time_seconds": 0.006635125966582577
       },
       "256": {
-        "throughput_samples_per_sec": 48347.15211650427,
-        "latency_per_sample_us": 20.683741569519043,
-        "mean_time_seconds": 0.20683741569519043,
-        "std_time_seconds": 0.0009008602268046665
+        "throughput_samples_per_sec": 18975.97256799864,
+        "latency_per_sample_us": 52.69822120666504,
+        "mean_time_seconds": 0.5269822120666504,
+        "std_time_seconds": 0.002474211746808799
       }
     }
   },
   "9": {
     "simplenn": {
       "1": {
-        "throughput_samples_per_sec": 3680.056703510425,
-        "latency_per_sample_us": 271.7349433898926,
-        "mean_time_seconds": 2.7173494338989257,
-        "std_time_seconds": 0.07368206870272169
+        "throughput_samples_per_sec": 1246.3085983848525,
+        "latency_per_sample_us": 802.3694944381713,
+        "mean_time_seconds": 8.023694944381713,
+        "std_time_seconds": 2.2301723377627556
       },
       "8": {
-        "throughput_samples_per_sec": 31069.34658507147,
-        "latency_per_sample_us": 32.1860647201538,
-        "mean_time_seconds": 0.32186064720153806,
-        "std_time_seconds": 0.02866835181696764
+        "throughput_samples_per_sec": 5192.528826845404,
+        "latency_per_sample_us": 192.5843906402588,
+        "mean_time_seconds": 1.9258439064025878,
+        "std_time_seconds": 0.021792356150381078
       },
       "16": {
-        "throughput_samples_per_sec": 58879.20866688547,
-        "latency_per_sample_us": 16.98392391204834,
-        "mean_time_seconds": 0.1698392391204834,
-        "std_time_seconds": 0.023990384727034214
+        "throughput_samples_per_sec": 9891.430901429861,
+        "latency_per_sample_us": 101.09760761260986,
+        "mean_time_seconds": 1.0109760761260986,
+        "std_time_seconds": 0.04491169854258857
       },
       "32": {
-        "throughput_samples_per_sec": 93598.03694913046,
-        "latency_per_sample_us": 10.683984756469727,
-        "mean_time_seconds": 0.10683984756469726,
-        "std_time_seconds": 0.005016747712209582
+        "throughput_samples_per_sec": 18975.296081835597,
+        "latency_per_sample_us": 52.70009994506835,
+        "mean_time_seconds": 0.5270009994506836,
+        "std_time_seconds": 0.002502159874768653
       },
       "64": {
-        "throughput_samples_per_sec": 194680.05904031638,
-        "latency_per_sample_us": 5.136632919311523,
-        "mean_time_seconds": 0.051366329193115234,
-        "std_time_seconds": 0.004354158970836839
+        "throughput_samples_per_sec": 40364.68398109753,
+        "latency_per_sample_us": 24.774131774902344,
+        "mean_time_seconds": 0.24774131774902344,
+        "std_time_seconds": 0.018424190760807074
       },
       "128": {
-        "throughput_samples_per_sec": 406977.69644420035,
-        "latency_per_sample_us": 2.457137107849121,
-        "mean_time_seconds": 0.02457137107849121,
-        "std_time_seconds": 0.0014662833205772853
+        "throughput_samples_per_sec": 75722.88084277754,
+        "latency_per_sample_us": 13.206048011779787,
+        "mean_time_seconds": 0.13206048011779786,
+        "std_time_seconds": 0.0007606024174439957
       },
       "256": {
-        "throughput_samples_per_sec": 779917.737100865,
-        "latency_per_sample_us": 1.282186508178711,
-        "mean_time_seconds": 0.01282186508178711,
-        "std_time_seconds": 0.00022080471720210094
+        "throughput_samples_per_sec": 106486.03773201686,
+        "latency_per_sample_us": 9.390902519226074,
+        "mean_time_seconds": 0.09390902519226074,
+        "std_time_seconds": 0.0021096854211214234
       }
     },
     "graphsage": {
       "1": {
-        "throughput_samples_per_sec": 494.8243671525868,
-        "latency_per_sample_us": 2020.9190702438354,
-        "mean_time_seconds": 20.209190702438356,
-        "std_time_seconds": 0.11991898435233818
+        "throughput_samples_per_sec": 228.87329928810556,
+        "latency_per_sample_us": 4369.229626655579,
+        "mean_time_seconds": 43.692296266555786,
+        "std_time_seconds": 0.12812090145233165
       },
       "8": {
-        "throughput_samples_per_sec": 3684.7028201237026,
-        "latency_per_sample_us": 271.39230728149414,
-        "mean_time_seconds": 2.7139230728149415,
-        "std_time_seconds": 0.07366688813817214
+        "throughput_samples_per_sec": 1672.7876259124148,
+        "latency_per_sample_us": 597.8045177459717,
+        "mean_time_seconds": 5.978045177459717,
+        "std_time_seconds": 0.034483691984395805
       },
       "16": {
-        "throughput_samples_per_sec": 6987.623573180373,
-        "latency_per_sample_us": 143.11017036437985,
-        "mean_time_seconds": 1.4311017036437987,
-        "std_time_seconds": 0.020959264563039405
+        "throughput_samples_per_sec": 3169.7570086530664,
+        "latency_per_sample_us": 315.481595993042,
+        "mean_time_seconds": 3.1548159599304197,
+        "std_time_seconds": 0.008600442900336675
       },
       "32": {
-        "throughput_samples_per_sec": 13130.098892468464,
-        "latency_per_sample_us": 76.16088867187501,
-        "mean_time_seconds": 0.76160888671875,
-        "std_time_seconds": 0.013934256830229072
+        "throughput_samples_per_sec": 5862.949660118941,
+        "latency_per_sample_us": 170.5626106262207,
+        "mean_time_seconds": 1.7056261062622071,
+        "std_time_seconds": 0.026997063564320058
       },
       "64": {
-        "throughput_samples_per_sec": 22206.25906398666,
-        "latency_per_sample_us": 45.03234863281251,
-        "mean_time_seconds": 0.450323486328125,
-        "std_time_seconds": 0.011396037421523368
+        "throughput_samples_per_sec": 9787.428905106437,
+        "latency_per_sample_us": 102.17187881469727,
+        "mean_time_seconds": 1.0217187881469727,
+        "std_time_seconds": 0.00421281758535119
       },
       "128": {
-        "throughput_samples_per_sec": 32869.659694373506,
-        "latency_per_sample_us": 30.423192977905273,
-        "mean_time_seconds": 0.3042319297790527,
-        "std_time_seconds": 0.016338671650144593
+        "throughput_samples_per_sec": 13608.011390708692,
+        "latency_per_sample_us": 73.48612308502197,
+        "mean_time_seconds": 0.7348612308502197,
+        "std_time_seconds": 0.030770271525891988
       },
       "256": {
-        "throughput_samples_per_sec": 44038.97828575844,
-        "latency_per_sample_us": 22.707157135009766,
-        "mean_time_seconds": 0.22707157135009765,
-        "std_time_seconds": 0.011537882131988662
+        "throughput_samples_per_sec": 16883.276744509007,
+        "latency_per_sample_us": 59.23020839691162,
+        "mean_time_seconds": 0.5923020839691162,
+        "std_time_seconds": 0.0030517855285339623
       }
     }
   },
   "11": {
     "simplenn": {
       "1": {
-        "throughput_samples_per_sec": 3699.573240966313,
-        "latency_per_sample_us": 270.3014469146729,
-        "mean_time_seconds": 2.7030144691467286,
-        "std_time_seconds": 0.09982534155150041
+        "throughput_samples_per_sec": 871.7001867971725,
+        "latency_per_sample_us": 1147.1834182739258,
+        "mean_time_seconds": 11.471834182739258,
+        "std_time_seconds": 3.823994877997056
       },
       "8": {
-        "throughput_samples_per_sec": 33314.662377112436,
-        "latency_per_sample_us": 30.01681327819824,
-        "mean_time_seconds": 0.3001681327819824,
-        "std_time_seconds": 0.004685406215121461
+        "throughput_samples_per_sec": 4773.437483995804,
+        "latency_per_sample_us": 209.4926357269287,
+        "mean_time_seconds": 2.094926357269287,
+        "std_time_seconds": 0.0023048375298811968
       },
       "16": {
-        "throughput_samples_per_sec": 53719.79409160956,
-        "latency_per_sample_us": 18.6151123046875,
-        "mean_time_seconds": 0.186151123046875,
-        "std_time_seconds": 0.004639871509909093
+        "throughput_samples_per_sec": 9081.61948052831,
+        "latency_per_sample_us": 110.11251926422119,
+        "mean_time_seconds": 1.1011251926422119,
+        "std_time_seconds": 0.007817701957934336
       },
       "32": {
-        "throughput_samples_per_sec": 94334.87487927856,
-        "latency_per_sample_us": 10.600533485412596,
-        "mean_time_seconds": 0.10600533485412597,
-        "std_time_seconds": 0.006319681724512201
+        "throughput_samples_per_sec": 17110.813903319566,
+        "latency_per_sample_us": 58.44257354736328,
+        "mean_time_seconds": 0.5844257354736329,
+        "std_time_seconds": 0.003972409709791869
       },
       "64": {
-        "throughput_samples_per_sec": 168746.84175799417,
-        "latency_per_sample_us": 5.926036834716797,
-        "mean_time_seconds": 0.05926036834716797,
-        "std_time_seconds": 0.004218846958577238
+        "throughput_samples_per_sec": 39390.526034837334,
+        "latency_per_sample_us": 25.386815071105957,
+        "mean_time_seconds": 0.25386815071105956,
+        "std_time_seconds": 0.003554224688955216
       },
       "128": {
-        "throughput_samples_per_sec": 374119.9808761301,
-        "latency_per_sample_us": 2.6729393005371094,
-        "mean_time_seconds": 0.026729393005371093,
-        "std_time_seconds": 0.00201062175559443
+        "throughput_samples_per_sec": 68570.68121031395,
+        "latency_per_sample_us": 14.583492279052734,
+        "mean_time_seconds": 0.14583492279052734,
+        "std_time_seconds": 0.0023567883028004764
       },
       "256": {
-        "throughput_samples_per_sec": 638091.6448609505,
-        "latency_per_sample_us": 1.5671730041503906,
-        "mean_time_seconds": 0.015671730041503906,
-        "std_time_seconds": 0.0008124187441854304
+        "throughput_samples_per_sec": 113024.03890720088,
+        "latency_per_sample_us": 8.84767532348633,
+        "mean_time_seconds": 0.08847675323486329,
+        "std_time_seconds": 0.02191339265429092
       }
     },
     "graphsage": {
       "1": {
-        "throughput_samples_per_sec": 492.84449416577627,
-        "latency_per_sample_us": 2029.0375804901125,
-        "mean_time_seconds": 20.290375804901124,
-        "std_time_seconds": 0.14267004664287006
+        "throughput_samples_per_sec": 227.14341521539393,
+        "latency_per_sample_us": 4402.504906654358,
+        "mean_time_seconds": 44.02504906654358,
+        "std_time_seconds": 0.11462049869756957
       },
       "8": {
-        "throughput_samples_per_sec": 3675.976273880173,
-        "latency_per_sample_us": 272.03657627105713,
-        "mean_time_seconds": 2.7203657627105713,
-        "std_time_seconds": 0.07126221275197678
+        "throughput_samples_per_sec": 1665.4970250478395,
+        "latency_per_sample_us": 600.4213666915892,
+        "mean_time_seconds": 6.004213666915893,
+        "std_time_seconds": 0.013143381912351556
       },
       "16": {
-        "throughput_samples_per_sec": 7062.035671976223,
-        "latency_per_sample_us": 141.60223007202148,
-        "mean_time_seconds": 1.4160223007202148,
-        "std_time_seconds": 0.025169861014279368
+        "throughput_samples_per_sec": 3247.7672947179644,
+        "latency_per_sample_us": 307.9038333892822,
+        "mean_time_seconds": 3.0790383338928224,
+        "std_time_seconds": 0.054011292059608064
       },
       "32": {
-        "throughput_samples_per_sec": 12737.754177826326,
-        "latency_per_sample_us": 78.50677490234375,
-        "mean_time_seconds": 0.7850677490234375,
-        "std_time_seconds": 0.009523682586276273
+        "throughput_samples_per_sec": 5809.001787779776,
+        "latency_per_sample_us": 172.14661598205566,
+        "mean_time_seconds": 1.7214661598205567,
+        "std_time_seconds": 0.026955311328660247
       },
       "64": {
-        "throughput_samples_per_sec": 21994.213539420016,
-        "latency_per_sample_us": 45.466504096984856,
-        "mean_time_seconds": 0.4546650409698486,
-        "std_time_seconds": 0.014783341358317163
+        "throughput_samples_per_sec": 9410.194526975238,
+        "latency_per_sample_us": 106.26772880554199,
+        "mean_time_seconds": 1.0626772880554198,
+        "std_time_seconds": 0.0053711718399835524
       },
       "128": {
-        "throughput_samples_per_sec": 33194.81793162679,
-        "latency_per_sample_us": 30.125184059143066,
-        "mean_time_seconds": 0.3012518405914307,
-        "std_time_seconds": 0.004555676896206821
+        "throughput_samples_per_sec": 13092.654061337853,
+        "latency_per_sample_us": 76.37870788574219,
+        "mean_time_seconds": 0.7637870788574219,
+        "std_time_seconds": 0.004172039282134716
       },
       "256": {
-        "throughput_samples_per_sec": 44039.17249315678,
-        "latency_per_sample_us": 22.707056999206543,
-        "mean_time_seconds": 0.22707056999206543,
-        "std_time_seconds": 0.0012359423860284677
+        "throughput_samples_per_sec": 15656.938268353164,
+        "latency_per_sample_us": 63.86944770812988,
+        "mean_time_seconds": 0.6386944770812988,
+        "std_time_seconds": 0.0027836158051021236
       }
     }
   },
   "13": {
     "simplenn": {
       "1": {
-        "throughput_samples_per_sec": 3704.8110949159804,
-        "latency_per_sample_us": 269.9192953109742,
-        "mean_time_seconds": 2.6991929531097414,
-        "std_time_seconds": 0.056027756264066544
+        "throughput_samples_per_sec": 1205.1497413287887,
+        "latency_per_sample_us": 829.7724056243898,
+        "mean_time_seconds": 8.297724056243897,
+        "std_time_seconds": 1.7820132618874525
       },
       "8": {
-        "throughput_samples_per_sec": 27528.7426104729,
-        "latency_per_sample_us": 36.325669288635254,
-        "mean_time_seconds": 0.36325669288635254,
-        "std_time_seconds": 0.003989577223224692
+        "throughput_samples_per_sec": 5438.642297920976,
+        "latency_per_sample_us": 183.8694190979004,
+        "mean_time_seconds": 1.838694190979004,
+        "std_time_seconds": 0.13036536842493474
       },
       "16": {
-        "throughput_samples_per_sec": 53401.90282372971,
-        "latency_per_sample_us": 18.725924491882324,
-        "mean_time_seconds": 0.18725924491882323,
-        "std_time_seconds": 0.009089098762835117
+        "throughput_samples_per_sec": 11712.740421200278,
+        "latency_per_sample_us": 85.3771162033081,
+        "mean_time_seconds": 0.853771162033081,
+        "std_time_seconds": 0.0062152128027813044
       },
       "32": {
-        "throughput_samples_per_sec": 98177.09077000932,
-        "latency_per_sample_us": 10.185675621032715,
-        "mean_time_seconds": 0.10185675621032715,
-        "std_time_seconds": 0.001763255477898257
+        "throughput_samples_per_sec": 22209.770213847536,
+        "latency_per_sample_us": 45.02522945404053,
+        "mean_time_seconds": 0.4502522945404053,
+        "std_time_seconds": 0.003079772797963352
       },
       "64": {
-        "throughput_samples_per_sec": 193338.8217788648,
-        "latency_per_sample_us": 5.172266960144043,
-        "mean_time_seconds": 0.05172266960144043,
-        "std_time_seconds": 0.0011362316362941215
+        "throughput_samples_per_sec": 37300.26816184191,
+        "latency_per_sample_us": 26.80945873260498,
+        "mean_time_seconds": 0.2680945873260498,
+        "std_time_seconds": 0.0026344085054702832
       },
       "128": {
-        "throughput_samples_per_sec": 332382.1689970299,
-        "latency_per_sample_us": 3.008584976196289,
-        "mean_time_seconds": 0.03008584976196289,
-        "std_time_seconds": 0.0006191131880873416
+        "throughput_samples_per_sec": 65145.8779813262,
+        "latency_per_sample_us": 15.350165367126463,
+        "mean_time_seconds": 0.15350165367126464,
+        "std_time_seconds": 0.005440589512241646
       },
       "256": {
-        "throughput_samples_per_sec": 578620.4613177354,
-        "latency_per_sample_us": 1.7282485961914062,
-        "mean_time_seconds": 0.017282485961914062,
-        "std_time_seconds": 0.001939727147099431
+        "throughput_samples_per_sec": 139148.06683134977,
+        "latency_per_sample_us": 7.186589241027833,
+        "mean_time_seconds": 0.07186589241027833,
+        "std_time_seconds": 0.020826068545583203
       }
     },
     "graphsage": {
       "1": {
-        "throughput_samples_per_sec": 495.2168237666936,
-        "latency_per_sample_us": 2019.3175029754639,
-        "mean_time_seconds": 20.193175029754638,
-        "std_time_seconds": 0.06205934747340794
+        "throughput_samples_per_sec": 224.26608865489516,
+        "latency_per_sample_us": 4458.988900184631,
+        "mean_time_seconds": 44.589889001846316,
+        "std_time_seconds": 0.7031616635291272
       },
       "8": {
-        "throughput_samples_per_sec": 3704.556189062745,
-        "latency_per_sample_us": 269.9378681182862,
-        "mean_time_seconds": 2.6993786811828615,
-        "std_time_seconds": 0.03453839314022189
+        "throughput_samples_per_sec": 1700.5517521520942,
+        "latency_per_sample_us": 588.0444383621216,
+        "mean_time_seconds": 5.8804443836212155,
+        "std_time_seconds": 0.17460239283799683
       },
       "16": {
-        "throughput_samples_per_sec": 6987.207307376123,
-        "latency_per_sample_us": 143.11869621276855,
-        "mean_time_seconds": 1.4311869621276856,
-        "std_time_seconds": 0.020567130685839825
+        "throughput_samples_per_sec": 3185.9571123167957,
+        "latency_per_sample_us": 313.87742042541504,
+        "mean_time_seconds": 3.13877420425415,
+        "std_time_seconds": 0.10263323595907789
       },
       "32": {
-        "throughput_samples_per_sec": 12292.447369044223,
-        "latency_per_sample_us": 81.35076522827148,
-        "mean_time_seconds": 0.8135076522827148,
-        "std_time_seconds": 0.01755658019865398
+        "throughput_samples_per_sec": 5563.7968832314245,
+        "latency_per_sample_us": 179.73337650299075,
+        "mean_time_seconds": 1.7973337650299073,
+        "std_time_seconds": 0.02799800599761764
       },
       "64": {
-        "throughput_samples_per_sec": 21114.25659745008,
-        "latency_per_sample_us": 47.36136436462402,
-        "mean_time_seconds": 0.47361364364624026,
-        "std_time_seconds": 0.003198544096653878
+        "throughput_samples_per_sec": 8376.747530706223,
+        "latency_per_sample_us": 119.37807559967042,
+        "mean_time_seconds": 1.1937807559967042,
+        "std_time_seconds": 0.023729896180920803
       },
       "128": {
-        "throughput_samples_per_sec": 31366.556939037375,
-        "latency_per_sample_us": 31.881089210510257,
-        "mean_time_seconds": 0.31881089210510255,
-        "std_time_seconds": 0.0023765390766317873
+        "throughput_samples_per_sec": 9544.09214819804,
+        "latency_per_sample_us": 104.77685928344727,
+        "mean_time_seconds": 1.0477685928344727,
+        "std_time_seconds": 0.0018310129886091183
       },
       "256": {
-        "throughput_samples_per_sec": 37525.38640115578,
-        "latency_per_sample_us": 26.648626327514645,
-        "mean_time_seconds": 0.26648626327514646,
-        "std_time_seconds": 0.010576327211825906
+        "throughput_samples_per_sec": 9740.548613705021,
+        "latency_per_sample_us": 102.66362190246583,
+        "mean_time_seconds": 1.0266362190246583,
+        "std_time_seconds": 0.034049632688933476
       }
     }
   }
