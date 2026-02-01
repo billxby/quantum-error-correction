@@ -618,7 +618,7 @@ def visualize_sparse_graph(graph: Data, title: str = "Sparse Graph Visualization
     """
     import networkx as nx
 
-    fig, axes = plt.subplots(1, 2, figsize=(14, 6))
+    fig, axes = plt.subplots(1, 2, figsize=(9, 5))
 
     # Left plot: Graph structure
     ax1 = axes[0]
@@ -715,24 +715,8 @@ def visualize_sparse_graph(graph: Data, title: str = "Sparse Graph Visualization
                          loc='upper center', cellLoc='center',
                          colColours=['#f0f0f0']*5)
         table.auto_set_font_size(False)
-        table.set_fontsize(10)
-        table.scale(1.2, 1.5)
-
-        # Add edge info below the table
-        info_text = f"Label: {graph.y.item():.0f} (Observable flip)\n\n"
-        if graph.edge_index.shape[1] > 0:
-            info_text += "Edge Weights (sample):\n"
-            for idx in range(min(5, graph.edge_index.shape[1])):
-                src = graph.edge_index[0, idx].item()
-                dst = graph.edge_index[1, idx].item()
-                w = graph.edge_attr[idx, 0].item()
-                info_text += f"  {src} -> {dst}: {w:.4f}\n"
-            if graph.edge_index.shape[1] > 5:
-                info_text += f"  ... and {graph.edge_index.shape[1] - 5} more edges"
-
-        ax2.text(0.5, 0.3, info_text, transform=ax2.transAxes,
-                fontsize=10, verticalalignment='top', horizontalalignment='center',
-                family='monospace')
+        table.set_fontsize(9)
+        table.scale(0.65, 1.3)
     else:
         ax2.text(0.5, 0.5, "No nodes to display", ha='center', va='center', fontsize=12)
 
