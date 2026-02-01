@@ -620,7 +620,7 @@ class SparseGraph:
         return [self.to_pyg(det, lbl) for det, lbl in zip(detections, labels)]
 
 
-def visualize_sparse_graph(graph: Data, title: str = "Sparse Graph Visualization"):
+def visualize_sparse_graph(graph: Data, title: str = "Sparse Graph Visualization", show_edge_weights: bool = True):
     """
     Visualize a PyG sparse graph with node features and edge weights.
 
@@ -631,6 +631,7 @@ def visualize_sparse_graph(graph: Data, title: str = "Sparse Graph Visualization
     Args:
         graph: PyTorch Geometric Data object from SparseGraph
         title: Plot title
+        show_edge_weights: If True, display edge weight values as labels on edges (default: True)
     """
     import networkx as nx
 
@@ -688,9 +689,6 @@ def visualize_sparse_graph(graph: Data, title: str = "Sparse Graph Visualization
         else:
             edge_widths = []
 
-        #Debug
-        print("Edge width: ", *edge_widths)
-
         # Draw the graph
         nx.draw_networkx_nodes(G, pos, ax=ax1, node_color=node_colors,
                               node_size=500, alpha=0.9, edgecolors='black', linewidths=2)
@@ -701,6 +699,14 @@ def visualize_sparse_graph(graph: Data, title: str = "Sparse Graph Visualization
                                   alpha=0.6, edge_color='gray',
                                   arrows=True, arrowsize=15,
                                   connectionstyle="arc3,rad=0.1")
+
+            # Draw edge weight labels if requested
+            if show_edge_weights:
+                edge_labels = {(u, v): f'{d["weight"]:.2f}' for u, v, d in G.edges(data=True)}
+                nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, ax=ax1,
+                                            font_size=7, font_color='darkred',
+                                            label_pos=0.3, rotate=False,
+                                            bbox=dict(boxstyle='round,pad=0.1', facecolor='white', alpha=0.7))
 
         # Legend
         from matplotlib.patches import Patch
