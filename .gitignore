@@ -5,3 +5,4 @@ requirements.txt
 
 # Windows
 desktop.ini
+*.ini
