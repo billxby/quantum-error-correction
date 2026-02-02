@@ -1,6 +1,6 @@
 {
   "seed": 42,
-  "n_configs": 50,
+  "n_configs": 25,
   "generated_at": "2026-02-01T00:38:14.849933",
   "search_space": {
     "num_layers": [
@@ -59,53 +59,37 @@
     {
       "id": 2,
       "num_layers": 2,
-      "hidden_dim": 64,
-      "learning_rate": 0.0001,
-      "dropout": 0.1,
-      "aggr": "mean"
-    },
-    {
-      "id": 3,
-      "num_layers": 2,
       "hidden_dim": 128,
       "learning_rate": 0.003,
       "dropout": 0.3,
       "aggr": "mean"
     },
     {
-      "id": 4,
-      "num_layers": 5,
+      "id": 3,
+      "num_layers": 4,
       "hidden_dim": 256,
-      "learning_rate": 0.0001,
+      "learning_rate": 0.0003,
       "dropout": 0.1,
+      "aggr": "max"
+    },
+    {
+      "id": 4,
+      "num_layers": 2,
+      "hidden_dim": 64,
+      "learning_rate": 0.001,
+      "dropout": 0.0,
       "aggr": "max"
     },
     {
       "id": 5,
       "num_layers": 4,
       "hidden_dim": 256,
-      "learning_rate": 0.0003,
-      "dropout": 0.1,
-      "aggr": "max"
-    },
-    {
-      "id": 6,
-      "num_layers": 2,
-      "hidden_dim": 64,
-      "learning_rate": 0.001,
-      "dropout": 0.0,
-      "aggr": "max"
-    },
-    {
-      "id": 7,
-      "num_layers": 4,
-      "hidden_dim": 256,
       "learning_rate": 0.0001,
       "dropout": 0.3,
       "aggr": "mean"
     },
     {
-      "id": 8,
+      "id": 6,
       "num_layers": 5,
       "hidden_dim": 64,
       "learning_rate": 0.003,
@@ -113,23 +97,7 @@
       "aggr": "max"
     },
     {
-      "id": 9,
-      "num_layers": 3,
-      "hidden_dim": 64,
-      "learning_rate": 0.0001,
-      "dropout": 0.1,
-      "aggr": "max"
-    },
-    {
-      "id": 10,
-      "num_layers": 2,
-      "hidden_dim": 128,
-      "learning_rate": 0.0001,
-      "dropout": 0.3,
-      "aggr": "max"
-    },
-    {
-      "id": 11,
+      "id": 7,
       "num_layers": 5,
       "hidden_dim": 256,
       "learning_rate": 0.0003,
@@ -137,7 +105,7 @@
       "aggr": "max"
     },
     {
-      "id": 12,
+      "id": 8,
       "num_layers": 3,
       "hidden_dim": 256,
       "learning_rate": 0.0001,
@@ -145,299 +113,131 @@
       "aggr": "mean"
     },
     {
-      "id": 13,
+      "id": 9,
       "num_layers": 3,
       "hidden_dim": 512,
       "learning_rate": 0.001,
       "dropout": 0.2,
       "aggr": "mean"
+    },
+    {
+      "id": 10,
+      "num_layers": 5,
+      "hidden_dim": 256,
+      "learning_rate": 0.0001,
+      "dropout": 0.1,
+      "aggr": "max"
+    },
+    {
+      "id": 11,
+      "num_layers": 3,
+      "hidden_dim": 512,
+      "learning_rate": 0.001,
+      "dropout": 0.3,
+      "aggr": "mean"
+    },
+    {
+      "id": 12,
+      "num_layers": 4,
+      "hidden_dim": 128,
+      "learning_rate": 0.0003,
+      "dropout": 0.2,
+      "aggr": "max"
+    },
+    {
+      "id": 13,
+      "num_layers": 5,
+      "hidden_dim": 256,
+      "learning_rate": 0.0003,
+      "dropout": 0.1,
+      "aggr": "max"
     },
     {
       "id": 14,
       "num_layers": 4,
       "hidden_dim": 64,
-      "learning_rate": 0.0003,
-      "dropout": 0.0,
+      "learning_rate": 0.0001,
+      "dropout": 0.2,
       "aggr": "max"
     },
     {
       "id": 15,
-      "num_layers": 5,
+      "num_layers": 2,
       "hidden_dim": 256,
-      "learning_rate": 0.0001,
+      "learning_rate": 0.001,
       "dropout": 0.1,
       "aggr": "max"
     },
     {
       "id": 16,
-      "num_layers": 3,
-      "hidden_dim": 512,
+      "num_layers": 2,
+      "hidden_dim": 256,
       "learning_rate": 0.001,
-      "dropout": 0.3,
+      "dropout": 0.0,
       "aggr": "mean"
     },
     {
       "id": 17,
       "num_layers": 4,
-      "hidden_dim": 128,
+      "hidden_dim": 256,
       "learning_rate": 0.0003,
-      "dropout": 0.2,
-      "aggr": "max"
+      "dropout": 0.0,
+      "aggr": "mean"
     },
     {
       "id": 18,
-      "num_layers": 5,
-      "hidden_dim": 256,
-      "learning_rate": 0.0003,
-      "dropout": 0.1,
-      "aggr": "max"
+      "num_layers": 2,
+      "hidden_dim": 64,
+      "learning_rate": 0.001,
+      "dropout": 0.0,
+      "aggr": "mean"
     },
     {
       "id": 19,
-      "num_layers": 2,
-      "hidden_dim": 64,
-      "learning_rate": 0.0001,
-      "dropout": 0.1,
+      "num_layers": 5,
+      "hidden_dim": 256,
+      "learning_rate": 0.001,
+      "dropout": 0.3,
       "aggr": "mean"
     },
     {
       "id": 20,
-      "num_layers": 5,
-      "hidden_dim": 64,
-      "learning_rate": 0.001,
-      "dropout": 0.3,
-      "aggr": "max"
+      "num_layers": 3,
+      "hidden_dim": 128,
+      "learning_rate": 0.0001,
+      "dropout": 0.2,
+      "aggr": "mean"
     },
     {
       "id": 21,
-      "num_layers": 4,
-      "hidden_dim": 64,
+      "num_layers": 3,
+      "hidden_dim": 128,
       "learning_rate": 0.0001,
-      "dropout": 0.2,
-      "aggr": "max"
+      "dropout": 0.0,
+      "aggr": "mean"
     },
     {
       "id": 22,
       "num_layers": 2,
-      "hidden_dim": 256,
+      "hidden_dim": 64,
       "learning_rate": 0.001,
-      "dropout": 0.1,
+      "dropout": 0.2,
       "aggr": "max"
     },
     {
       "id": 23,
-      "num_layers": 2,
-      "hidden_dim": 256,
-      "learning_rate": 0.003,
-      "dropout": 0.1,
+      "num_layers": 5,
+      "hidden_dim": 512,
+      "learning_rate": 0.0001,
+      "dropout": 0.0,
       "aggr": "mean"
     },
     {
       "id": 24,
-      "num_layers": 4,
-      "hidden_dim": 128,
-      "learning_rate": 0.0003,
-      "dropout": 0.2,
-      "aggr": "mean"
-    },
-    {
-      "id": 25,
-      "num_layers": 2,
-      "hidden_dim": 256,
-      "learning_rate": 0.001,
-      "dropout": 0.0,
-      "aggr": "mean"
-    },
-    {
-      "id": 26,
-      "num_layers": 4,
-      "hidden_dim": 256,
-      "learning_rate": 0.0003,
-      "dropout": 0.0,
-      "aggr": "mean"
-    },
-    {
-      "id": 27,
-      "num_layers": 2,
-      "hidden_dim": 64,
-      "learning_rate": 0.001,
-      "dropout": 0.0,
-      "aggr": "mean"
-    },
-    {
-      "id": 28,
-      "num_layers": 3,
-      "hidden_dim": 512,
-      "learning_rate": 0.003,
-      "dropout": 0.1,
-      "aggr": "max"
-    },
-    {
-      "id": 29,
-      "num_layers": 5,
-      "hidden_dim": 128,
-      "learning_rate": 0.003,
-      "dropout": 0.1,
-      "aggr": "max"
-    },
-    {
-      "id": 30,
-      "num_layers": 5,
-      "hidden_dim": 256,
-      "learning_rate": 0.001,
-      "dropout": 0.3,
-      "aggr": "mean"
-    },
-    {
-      "id": 31,
-      "num_layers": 3,
-      "hidden_dim": 128,
-      "learning_rate": 0.0001,
-      "dropout": 0.2,
-      "aggr": "mean"
-    },
-    {
-      "id": 32,
-      "num_layers": 3,
-      "hidden_dim": 128,
-      "learning_rate": 0.0001,
-      "dropout": 0.0,
-      "aggr": "mean"
-    },
-    {
-      "id": 33,
-      "num_layers": 3,
-      "hidden_dim": 64,
-      "learning_rate": 0.0001,
-      "dropout": 0.2,
-      "aggr": "mean"
-    },
-    {
-      "id": 34,
-      "num_layers": 3,
-      "hidden_dim": 256,
-      "learning_rate": 0.001,
-      "dropout": 0.1,
-      "aggr": "mean"
-    },
-    {
-      "id": 35,
-      "num_layers": 5,
-      "hidden_dim": 128,
-      "learning_rate": 0.001,
-      "dropout": 0.3,
-      "aggr": "mean"
-    },
-    {
-      "id": 36,
-      "num_layers": 2,
-      "hidden_dim": 64,
-      "learning_rate": 0.001,
-      "dropout": 0.2,
-      "aggr": "max"
-    },
-    {
-      "id": 37,
-      "num_layers": 5,
-      "hidden_dim": 512,
-      "learning_rate": 0.0001,
-      "dropout": 0.0,
-      "aggr": "mean"
-    },
-    {
-      "id": 38,
-      "num_layers": 5,
-      "hidden_dim": 256,
-      "learning_rate": 0.0001,
-      "dropout": 0.1,
-      "aggr": "mean"
-    },
-    {
-      "id": 39,
-      "num_layers": 3,
-      "hidden_dim": 512,
-      "learning_rate": 0.0003,
-      "dropout": 0.3,
-      "aggr": "mean"
-    },
-    {
-      "id": 40,
-      "num_layers": 4,
-      "hidden_dim": 512,
-      "learning_rate": 0.0003,
-      "dropout": 0.0,
-      "aggr": "max"
-    },
-    {
-      "id": 41,
       "num_layers": 2,
       "hidden_dim": 64,
       "learning_rate": 0.003,
       "dropout": 0.0,
-      "aggr": "mean"
-    },
-    {
-      "id": 42,
-      "num_layers": 3,
-      "hidden_dim": 128,
-      "learning_rate": 0.001,
-      "dropout": 0.3,
-      "aggr": "max"
-    },
-    {
-      "id": 43,
-      "num_layers": 3,
-      "hidden_dim": 512,
-      "learning_rate": 0.0001,
-      "dropout": 0.1,
-      "aggr": "max"
-    },
-    {
-      "id": 44,
-      "num_layers": 2,
-      "hidden_dim": 512,
-      "learning_rate": 0.0005,
-      "dropout": 0.3,
-      "aggr": "max"
-    },
-    {
-      "id": 45,
-      "num_layers": 5,
-      "hidden_dim": 512,
-      "learning_rate": 0.0003,
-      "dropout": 0.1,
-      "aggr": "max"
-    },
-    {
-      "id": 46,
-      "num_layers": 3,
-      "hidden_dim": 64,
-      "learning_rate": 0.003,
-      "dropout": 0.0,
-      "aggr": "max"
-    },
-    {
-      "id": 47,
-      "num_layers": 2,
-      "hidden_dim": 64,
-      "learning_rate": 0.003,
-      "dropout": 0.3,
-      "aggr": "mean"
-    },
-    {
-      "id": 48,
-      "num_layers": 2,
-      "hidden_dim": 64,
-      "learning_rate": 0.0003,
-      "dropout": 0.0,
-      "aggr": "mean"
-    },
-    {
-      "id": 49,
-      "num_layers": 3,
-      "hidden_dim": 512,
-      "learning_rate": 0.0001,
-      "dropout": 0.1,
       "aggr": "mean"
     }
   ]
