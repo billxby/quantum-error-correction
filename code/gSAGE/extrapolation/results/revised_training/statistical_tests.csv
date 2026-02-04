@@ -1,0 +1,7 @@
+statistic,pvalue,significant,mean_diff,n_samples,split1,split2,description
+109.5,0.38598232717229075,False,-0.0007749999999999979,24,equal_333333,a1_d3_00,Control vs No d=3 (Exp A)
+6.0,5.950282644768789e-05,True,-0.017899999999999996,24,a1_d3_00,a5_d3_50,No d=3 vs 50% d=3 (Exp A extremes)
+122.0,0.42366349489111677,False,0.000804166666666666,24,equal_333333,a2_d3_10,Control vs 10% d=3
+58.0,0.007189035415649414,True,0.02727916666666666,24,b1_d5heavy,b5_d7heavy,d5-heavy vs d7-heavy (Exp B extremes)
+0.0,1.1920928955078125e-07,True,0.03248749999999998,24,b3_balanced,b5_d7heavy,Balanced vs d7-heavy (Exp B)
+48.0,0.0035616393197702646,True,0.01352083333333333,24,a1_d3_00,b5_d7heavy,Exp A best vs Exp B best
