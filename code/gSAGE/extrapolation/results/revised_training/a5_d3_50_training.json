@@ -903,10 +903,10 @@
   },
   "final_metrics": {
     "final_loss": 0.07035791753740356,
-    "train_accuracy": 0.9716,
-    "val_accuracy": 0.9734,
+    "train_accuracy": 0.9722,
+    "val_accuracy": 0.9751,
     "test_accuracy": 0.972785,
-    "total_training_time_seconds": 550.0776908397675
+    "total_training_time_seconds": 561.752007484436
   },
-  "timestamp": "2026-02-03T03:06:54.701568"
+  "timestamp": "2026-02-04T04:59:59.519559"
 }
