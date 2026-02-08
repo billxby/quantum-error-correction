@@ -3,90 +3,90 @@
     "wilcoxon": {
       "test": "Wilcoxon signed-rank",
       "statistic": 0.0,
-      "p_value": 1.5588369252096167e-09,
+      "p_value": 1.5756630464482418e-11,
       "significant": true,
-      "effect_size_r": 0.8715329921501542,
+      "effect_size_r": 0.8702276571045146,
       "interpretation": "large"
     },
-    "cohens_d": -1.2923696069502333,
+    "cohens_d": -1.3732745230337302,
     "effect_size_interpretation": "large",
-    "deepsets_mean": 0.9263666666666667,
-    "graphsage_mean": 0.9860833333333333,
-    "diff": 0.05971666666666664
+    "deepsets_mean": 0.9165866666666668,
+    "graphsage_mean": 0.9835133333333331,
+    "diff": 0.06692666666666636
   },
   "5": {
     "wilcoxon": {
       "test": "Wilcoxon signed-rank",
       "statistic": 0.0,
-      "p_value": 1.5588369252096167e-09,
+      "p_value": 1.5916070849113537e-11,
       "significant": true,
-      "effect_size_r": 0.8715329921501542,
+      "effect_size_r": 0.8700388030527066,
       "interpretation": "large"
     },
-    "cohens_d": -4.887327882653193,
-    "effect_size_interpretation": "large",
-    "deepsets_mean": 0.9578916666666667,
-    "graphsage_mean": 0.9782583333333333,
-    "diff": 0.020366666666666644
+    "cohens_d": -0.6750555264554766,
+    "effect_size_interpretation": "medium",
+    "deepsets_mean": 0.9189066666666669,
+    "graphsage_mean": 0.9695,
+    "diff": 0.05059333333333316
   },
   "7": {
     "wilcoxon": {
       "test": "Wilcoxon signed-rank",
       "statistic": 0.0,
-      "p_value": 1.5836099105630597e-09,
+      "p_value": 1.5756630464482418e-11,
       "significant": true,
-      "effect_size_r": 0.8711656054789032,
+      "effect_size_r": 0.8702276571045146,
       "interpretation": "large"
     },
-    "cohens_d": -1.343092057266461,
+    "cohens_d": -0.9929128716943423,
     "effect_size_interpretation": "large",
-    "deepsets_mean": 0.8457666666666667,
-    "graphsage_mean": 0.9320666666666666,
-    "diff": 0.08629999999999993
+    "deepsets_mean": 0.8281399999999999,
+    "graphsage_mean": 0.9142533333333335,
+    "diff": 0.0861133333333336
   },
   "9": {
     "wilcoxon": {
       "test": "Wilcoxon signed-rank",
       "statistic": 0.0,
-      "p_value": 1.5836099105630597e-09,
+      "p_value": 1.5916070849113537e-11,
       "significant": true,
-      "effect_size_r": 0.8711656054789032,
+      "effect_size_r": 0.8700388030527066,
       "interpretation": "large"
     },
-    "cohens_d": -9.168404672185021,
+    "cohens_d": -5.726355780726696,
     "effect_size_interpretation": "large",
-    "deepsets_mean": 0.5477833333333333,
-    "graphsage_mean": 0.8082166666666666,
-    "diff": 0.2604333333333333
+    "deepsets_mean": 0.5535066666666668,
+    "graphsage_mean": 0.79048,
+    "diff": 0.23697333333333315
   },
   "11": {
     "wilcoxon": {
       "test": "Wilcoxon signed-rank",
       "statistic": 0.0,
-      "p_value": 1.5836099105630597e-09,
+      "p_value": 1.5916070849113537e-11,
       "significant": true,
-      "effect_size_r": 0.8711656054789032,
+      "effect_size_r": 0.8700388030527066,
       "interpretation": "large"
     },
-    "cohens_d": -7.0163759966459365,
+    "cohens_d": -4.6683135438076695,
     "effect_size_interpretation": "large",
-    "deepsets_mean": 0.5272749999999999,
-    "graphsage_mean": 0.6907583333333333,
-    "diff": 0.1634833333333333
+    "deepsets_mean": 0.53182,
+    "graphsage_mean": 0.6815533333333335,
+    "diff": 0.1497333333333335
   },
   "13": {
     "wilcoxon": {
       "test": "Wilcoxon signed-rank",
       "statistic": 0.0,
-      "p_value": 1.5836099105630597e-09,
+      "p_value": 1.5916070849113537e-11,
       "significant": true,
-      "effect_size_r": 0.8711656054789032,
+      "effect_size_r": 0.8700388030527066,
       "interpretation": "large"
     },
-    "cohens_d": -4.861067069531253,
+    "cohens_d": -3.3803769694851415,
     "effect_size_interpretation": "large",
-    "deepsets_mean": 0.5185166666666666,
-    "graphsage_mean": 0.6126083333333333,
-    "diff": 0.09409166666666668
+    "deepsets_mean": 0.5229466666666667,
+    "graphsage_mean": 0.5995866666666667,
+    "diff": 0.07664000000000004
   }
 }

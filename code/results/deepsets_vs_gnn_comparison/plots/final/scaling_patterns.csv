@@ -1,4 +1,1 @@
-Decoder,Scaling Pattern,Exponent (d^n),Growth (d3→d13),Latency d=3 (μs),Latency d=13 (μs)
-DeepSets,SUB-LINEAR (nearly constant),0.01,1.03x,21.2,21.8
-GNN,SUB-LINEAR (nearly constant),0.03,1.09x,58.3,63.8
-MWPM,SUPER-LINEAR (quadratic+),3.35,238.64x,0.1,28.0
+
