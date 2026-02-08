@@ -635,7 +635,7 @@ def visualize_sparse_graph(graph: Data, title: str = "Sparse Graph Visualization
     """
     import networkx as nx
 
-    fig, axes = plt.subplots(1, 2, figsize=(14, 6))
+    fig, axes = plt.subplots(1, 2, figsize=(9, 5))
 
     # Left plot: Graph structure
     ax1 = axes[0]
@@ -740,8 +740,8 @@ def visualize_sparse_graph(graph: Data, title: str = "Sparse Graph Visualization
                          loc='upper center', cellLoc='center',
                          colColours=['#f0f0f0']*5)
         table.auto_set_font_size(False)
-        table.set_fontsize(10)
-        table.scale(1.2, 1.5)
+        table.set_fontsize(9)
+        table.scale(0.65, 1.3)
 
         # Add edge info below the table
         info_text = f"Label: {graph.y.item():.0f} (Observable flip)\n\n"

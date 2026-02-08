@@ -1,0 +1,92 @@
+{
+  "3": {
+    "wilcoxon": {
+      "test": "Wilcoxon signed-rank",
+      "statistic": 0.0,
+      "p_value": 1.5588369252096167e-09,
+      "significant": true,
+      "effect_size_r": 0.8715329921501542,
+      "interpretation": "large"
+    },
+    "cohens_d": -1.2923696069502333,
+    "effect_size_interpretation": "large",
+    "deepsets_mean": 0.9263666666666667,
+    "graphsage_mean": 0.9860833333333333,
+    "diff": 0.05971666666666664
+  },
+  "5": {
+    "wilcoxon": {
+      "test": "Wilcoxon signed-rank",
+      "statistic": 0.0,
+      "p_value": 1.5588369252096167e-09,
+      "significant": true,
+      "effect_size_r": 0.8715329921501542,
+      "interpretation": "large"
+    },
+    "cohens_d": -4.887327882653193,
+    "effect_size_interpretation": "large",
+    "deepsets_mean": 0.9578916666666667,
+    "graphsage_mean": 0.9782583333333333,
+    "diff": 0.020366666666666644
+  },
+  "7": {
+    "wilcoxon": {
+      "test": "Wilcoxon signed-rank",
+      "statistic": 0.0,
+      "p_value": 1.5836099105630597e-09,
+      "significant": true,
+      "effect_size_r": 0.8711656054789032,
+      "interpretation": "large"
+    },
+    "cohens_d": -1.343092057266461,
+    "effect_size_interpretation": "large",
+    "deepsets_mean": 0.8457666666666667,
+    "graphsage_mean": 0.9320666666666666,
+    "diff": 0.08629999999999993
+  },
+  "9": {
+    "wilcoxon": {
+      "test": "Wilcoxon signed-rank",
+      "statistic": 0.0,
+      "p_value": 1.5836099105630597e-09,
+      "significant": true,
+      "effect_size_r": 0.8711656054789032,
+      "interpretation": "large"
+    },
+    "cohens_d": -9.168404672185021,
+    "effect_size_interpretation": "large",
+    "deepsets_mean": 0.5477833333333333,
+    "graphsage_mean": 0.8082166666666666,
+    "diff": 0.2604333333333333
+  },
+  "11": {
+    "wilcoxon": {
+      "test": "Wilcoxon signed-rank",
+      "statistic": 0.0,
+      "p_value": 1.5836099105630597e-09,
+      "significant": true,
+      "effect_size_r": 0.8711656054789032,
+      "interpretation": "large"
+    },
+    "cohens_d": -7.0163759966459365,
+    "effect_size_interpretation": "large",
+    "deepsets_mean": 0.5272749999999999,
+    "graphsage_mean": 0.6907583333333333,
+    "diff": 0.1634833333333333
+  },
+  "13": {
+    "wilcoxon": {
+      "test": "Wilcoxon signed-rank",
+      "statistic": 0.0,
+      "p_value": 1.5836099105630597e-09,
+      "significant": true,
+      "effect_size_r": 0.8711656054789032,
+      "interpretation": "large"
+    },
+    "cohens_d": -4.861067069531253,
+    "effect_size_interpretation": "large",
+    "deepsets_mean": 0.5185166666666666,
+    "graphsage_mean": 0.6126083333333333,
+    "diff": 0.09409166666666668
+  }
+}
