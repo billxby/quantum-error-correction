@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "timestamp": "2026-01-27T09:03:25.379811",
+    "timestamp": "2026-02-10T15:05:39.408748",
     "distances": [
       3,
       5,
@@ -19,171 +19,143 @@
     {
       "distance": 3,
       "simplenn_params": 2646529,
-      "graphsage_params": 142593,
+      "graphsage_params": 547201,
       "simplenn_size_mb": 30.30717372894287,
-      "graphsage_size_mb": 0.5631837844848633,
-      "param_ratio": 0.053879250898063086
+      "graphsage_size_mb": 2.1125001907348633,
+      "param_ratio": 0.20676176229317722
     },
     {
       "distance": 5,
       "simplenn_params": 2695681,
-      "graphsage_params": 142593,
+      "graphsage_params": 547201,
       "simplenn_size_mb": 30.86967372894287,
-      "graphsage_size_mb": 0.5631837844848633,
-      "param_ratio": 0.05289683757091436
+      "graphsage_size_mb": 2.1125001907348633,
+      "param_ratio": 0.2029917486527523
     },
     {
       "distance": 7,
       "simplenn_params": 2806273,
-      "graphsage_params": 142593,
+      "graphsage_params": 547201,
       "simplenn_size_mb": 32.13529872894287,
-      "graphsage_size_mb": 0.5631837844848633,
-      "param_ratio": 0.050812233877459534
-    },
-    {
-      "distance": 9,
-      "simplenn_params": 3002881,
-      "graphsage_params": 142593,
-      "simplenn_size_mb": 34.38529872894287,
-      "graphsage_size_mb": 0.5631837844848633,
-      "param_ratio": 0.047485398189272235
+      "graphsage_size_mb": 2.1125001907348633,
+      "param_ratio": 0.1949920766796388
     },
     {
       "distance": 11,
       "simplenn_params": 3310081,
-      "graphsage_params": 142593,
+      "graphsage_params": 547201,
       "simplenn_size_mb": 37.90098285675049,
-      "graphsage_size_mb": 1.6677980422973633,
-      "param_ratio": 0.043078402008893436
+      "graphsage_size_mb": 6.302807807922363,
+      "param_ratio": 0.16531347722306494
     },
     {
       "distance": 13,
       "simplenn_params": 3752449,
-      "graphsage_params": 142593,
+      "graphsage_params": 547201,
       "simplenn_size_mb": 42.96348285675049,
-      "graphsage_size_mb": 1.6677980422973633,
-      "param_ratio": 0.03799998347745699
+      "graphsage_size_mb": 6.302807807922363,
+      "param_ratio": 0.14582503319831927
     }
   ],
   "accuracy_results": {
     "3": {
       "simplenn": {
-        "accuracy_mean": 0.9866,
+        "accuracy_mean": 0.9862,
         "accuracy_std": 0.0,
         "accuracy_ci_95": 0.0,
-        "f1_mean": 0.912987012987013,
+        "f1_mean": 0.9183431952662723,
         "f1_std": 0.0,
-        "precision_mean": 0.9213630406290957,
-        "recall_mean": 0.9047619047619048
+        "precision_mean": 0.9260143198090692,
+        "recall_mean": 0.9107981220657277
       },
       "graphsage": {
-        "accuracy_mean": 0.987,
+        "accuracy_mean": 0.9869,
         "accuracy_std": 0.0,
         "accuracy_ci_95": 0.0,
-        "f1_mean": 0.9152542372881356,
+        "f1_mean": 0.921226698737222,
         "f1_std": 0.0,
-        "precision_mean": 0.9273447820343461,
-        "recall_mean": 0.9034749034749034
+        "precision_mean": 0.9445129469790382,
+        "recall_mean": 0.8990610328638498
       }
     },
     "5": {
       "simplenn": {
-        "accuracy_mean": 0.9732,
+        "accuracy_mean": 0.975,
         "accuracy_std": 0.0,
         "accuracy_ci_95": 0.0,
-        "f1_mean": 0.9259259259259259,
+        "f1_mean": 0.931280923584387,
         "f1_std": 0.0,
-        "precision_mean": 0.9300388672959466,
-        "recall_mean": 0.9218492019812878
+        "precision_mean": 0.9421579532814238,
+        "recall_mean": 0.9206521739130434
       },
       "graphsage": {
-        "accuracy_mean": 0.9689,
+        "accuracy_mean": 0.9799,
         "accuracy_std": 0.0,
         "accuracy_ci_95": 0.0,
-        "f1_mean": 0.9136830419095198,
+        "f1_mean": 0.945246526831926,
         "f1_std": 0.0,
-        "precision_mean": 0.921612541993281,
-        "recall_mean": 0.9058888277380297
+        "precision_mean": 0.9475696340797378,
+        "recall_mean": 0.9429347826086957
       }
     },
     "7": {
       "simplenn": {
-        "accuracy_mean": 0.8999,
+        "accuracy_mean": 0.8929,
         "accuracy_std": 0.0,
         "accuracy_ci_95": 0.0,
-        "f1_mean": 0.8169014084507042,
+        "f1_mean": 0.8048113723346091,
         "f1_std": 0.0,
-        "precision_mean": 0.8301115241635688,
-        "recall_mean": 0.8041051494418437
+        "precision_mean": 0.8291400675929403,
+        "recall_mean": 0.7818696883852692
       },
       "graphsage": {
-        "accuracy_mean": 0.9196,
+        "accuracy_mean": 0.9484,
         "accuracy_std": 0.0,
         "accuracy_ci_95": 0.0,
-        "f1_mean": 0.8507795100222716,
+        "f1_mean": 0.9079229122055673,
         "f1_std": 0.0,
-        "precision_mean": 0.8778245882803524,
-        "recall_mean": 0.8253510983075261
-      }
-    },
-    "9": {
-      "simplenn": {
-        "accuracy_mean": 0.7509,
-        "accuracy_std": 0.0,
-        "accuracy_ci_95": 0.0,
-        "f1_mean": 0.5877875227535992,
-        "f1_std": 0.0,
-        "precision_mean": 0.6975648075412412,
-        "recall_mean": 0.5078638833285674
-      },
-      "graphsage": {
-        "accuracy_mean": 0.8692,
-        "accuracy_std": 0.0,
-        "accuracy_ci_95": 0.0,
-        "f1_mean": 0.8102147417295416,
-        "f1_std": 0.0,
-        "precision_mean": 0.8223858615611193,
-        "recall_mean": 0.79839862739491
+        "precision_mean": 0.9151079136690647,
+        "recall_mean": 0.9008498583569405
       }
     },
     "11": {
       "simplenn": {
-        "accuracy_mean": 0.627,
+        "accuracy_mean": 0.6289,
         "accuracy_std": 0.0,
         "accuracy_ci_95": 0.0,
-        "f1_mean": 0.4127833753148615,
+        "f1_mean": 0.4195213514781792,
         "f1_std": 0.0,
-        "precision_mean": 0.5724890829694324,
-        "recall_mean": 0.3227474150664697
+        "precision_mean": 0.5622641509433962,
+        "recall_mean": 0.3345808383233533
       },
       "graphsage": {
-        "accuracy_mean": 0.8251,
+        "accuracy_mean": 0.8335,
         "accuracy_std": 0.0,
         "accuracy_ci_95": 0.0,
-        "f1_mean": 0.7809643080776456,
+        "f1_mean": 0.7881409848581244,
         "f1_std": 0.0,
-        "precision_mean": 0.7947998980372164,
-        "recall_mean": 0.7676021664204825
+        "precision_mean": 0.8042066995585562,
+        "recall_mean": 0.7727045908183633
       }
     },
     "13": {
       "simplenn": {
-        "accuracy_mean": 0.5765,
+        "accuracy_mean": 0.5812,
         "accuracy_std": 0.0,
         "accuracy_ci_95": 0.0,
-        "f1_mean": 0.37930529092774434,
+        "f1_mean": 0.3882559158632778,
         "f1_std": 0.0,
-        "precision_mean": 0.5035019455252918,
-        "recall_mean": 0.30425581942158475
+        "precision_mean": 0.5181286549707602,
+        "recall_mean": 0.3104414856341976
       },
       "graphsage": {
-        "accuracy_mean": 0.7712,
+        "accuracy_mean": 0.7528,
         "accuracy_std": 0.0,
         "accuracy_ci_95": 0.0,
-        "f1_mean": 0.7248015395718066,
+        "f1_mean": 0.67987567987568,
         "f1_std": 0.0,
-        "precision_mean": 0.7419354838709677,
-        "recall_mean": 0.7084411003997179
+        "precision_mean": 0.7628596338273758,
+        "recall_mean": 0.6131744919411353
       }
     }
   },
@@ -295,84 +267,70 @@
     "graphsage": {
       "3": {
         "distance": 3,
-        "num_parameters": 142593,
-        "model_size_mb": 0.5631837844848633,
+        "num_parameters": 547201,
+        "model_size_mb": 2.1125001907348633,
         "model_path": "..\\..\\gSAGE\\distances\\models\\revised_training\\d3.pt",
         "config": {
           "in_channels": 5,
-          "hidden_dim": 128,
+          "hidden_dim": 256,
           "num_layers": 5,
-          "dropout": 0.0,
+          "dropout": 0.1,
           "aggr": "max",
           "seed": 42
         }
       },
       "5": {
         "distance": 5,
-        "num_parameters": 142593,
-        "model_size_mb": 0.5631837844848633,
+        "num_parameters": 547201,
+        "model_size_mb": 2.1125001907348633,
         "model_path": "..\\..\\gSAGE\\distances\\models\\revised_training\\d5.pt",
         "config": {
           "in_channels": 5,
-          "hidden_dim": 128,
+          "hidden_dim": 256,
           "num_layers": 5,
-          "dropout": 0.0,
+          "dropout": 0.1,
           "aggr": "max",
           "seed": 42
         }
       },
       "7": {
         "distance": 7,
-        "num_parameters": 142593,
-        "model_size_mb": 0.5631837844848633,
+        "num_parameters": 547201,
+        "model_size_mb": 2.1125001907348633,
         "model_path": "..\\..\\gSAGE\\distances\\models\\revised_training\\d7.pt",
         "config": {
           "in_channels": 5,
-          "hidden_dim": 128,
+          "hidden_dim": 256,
           "num_layers": 5,
-          "dropout": 0.0,
-          "aggr": "max",
-          "seed": 42
-        }
-      },
-      "9": {
-        "distance": 9,
-        "num_parameters": 142593,
-        "model_size_mb": 0.5631837844848633,
-        "model_path": "..\\..\\gSAGE\\distances\\models\\revised_training\\d9.pt",
-        "config": {
-          "in_channels": 5,
-          "hidden_dim": 128,
-          "num_layers": 5,
-          "dropout": 0.0,
+          "dropout": 0.1,
           "aggr": "max",
           "seed": 42
         }
       },
       "11": {
         "distance": 11,
-        "num_parameters": 142593,
-        "model_size_mb": 1.6677980422973633,
+        "num_parameters": 547201,
+        "model_size_mb": 6.302807807922363,
         "model_path": "..\\..\\gSAGE\\distances\\models\\revised_training\\d11.pt",
         "config": {
           "in_channels": 5,
-          "hidden_dim": 128,
+          "hidden_dim": 256,
           "num_layers": 5,
-          "dropout": 0.0,
+          "dropout": 0.1,
           "aggr": "max",
           "seed": 42
         }
       },
       "13": {
         "distance": 13,
-        "num_parameters": 142593,
-        "model_size_mb": 1.6677980422973633,
+        "num_parameters": 547201,
+        "model_size_mb": 6.302807807922363,
         "model_path": "..\\..\\gSAGE\\distances\\models\\revised_training\\d13.pt",
         "config": {
           "in_channels": 5,
-          "hidden_dim": 128,
+          "hidden_dim": 256,
           "num_layers": 5,
-          "dropout": 0.0,
+          "dropout": 0.1,
           "aggr": "max",
           "seed": 42
         }

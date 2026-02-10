@@ -1,8 +1,7 @@
 test_type,statistic,p_value,significant,effect_size_r,cohens_d,interpretation,n_observations
-pooled,26.0,0.0001270771026611328,True,0.7822150371185275,-0.6790597133909724,medium,24
+pooled,0.0,8.246690806096905e-05,True,0.8803657971156691,-0.6142184392169598,medium,20
 distance_3,0.0,0.125,False,0.7670602721762732,0.0,small,4
 distance_5,0.0,0.125,False,0.7670602721762732,0.0,small,4
 distance_7,0.0,0.125,False,0.7670602721762732,0.0,small,4
-distance_9,0.0,0.125,False,0.7670602721762732,0.0,small,4
 distance_11,0.0,0.125,False,0.7670602721762732,0.0,small,4
 distance_13,0.0,0.125,False,0.7670602721762732,0.0,small,4
