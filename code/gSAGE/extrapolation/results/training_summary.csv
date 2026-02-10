@@ -1,2 +1,0 @@
-Split,d3 %,d5 %,d7 %,Train Acc,Val Acc,Test Acc,Final Loss,Time (min)
-tiny_d3_10_40_50,10.0,40.0,50.0,96.8,93.329,93.36,0.07447475216150284,168.74867746432622

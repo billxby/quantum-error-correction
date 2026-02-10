@@ -1,0 +1,793 @@
+{
+  "metadata": {
+    "timestamp": "2026-02-08T14:07:04.212005",
+    "distances": [
+      3,
+      5,
+      7,
+      9,
+      11,
+      13
+    ],
+    "test_samples_per_distance": 10000,
+    "num_benchmark_runs": 5,
+    "num_accuracy_runs": 4,
+    "significance_level": 0.05,
+    "seed": 42
+  },
+  "parameter_comparison": [
+    {
+      "model_name": "a1_d3_00",
+      "deepsets_params": 50689,
+      "graphsage_params": 547201,
+      "deepsets_size_mb": 0.2013559341430664,
+      "graphsage_size_mb": 2.110377311706543,
+      "param_ratio": 10.795261299295705
+    },
+    {
+      "model_name": "a2_d3_10",
+      "deepsets_params": 50689,
+      "graphsage_params": 547201,
+      "deepsets_size_mb": 0.2013559341430664,
+      "graphsage_size_mb": 2.110377311706543,
+      "param_ratio": 10.795261299295705
+    },
+    {
+      "model_name": "a3_d3_20",
+      "deepsets_params": 50689,
+      "graphsage_params": 547201,
+      "deepsets_size_mb": 0.2013559341430664,
+      "graphsage_size_mb": 2.110377311706543,
+      "param_ratio": 10.795261299295705
+    },
+    {
+      "model_name": "a4_d3_40",
+      "deepsets_params": 50689,
+      "graphsage_params": 547201,
+      "deepsets_size_mb": 0.2013559341430664,
+      "graphsage_size_mb": 2.110377311706543,
+      "param_ratio": 10.795261299295705
+    },
+    {
+      "model_name": "a5_d3_50",
+      "deepsets_params": 50689,
+      "graphsage_params": 547201,
+      "deepsets_size_mb": 0.2013559341430664,
+      "graphsage_size_mb": 2.110377311706543,
+      "param_ratio": 10.795261299295705
+    },
+    {
+      "model_name": "b1_d5heavy",
+      "deepsets_params": 50689,
+      "graphsage_params": 547201,
+      "deepsets_size_mb": 0.20140552520751953,
+      "graphsage_size_mb": 2.1104631423950195,
+      "param_ratio": 10.795261299295705
+    },
+    {
+      "model_name": "b2_d5more",
+      "deepsets_params": 50689,
+      "graphsage_params": 547201,
+      "deepsets_size_mb": 0.20138072967529297,
+      "graphsage_size_mb": 2.1104202270507812,
+      "param_ratio": 10.795261299295705
+    },
+    {
+      "model_name": "b3_balanced",
+      "deepsets_params": 50689,
+      "graphsage_params": 547201,
+      "deepsets_size_mb": 0.2014303207397461,
+      "graphsage_size_mb": 2.110567092895508,
+      "param_ratio": 10.795261299295705
+    },
+    {
+      "model_name": "b4_d7more",
+      "deepsets_params": 50689,
+      "graphsage_params": 547201,
+      "deepsets_size_mb": 0.20138072967529297,
+      "graphsage_size_mb": 2.1104202270507812,
+      "param_ratio": 10.795261299295705
+    },
+    {
+      "model_name": "b5_d7heavy",
+      "deepsets_params": 50689,
+      "graphsage_params": 547201,
+      "deepsets_size_mb": 0.20140552520751953,
+      "graphsage_size_mb": 2.1104631423950195,
+      "param_ratio": 10.795261299295705
+    },
+    {
+      "model_name": "c1_only_d3",
+      "deepsets_params": 50689,
+      "graphsage_params": 547201,
+      "deepsets_size_mb": 0.20140552520751953,
+      "graphsage_size_mb": 2.1125001907348633,
+      "param_ratio": 10.795261299295705
+    },
+    {
+      "model_name": "c2_only_d5",
+      "deepsets_params": 50689,
+      "graphsage_params": 547201,
+      "deepsets_size_mb": 0.20140552520751953,
+      "graphsage_size_mb": 2.1125001907348633,
+      "param_ratio": 10.795261299295705
+    },
+    {
+      "model_name": "c3_only_d7",
+      "deepsets_params": 50689,
+      "graphsage_params": 547201,
+      "deepsets_size_mb": 0.20140552520751953,
+      "graphsage_size_mb": 2.1125001907348633,
+      "param_ratio": 10.795261299295705
+    },
+    {
+      "model_name": "c4_no_d7",
+      "deepsets_params": 50689,
+      "graphsage_params": 547201,
+      "deepsets_size_mb": 0.2013559341430664,
+      "graphsage_size_mb": 2.110377311706543,
+      "param_ratio": 10.795261299295705
+    },
+    {
+      "model_name": "equal_333333",
+      "deepsets_params": 50689,
+      "graphsage_params": 547201,
+      "deepsets_size_mb": 0.20145511627197266,
+      "graphsage_size_mb": 2.110610008239746,
+      "param_ratio": 10.795261299295705
+    }
+  ],
+  "accuracy_results": {
+    "3": {
+      "deepsets": {
+        "accuracy_mean": 0.9165866666666668,
+        "accuracy_std": 0.0,
+        "accuracy_ci_95": 0.034465219546908336,
+        "f1_mean": 0.563728206036537,
+        "f1_std": 0.0,
+        "precision_mean": 0.5777590475296859,
+        "recall_mean": 0.5702422145328719
+      },
+      "graphsage": {
+        "accuracy_mean": 0.9835133333333331,
+        "accuracy_std": 0.0,
+        "accuracy_ci_95": 0.0029043803330168023,
+        "f1_mean": 0.8995940755543886,
+        "f1_std": 0.0,
+        "precision_mean": 0.9362017591302233,
+        "recall_mean": 0.8698961937716263
+      }
+    },
+    "5": {
+      "deepsets": {
+        "accuracy_mean": 0.9189066666666666,
+        "accuracy_std": 0.0,
+        "accuracy_ci_95": 0.05209245398587797,
+        "f1_mean": 0.79685990866557,
+        "f1_std": 0.0,
+        "precision_mean": 0.8030947208376816,
+        "recall_mean": 0.7949199337382663
+      },
+      "graphsage": {
+        "accuracy_mean": 0.9694999999999999,
+        "accuracy_std": 0.0,
+        "accuracy_ci_95": 0.010749301096453773,
+        "f1_mean": 0.9121675799053103,
+        "f1_std": 0.0,
+        "precision_mean": 0.9264867698521848,
+        "recall_mean": 0.9003129026320632
+      }
+    },
+    "7": {
+      "deepsets": {
+        "accuracy_mean": 0.82814,
+        "accuracy_std": 0.0,
+        "accuracy_ci_95": 0.055610271296570944,
+        "f1_mean": 0.6658044348071923,
+        "f1_std": 0.0,
+        "precision_mean": 0.6873878287100121,
+        "recall_mean": 0.6511988196237551
+      },
+      "graphsage": {
+        "accuracy_mean": 0.9142533333333335,
+        "accuracy_std": 0.0,
+        "accuracy_ci_95": 0.02638224307839846,
+        "f1_mean": 0.8262509798688134,
+        "f1_std": 0.0,
+        "precision_mean": 0.8477923102927637,
+        "recall_mean": 0.8219107340464774
+      }
+    },
+    "9": {
+      "deepsets": {
+        "accuracy_mean": 0.5535066666666667,
+        "accuracy_std": 0.0,
+        "accuracy_ci_95": 0.013470211971430121,
+        "f1_mean": 0.30748320923220923,
+        "f1_std": 0.0,
+        "precision_mean": 0.3251623373002836,
+        "recall_mean": 0.31555934128336177
+      },
+      "graphsage": {
+        "accuracy_mean": 0.79048,
+        "accuracy_std": 0.0,
+        "accuracy_ci_95": 0.02609832519159462,
+        "f1_mean": 0.6854793775896248,
+        "f1_std": 0.0,
+        "precision_mean": 0.6940791325540093,
+        "recall_mean": 0.7123036153700549
+      }
+    },
+    "11": {
+      "deepsets": {
+        "accuracy_mean": 0.53182,
+        "accuracy_std": 0.0,
+        "accuracy_ci_95": 0.011917504891433155,
+        "f1_mean": 0.3206205880651417,
+        "f1_std": 0.0,
+        "precision_mean": 0.3699931811449516,
+        "recall_mean": 0.33107260726072607
+      },
+      "graphsage": {
+        "accuracy_mean": 0.6815533333333333,
+        "accuracy_std": 0.0,
+        "accuracy_ci_95": 0.019394295389880134,
+        "f1_mean": 0.6015282862710691,
+        "f1_std": 0.0,
+        "precision_mean": 0.5905677060397626,
+        "recall_mean": 0.664075907590759
+      }
+    },
+    "13": {
+      "deepsets": {
+        "accuracy_mean": 0.5229466666666667,
+        "accuracy_std": 0.0,
+        "accuracy_ci_95": 0.012678220660948581,
+        "f1_mean": 0.30838872065275835,
+        "f1_std": 0.0,
+        "precision_mean": 0.3943771786723181,
+        "recall_mean": 0.3225402784295323
+      },
+      "graphsage": {
+        "accuracy_mean": 0.5995866666666667,
+        "accuracy_std": 0.0,
+        "accuracy_ci_95": 0.009907719616481623,
+        "f1_mean": 0.5287549982363061,
+        "f1_std": 0.0,
+        "precision_mean": 0.5231187334003552,
+        "recall_mean": 0.5930705459095886
+      }
+    }
+  },
+  "model_info": {
+    "deepsets": {
+      "a1_d3_00": {
+        "name": "a1_d3_00",
+        "num_parameters": 50689,
+        "model_size_mb": 0.2013559341430664,
+        "model_path": "..\\..\\deepsets\\extrapolation\\models\\revised_training\\a1_d3_00.pt",
+        "config": {
+          "phi_hidden": [
+            128,
+            128
+          ],
+          "rho_hidden": [
+            128,
+            64
+          ],
+          "pool": "mean",
+          "dropout": 0.0,
+          "use_fourier_features": true,
+          "fourier_dim": 64,
+          "seed": 42
+        }
+      },
+      "a2_d3_10": {
+        "name": "a2_d3_10",
+        "num_parameters": 50689,
+        "model_size_mb": 0.2013559341430664,
+        "model_path": "..\\..\\deepsets\\extrapolation\\models\\revised_training\\a2_d3_10.pt",
+        "config": {
+          "phi_hidden": [
+            128,
+            128
+          ],
+          "rho_hidden": [
+            128,
+            64
+          ],
+          "pool": "mean",
+          "dropout": 0.0,
+          "use_fourier_features": true,
+          "fourier_dim": 64,
+          "seed": 42
+        }
+      },
+      "a3_d3_20": {
+        "name": "a3_d3_20",
+        "num_parameters": 50689,
+        "model_size_mb": 0.2013559341430664,
+        "model_path": "..\\..\\deepsets\\extrapolation\\models\\revised_training\\a3_d3_20.pt",
+        "config": {
+          "phi_hidden": [
+            128,
+            128
+          ],
+          "rho_hidden": [
+            128,
+            64
+          ],
+          "pool": "mean",
+          "dropout": 0.0,
+          "use_fourier_features": true,
+          "fourier_dim": 64,
+          "seed": 42
+        }
+      },
+      "a4_d3_40": {
+        "name": "a4_d3_40",
+        "num_parameters": 50689,
+        "model_size_mb": 0.2013559341430664,
+        "model_path": "..\\..\\deepsets\\extrapolation\\models\\revised_training\\a4_d3_40.pt",
+        "config": {
+          "phi_hidden": [
+            128,
+            128
+          ],
+          "rho_hidden": [
+            128,
+            64
+          ],
+          "pool": "mean",
+          "dropout": 0.0,
+          "use_fourier_features": true,
+          "fourier_dim": 64,
+          "seed": 42
+        }
+      },
+      "a5_d3_50": {
+        "name": "a5_d3_50",
+        "num_parameters": 50689,
+        "model_size_mb": 0.2013559341430664,
+        "model_path": "..\\..\\deepsets\\extrapolation\\models\\revised_training\\a5_d3_50.pt",
+        "config": {
+          "phi_hidden": [
+            128,
+            128
+          ],
+          "rho_hidden": [
+            128,
+            64
+          ],
+          "pool": "mean",
+          "dropout": 0.0,
+          "use_fourier_features": true,
+          "fourier_dim": 64,
+          "seed": 42
+        }
+      },
+      "b1_d5heavy": {
+        "name": "b1_d5heavy",
+        "num_parameters": 50689,
+        "model_size_mb": 0.20140552520751953,
+        "model_path": "..\\..\\deepsets\\extrapolation\\models\\revised_training\\b1_d5heavy.pt",
+        "config": {
+          "phi_hidden": [
+            128,
+            128
+          ],
+          "rho_hidden": [
+            128,
+            64
+          ],
+          "pool": "mean",
+          "dropout": 0.0,
+          "use_fourier_features": true,
+          "fourier_dim": 64,
+          "seed": 42
+        }
+      },
+      "b2_d5more": {
+        "name": "b2_d5more",
+        "num_parameters": 50689,
+        "model_size_mb": 0.20138072967529297,
+        "model_path": "..\\..\\deepsets\\extrapolation\\models\\revised_training\\b2_d5more.pt",
+        "config": {
+          "phi_hidden": [
+            128,
+            128
+          ],
+          "rho_hidden": [
+            128,
+            64
+          ],
+          "pool": "mean",
+          "dropout": 0.0,
+          "use_fourier_features": true,
+          "fourier_dim": 64,
+          "seed": 42
+        }
+      },
+      "b3_balanced": {
+        "name": "b3_balanced",
+        "num_parameters": 50689,
+        "model_size_mb": 0.2014303207397461,
+        "model_path": "..\\..\\deepsets\\extrapolation\\models\\revised_training\\b3_balanced.pt",
+        "config": {
+          "phi_hidden": [
+            128,
+            128
+          ],
+          "rho_hidden": [
+            128,
+            64
+          ],
+          "pool": "mean",
+          "dropout": 0.0,
+          "use_fourier_features": true,
+          "fourier_dim": 64,
+          "seed": 42
+        }
+      },
+      "b4_d7more": {
+        "name": "b4_d7more",
+        "num_parameters": 50689,
+        "model_size_mb": 0.20138072967529297,
+        "model_path": "..\\..\\deepsets\\extrapolation\\models\\revised_training\\b4_d7more.pt",
+        "config": {
+          "phi_hidden": [
+            128,
+            128
+          ],
+          "rho_hidden": [
+            128,
+            64
+          ],
+          "pool": "mean",
+          "dropout": 0.0,
+          "use_fourier_features": true,
+          "fourier_dim": 64,
+          "seed": 42
+        }
+      },
+      "b5_d7heavy": {
+        "name": "b5_d7heavy",
+        "num_parameters": 50689,
+        "model_size_mb": 0.20140552520751953,
+        "model_path": "..\\..\\deepsets\\extrapolation\\models\\revised_training\\b5_d7heavy.pt",
+        "config": {
+          "phi_hidden": [
+            128,
+            128
+          ],
+          "rho_hidden": [
+            128,
+            64
+          ],
+          "pool": "mean",
+          "dropout": 0.0,
+          "use_fourier_features": true,
+          "fourier_dim": 64,
+          "seed": 42
+        }
+      },
+      "c1_only_d3": {
+        "name": "c1_only_d3",
+        "num_parameters": 50689,
+        "model_size_mb": 0.20140552520751953,
+        "model_path": "..\\..\\deepsets\\extrapolation\\models\\revised_training\\c1_only_d3.pt",
+        "config": {
+          "phi_hidden": [
+            128,
+            128
+          ],
+          "rho_hidden": [
+            128,
+            64
+          ],
+          "pool": "mean",
+          "dropout": 0.0,
+          "use_fourier_features": true,
+          "fourier_dim": 64,
+          "seed": 42
+        }
+      },
+      "c2_only_d5": {
+        "name": "c2_only_d5",
+        "num_parameters": 50689,
+        "model_size_mb": 0.20140552520751953,
+        "model_path": "..\\..\\deepsets\\extrapolation\\models\\revised_training\\c2_only_d5.pt",
+        "config": {
+          "phi_hidden": [
+            128,
+            128
+          ],
+          "rho_hidden": [
+            128,
+            64
+          ],
+          "pool": "mean",
+          "dropout": 0.0,
+          "use_fourier_features": true,
+          "fourier_dim": 64,
+          "seed": 42
+        }
+      },
+      "c3_only_d7": {
+        "name": "c3_only_d7",
+        "num_parameters": 50689,
+        "model_size_mb": 0.20140552520751953,
+        "model_path": "..\\..\\deepsets\\extrapolation\\models\\revised_training\\c3_only_d7.pt",
+        "config": {
+          "phi_hidden": [
+            128,
+            128
+          ],
+          "rho_hidden": [
+            128,
+            64
+          ],
+          "pool": "mean",
+          "dropout": 0.0,
+          "use_fourier_features": true,
+          "fourier_dim": 64,
+          "seed": 42
+        }
+      },
+      "c4_no_d7": {
+        "name": "c4_no_d7",
+        "num_parameters": 50689,
+        "model_size_mb": 0.2013559341430664,
+        "model_path": "..\\..\\deepsets\\extrapolation\\models\\revised_training\\c4_no_d7.pt",
+        "config": {
+          "phi_hidden": [
+            128,
+            128
+          ],
+          "rho_hidden": [
+            128,
+            64
+          ],
+          "pool": "mean",
+          "dropout": 0.0,
+          "use_fourier_features": true,
+          "fourier_dim": 64,
+          "seed": 42
+        }
+      },
+      "equal_333333": {
+        "name": "equal_333333",
+        "num_parameters": 50689,
+        "model_size_mb": 0.20145511627197266,
+        "model_path": "..\\..\\deepsets\\extrapolation\\models\\revised_training\\equal_333333.pt",
+        "config": {
+          "phi_hidden": [
+            128,
+            128
+          ],
+          "rho_hidden": [
+            128,
+            64
+          ],
+          "pool": "mean",
+          "dropout": 0.0,
+          "use_fourier_features": true,
+          "fourier_dim": 64,
+          "seed": 42
+        }
+      }
+    },
+    "graphsage": {
+      "a1_d3_00": {
+        "name": "a1_d3_00",
+        "num_parameters": 547201,
+        "model_size_mb": 2.110377311706543,
+        "model_path": "..\\..\\gSAGE\\extrapolation\\models\\revised_training\\a1_d3_00.pt",
+        "config": {
+          "in_channels": 5,
+          "hidden_dim": 256,
+          "num_layers": 5,
+          "dropout": 0.1,
+          "aggr": "max",
+          "seed": 42
+        }
+      },
+      "a2_d3_10": {
+        "name": "a2_d3_10",
+        "num_parameters": 547201,
+        "model_size_mb": 2.110377311706543,
+        "model_path": "..\\..\\gSAGE\\extrapolation\\models\\revised_training\\a2_d3_10.pt",
+        "config": {
+          "in_channels": 5,
+          "hidden_dim": 256,
+          "num_layers": 5,
+          "dropout": 0.1,
+          "aggr": "max",
+          "seed": 42
+        }
+      },
+      "a3_d3_20": {
+        "name": "a3_d3_20",
+        "num_parameters": 547201,
+        "model_size_mb": 2.110377311706543,
+        "model_path": "..\\..\\gSAGE\\extrapolation\\models\\revised_training\\a3_d3_20.pt",
+        "config": {
+          "in_channels": 5,
+          "hidden_dim": 256,
+          "num_layers": 5,
+          "dropout": 0.1,
+          "aggr": "max",
+          "seed": 42
+        }
+      },
+      "a4_d3_40": {
+        "name": "a4_d3_40",
+        "num_parameters": 547201,
+        "model_size_mb": 2.110377311706543,
+        "model_path": "..\\..\\gSAGE\\extrapolation\\models\\revised_training\\a4_d3_40.pt",
+        "config": {
+          "in_channels": 5,
+          "hidden_dim": 256,
+          "num_layers": 5,
+          "dropout": 0.1,
+          "aggr": "max",
+          "seed": 42
+        }
+      },
+      "a5_d3_50": {
+        "name": "a5_d3_50",
+        "num_parameters": 547201,
+        "model_size_mb": 2.110377311706543,
+        "model_path": "..\\..\\gSAGE\\extrapolation\\models\\revised_training\\a5_d3_50.pt",
+        "config": {
+          "in_channels": 5,
+          "hidden_dim": 256,
+          "num_layers": 5,
+          "dropout": 0.1,
+          "aggr": "max",
+          "seed": 42
+        }
+      },
+      "b1_d5heavy": {
+        "name": "b1_d5heavy",
+        "num_parameters": 547201,
+        "model_size_mb": 2.1104631423950195,
+        "model_path": "..\\..\\gSAGE\\extrapolation\\models\\revised_training\\b1_d5heavy.pt",
+        "config": {
+          "in_channels": 5,
+          "hidden_dim": 256,
+          "num_layers": 5,
+          "dropout": 0.1,
+          "aggr": "max",
+          "seed": 42
+        }
+      },
+      "b2_d5more": {
+        "name": "b2_d5more",
+        "num_parameters": 547201,
+        "model_size_mb": 2.1104202270507812,
+        "model_path": "..\\..\\gSAGE\\extrapolation\\models\\revised_training\\b2_d5more.pt",
+        "config": {
+          "in_channels": 5,
+          "hidden_dim": 256,
+          "num_layers": 5,
+          "dropout": 0.1,
+          "aggr": "max",
+          "seed": 42
+        }
+      },
+      "b3_balanced": {
+        "name": "b3_balanced",
+        "num_parameters": 547201,
+        "model_size_mb": 2.110567092895508,
+        "model_path": "..\\..\\gSAGE\\extrapolation\\models\\revised_training\\b3_balanced.pt",
+        "config": {
+          "in_channels": 5,
+          "hidden_dim": 256,
+          "num_layers": 5,
+          "dropout": 0.1,
+          "aggr": "max",
+          "seed": 42
+        }
+      },
+      "b4_d7more": {
+        "name": "b4_d7more",
+        "num_parameters": 547201,
+        "model_size_mb": 2.1104202270507812,
+        "model_path": "..\\..\\gSAGE\\extrapolation\\models\\revised_training\\b4_d7more.pt",
+        "config": {
+          "in_channels": 5,
+          "hidden_dim": 256,
+          "num_layers": 5,
+          "dropout": 0.1,
+          "aggr": "max",
+          "seed": 42
+        }
+      },
+      "b5_d7heavy": {
+        "name": "b5_d7heavy",
+        "num_parameters": 547201,
+        "model_size_mb": 2.1104631423950195,
+        "model_path": "..\\..\\gSAGE\\extrapolation\\models\\revised_training\\b5_d7heavy.pt",
+        "config": {
+          "in_channels": 5,
+          "hidden_dim": 256,
+          "num_layers": 5,
+          "dropout": 0.1,
+          "aggr": "max",
+          "seed": 42
+        }
+      },
+      "c1_only_d3": {
+        "name": "c1_only_d3",
+        "num_parameters": 547201,
+        "model_size_mb": 2.1125001907348633,
+        "model_path": "..\\..\\gSAGE\\extrapolation\\models\\revised_training\\c1_only_d3.pt",
+        "config": {
+          "in_channels": 5,
+          "hidden_dim": 256,
+          "num_layers": 5,
+          "dropout": 0.1,
+          "aggr": "max",
+          "seed": 42
+        }
+      },
+      "c2_only_d5": {
+        "name": "c2_only_d5",
+        "num_parameters": 547201,
+        "model_size_mb": 2.1125001907348633,
+        "model_path": "..\\..\\gSAGE\\extrapolation\\models\\revised_training\\c2_only_d5.pt",
+        "config": {
+          "in_channels": 5,
+          "hidden_dim": 256,
+          "num_layers": 5,
+          "dropout": 0.1,
+          "aggr": "max",
+          "seed": 42
+        }
+      },
+      "c3_only_d7": {
+        "name": "c3_only_d7",
+        "num_parameters": 547201,
+        "model_size_mb": 2.1125001907348633,
+        "model_path": "..\\..\\gSAGE\\extrapolation\\models\\revised_training\\c3_only_d7.pt",
+        "config": {
+          "in_channels": 5,
+          "hidden_dim": 256,
+          "num_layers": 5,
+          "dropout": 0.1,
+          "aggr": "max",
+          "seed": 42
+        }
+      },
+      "c4_no_d7": {
+        "name": "c4_no_d7",
+        "num_parameters": 547201,
+        "model_size_mb": 2.110377311706543,
+        "model_path": "..\\..\\gSAGE\\extrapolation\\models\\revised_training\\c4_no_d7.pt",
+        "config": {
+          "in_channels": 5,
+          "hidden_dim": 256,
+          "num_layers": 5,
+          "dropout": 0.1,
+          "aggr": "max",
+          "seed": 42
+        }
+      },
+      "equal_333333": {
+        "name": "equal_333333",
+        "num_parameters": 547201,
+        "model_size_mb": 2.110610008239746,
+        "model_path": "..\\..\\gSAGE\\extrapolation\\models\\revised_training\\equal_333333.pt",
+        "config": {
+          "in_channels": 5,
+          "hidden_dim": 256,
+          "num_layers": 5,
+          "dropout": 0.1,
+          "aggr": "max",
+          "seed": 42
+        }
+      }
+    }
+  }
+}

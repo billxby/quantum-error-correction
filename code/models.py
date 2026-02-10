@@ -419,10 +419,19 @@ class SparseGraph:
             num_detectors: Number of detectors in the detection sample
 
         Returns:
-            tuple: (detector_coords, all_features, normalization_bounds)
+            tuple: (detector_coords, all_features, normalization_bounds, all_raw_coords)
+                - detector_coords: dict mapping detector_id -> [x, y, t, basis]
+                - all_features: Tensor [num_detectors, 5] with normalized node features
+                - normalization_bounds: dict with x/y/t min/max values
+                - all_raw_coords: Tensor [num_detectors, 3] with raw (north, west, time) for edge weights
         """
         if num_detectors in self._feature_cache:
-            return self._feature_cache[num_detectors]
+            cached = self._feature_cache[num_detectors]
+            # Handle legacy cache entries without raw_coords (length 3 vs 4)
+            if len(cached) == 4:
+                return cached
+            # Rebuild cache with raw coords
+            del self._feature_cache[num_detectors]
 
         # Cache miss: compute everything
         distance = self._infer_distance(num_detectors)
@@ -451,9 +460,13 @@ class SparseGraph:
 
         # Precompute features for all detectors
         features = []
+        raw_coords = []  # Store raw (unnormalized) coordinates for edge weight computation
         for det_id in range(num_detectors):
             coord = detector_coords.get(det_id, [0, 0, 0, 0])
             x, y, t = coord[0], coord[1], coord[2]
+
+            # Store raw coordinates (y=north, x=west, t=time)
+            raw_coords.append([y, x, t])
 
             # Get basis from 4th coordinate
             if len(coord) >= 4:
@@ -466,7 +479,7 @@ class SparseGraph:
                 is_x = float(stabilizer_type)
                 is_z = 1.0 - is_x
 
-            # Normalized distances (0 to 1)
+            # Normalized distances (0 to 1) for node features
             d_west = (x - x_min) / max(1, x_max - x_min)
             d_north = (y - y_min) / max(1, y_max - y_min)
             d_time = (t - t_min) / max(1, t_max - t_min)
@@ -474,11 +487,12 @@ class SparseGraph:
             features.append([is_x, is_z, d_north, d_west, d_time])
 
         all_features = torch.tensor(features, dtype=torch.float32)
+        all_raw_coords = torch.tensor(raw_coords, dtype=torch.float32)  # [num_detectors, 3]
 
-        # Cache the result
-        self._feature_cache[num_detectors] = (detector_coords, all_features, norm_bounds)
+        # Cache the result (now includes raw coordinates for edge weights)
+        self._feature_cache[num_detectors] = (detector_coords, all_features, norm_bounds, all_raw_coords)
 
-        return detector_coords, all_features, norm_bounds
+        return detector_coords, all_features, norm_bounds, all_raw_coords
 
     def _supremum_distance(self, feat_i: torch.Tensor, feat_j: torch.Tensor) -> float:
         """
@@ -522,8 +536,8 @@ class SparseGraph:
         detections_cpu = detections.cpu()
         num_detectors = detections_cpu.shape[0]
 
-        # Get cached coordinates and features for this detection size
-        _, all_features, _ = self._get_coords_and_features(num_detectors)
+        # Get cached coordinates, features, and raw coords for edge weights
+        _, all_features, _, all_raw_coords = self._get_coords_and_features(num_detectors)
 
         # Find fired detectors (value == +1)
         fired_mask = detections_cpu > 0
@@ -552,12 +566,13 @@ class SparseGraph:
             )
 
         # === VECTORIZED k-NN with supremum (L-infinity) distance ===
-        # Extract spatial coordinates: d_north, d_west, d_time (indices 2, 3, 4)
-        coords = node_features[:, 2:5]  # [n, 3]
+        # Use RAW (unnormalized) coordinates for edge weight computation
+        # This ensures distances are integers (1, 2, 3...) so weights = dist^(-2) are meaningful
+        raw_coords = all_raw_coords[fired_indices]  # [n, 3] - raw (north, west, time)
 
         # Compute pairwise L-infinity (supremum) distance using broadcasting
-        # diff[i, j, k] = coords[i, k] - coords[j, k]
-        diff = coords.unsqueeze(0) - coords.unsqueeze(1)  # [n, n, 3]
+        # diff[i, j, k] = raw_coords[i, k] - raw_coords[j, k]
+        diff = raw_coords.unsqueeze(0) - raw_coords.unsqueeze(1)  # [n, n, 3]
         sup_dist = diff.abs().max(dim=2).values  # [n, n] pairwise supremum distances
 
         # Exclude self-connections by setting diagonal to infinity
@@ -577,10 +592,11 @@ class SparseGraph:
         dst = knn_indices.flatten()  # [n*k]
         edge_index = torch.stack([src, dst], dim=0).long()  # [2, n*k]
 
-        # Compute edge weights vectorized: w = sup_dist^(-2), clamped to max 1.0
+        # Compute edge weights: w = sup_dist^(-2)
+        # With raw coords, distances are integers >= 1, so weights are in (0, 1]
+        # dist=1 -> w=1.0, dist=2 -> w=0.25, dist=3 -> w=0.111, etc.
         edge_distances = sup_dist[src, dst]  # [n*k]
-        # Handle near-zero distances (same position) by clamping
-        edge_attr = (edge_distances ** -2).clamp(max=1.0).unsqueeze(1)  # [n*k, 1]
+        edge_attr = (edge_distances ** -2).unsqueeze(1)  # [n*k, 1]
 
         return Data(
             x=node_features,
@@ -604,7 +620,7 @@ class SparseGraph:
         return [self.to_pyg(det, lbl) for det, lbl in zip(detections, labels)]
 
 
-def visualize_sparse_graph(graph: Data, title: str = "Sparse Graph Visualization"):
+def visualize_sparse_graph(graph: Data, title: str = "Sparse Graph Visualization", show_edge_weights: bool = True):
     """
     Visualize a PyG sparse graph with node features and edge weights.
 
@@ -615,6 +631,7 @@ def visualize_sparse_graph(graph: Data, title: str = "Sparse Graph Visualization
     Args:
         graph: PyTorch Geometric Data object from SparseGraph
         title: Plot title
+        show_edge_weights: If True, display edge weight values as labels on edges (default: True)
     """
     import networkx as nx
 
@@ -683,6 +700,14 @@ def visualize_sparse_graph(graph: Data, title: str = "Sparse Graph Visualization
                                   arrows=True, arrowsize=15,
                                   connectionstyle="arc3,rad=0.1")
 
+            # Draw edge weight labels if requested
+            if show_edge_weights:
+                edge_labels = {(u, v): f'{d["weight"]:.2f}' for u, v, d in G.edges(data=True)}
+                nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, ax=ax1,
+                                            font_size=7, font_color='darkred',
+                                            label_pos=0.3, rotate=False,
+                                            bbox=dict(boxstyle='round,pad=0.1', facecolor='white', alpha=0.7))
+
         # Legend
         from matplotlib.patches import Patch
         legend_elements = [
@@ -717,6 +742,22 @@ def visualize_sparse_graph(graph: Data, title: str = "Sparse Graph Visualization
         table.auto_set_font_size(False)
         table.set_fontsize(9)
         table.scale(0.65, 1.3)
+
+        # Add edge info below the table
+        info_text = f"Label: {graph.y.item():.0f} (Observable flip)\n\n"
+        if graph.edge_index.shape[1] > 0:
+            info_text += "Edge Weights (sample):\n"
+            for idx in range(min(5, graph.edge_index.shape[1])):
+                src = graph.edge_index[0, idx].item()
+                dst = graph.edge_index[1, idx].item()
+                w = graph.edge_attr[idx, 0].item()
+                info_text += f"  {src} -> {dst}: {w:.4f}\n"
+            if graph.edge_index.shape[1] > 5:
+                info_text += f"  ... and {graph.edge_index.shape[1] - 5} more edges"
+
+        ax2.text(0.5, 0.3, info_text, transform=ax2.transAxes,
+                fontsize=10, verticalalignment='top', horizontalalignment='center',
+                family='monospace')
     else:
         ax2.text(0.5, 0.5, "No nodes to display", ha='center', va='center', fontsize=12)
 
@@ -732,7 +773,7 @@ def visualize_sparse_graph(graph: Data, title: str = "Sparse Graph Visualization
 def _save_to_gdrive(data, path):
     """
     Save data to path using temp file to avoid Google Drive sync conflicts.
-    
+
     Google Drive's sync process can interfere with large file writes, causing
     corruption. This function writes to a local temp file first, then moves
     the completed file to the target path in one atomic operation.
@@ -784,7 +825,7 @@ class DatasetCache:
         # Current dataset state
         self.graphs = []
         self.config = {}
-        
+
         # Original detection arrays (saved alongside graphs)
         self.detections = None
         self.labels = None
@@ -942,10 +983,10 @@ class DatasetCache:
                 size_str = f"{file_size_mb:.1f} MB"
             print(f"Loading dataset '{name}' ({size_str})...")
 
-        # Load graphs (mmap=True speeds up loading for large files)
+        # Load graphs
         if verbose:
             print(f"  Reading {name}.pt (this may take a while for large files)...")
-        self.graphs = torch.load(data_path, weights_only=False, mmap=True)
+        self.graphs = torch.load(str(data_path), weights_only=False)
 
         # Load metadata if exists
         if meta_path.exists():
@@ -1881,73 +1922,73 @@ class WeightedSAGEConv(MessagePassing):
 
     def _lstm_aggregate(self, x, edge_index, edge_weight):
         """LSTM-based aggregation of neighbors (batched implementation).
-        
+
         Uses pack_padded_sequence for efficient batched LSTM processing,
         avoiding the slow Python for-loop over nodes.
         """
         from torch_geometric.utils import degree
-        
+
         num_nodes = x.size(0)
         row, col = edge_index
-        
+
         # Handle empty edge case
         if edge_index.numel() == 0:
             return torch.zeros(num_nodes, self.in_channels, device=x.device)
-        
+
         # Get neighbor features
         neighbor_feats = x[col]  # [num_edges, in_channels]
-        
+
         # Apply edge weights if provided
         if edge_weight is not None:
             neighbor_feats = neighbor_feats * edge_weight.view(-1, 1)
-        
+
         # Sort edges by source node for grouping
         perm = torch.argsort(row)
         row_sorted = row[perm]
         neighbor_feats_sorted = neighbor_feats[perm]
-        
+
         # Get counts per node (degree)
         deg = degree(row, num_nodes, dtype=torch.long)
-        
+
         # Split into list of tensors (one per node)
         splits = deg.tolist()
         neighbor_groups = torch.split(neighbor_feats_sorted, splits)
-        
+
         # Initialize output
         out = torch.zeros(num_nodes, self.in_channels, device=x.device)
-        
+
         # Find nodes that have neighbors
         nodes_with_neighbors = (deg > 0).nonzero(as_tuple=True)[0]
-        
+
         if len(nodes_with_neighbors) == 0:
             return out
-        
+
         # Pad sequences and batch them
         max_neighbors = deg.max().item()
         batch_size = len(nodes_with_neighbors)
-        
+
         # Create padded tensor for batched LSTM
         padded = torch.zeros(batch_size, max_neighbors, self.in_channels, device=x.device)
         lengths = []
-        
+
         for i, node_idx in enumerate(nodes_with_neighbors):
             seq = neighbor_groups[node_idx.item()]
             seq_len = seq.size(0)
             padded[i, :seq_len] = seq
             lengths.append(seq_len)
-        
+
         # Pack for efficient LSTM processing (lengths must be on CPU)
         lengths_tensor = torch.tensor(lengths, dtype=torch.long, device='cpu')
         packed = torch.nn.utils.rnn.pack_padded_sequence(
             padded, lengths_tensor, batch_first=True, enforce_sorted=False
         )
-        
+
         # Run LSTM on entire batch at once
         _, (h_n, _) = self.lstm(packed)  # h_n: [1, batch_size, hidden]
-        
+
         # Place results back into output tensor
         out[nodes_with_neighbors] = h_n.squeeze(0)
-        
+
         return out
 
     def message(self, x_j, edge_weight, aggr_mode=None):

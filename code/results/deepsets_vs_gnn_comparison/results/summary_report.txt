@@ -1,0 +1,53 @@
+================================================================================
+DEEPSETS vs GRAPH NEURAL NETWORK COMPARISON REPORT
+================================================================================
+Generated: 2026-02-08 14:07:04
+
+PER-DISTANCE SUMMARY
+--------------------------------------------------------------------------------
+Distance d=3:
+  DeepSets: 0.9166 ± 0.0000
+  GraphSAGE: 0.9835 ± 0.0000
+  Difference: +0.0669
+  p-value: 0.000000 (significant)
+  Effect size: -1.3733
+
+Distance d=5:
+  DeepSets: 0.9189 ± 0.0000
+  GraphSAGE: 0.9695 ± 0.0000
+  Difference: +0.0506
+  p-value: 0.000000 (significant)
+  Effect size: -0.6751
+
+Distance d=7:
+  DeepSets: 0.8281 ± 0.0000
+  GraphSAGE: 0.9143 ± 0.0000
+  Difference: +0.0861
+  p-value: 0.000000 (significant)
+  Effect size: -0.9929
+
+Distance d=9:
+  DeepSets: 0.5535 ± 0.0000
+  GraphSAGE: 0.7905 ± 0.0000
+  Difference: +0.2370
+  p-value: 0.000000 (significant)
+  Effect size: -5.7264
+
+Distance d=11:
+  DeepSets: 0.5318 ± 0.0000
+  GraphSAGE: 0.6816 ± 0.0000
+  Difference: +0.1497
+  p-value: 0.000000 (significant)
+  Effect size: -4.6683
+
+Distance d=13:
+  DeepSets: 0.5229 ± 0.0000
+  GraphSAGE: 0.5996 ± 0.0000
+  Difference: +0.0766
+  p-value: 0.000000 (significant)
+  Effect size: -3.3804
+
+FINAL VERDICT
+--------------------------------------------------------------------------------
+
+================================================================================
