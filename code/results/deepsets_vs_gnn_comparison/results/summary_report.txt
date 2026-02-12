@@ -1,51 +1,51 @@
 ================================================================================
 DEEPSETS vs GRAPH NEURAL NETWORK COMPARISON REPORT
 ================================================================================
-Generated: 2026-02-08 14:07:04
+Generated: 2026-02-12 09:16:07
 
 PER-DISTANCE SUMMARY
 --------------------------------------------------------------------------------
 Distance d=3:
-  DeepSets: 0.9166 ± 0.0000
-  GraphSAGE: 0.9835 ± 0.0000
-  Difference: +0.0669
+  DeepSets: 0.9181 ± 0.0000
+  GraphSAGE: 0.9837 ± 0.0000
+  Difference: +0.0656
   p-value: 0.000000 (significant)
-  Effect size: -1.3733
+  Effect size: -1.3640
 
 Distance d=5:
-  DeepSets: 0.9189 ± 0.0000
-  GraphSAGE: 0.9695 ± 0.0000
-  Difference: +0.0506
+  DeepSets: 0.9212 ± 0.0000
+  GraphSAGE: 0.9734 ± 0.0000
+  Difference: +0.0522
   p-value: 0.000000 (significant)
-  Effect size: -0.6751
+  Effect size: -0.6984
 
 Distance d=7:
-  DeepSets: 0.8281 ± 0.0000
-  GraphSAGE: 0.9143 ± 0.0000
-  Difference: +0.0861
+  DeepSets: 0.8219 ± 0.0000
+  GraphSAGE: 0.9117 ± 0.0000
+  Difference: +0.0898
   p-value: 0.000000 (significant)
-  Effect size: -0.9929
+  Effect size: -1.0345
 
 Distance d=9:
-  DeepSets: 0.5535 ± 0.0000
-  GraphSAGE: 0.7905 ± 0.0000
-  Difference: +0.2370
+  DeepSets: 0.5499 ± 0.0000
+  GraphSAGE: 0.7951 ± 0.0000
+  Difference: +0.2452
   p-value: 0.000000 (significant)
-  Effect size: -5.7264
+  Effect size: -5.4587
 
 Distance d=11:
-  DeepSets: 0.5318 ± 0.0000
-  GraphSAGE: 0.6816 ± 0.0000
-  Difference: +0.1497
+  DeepSets: 0.5349 ± 0.0000
+  GraphSAGE: 0.6777 ± 0.0000
+  Difference: +0.1428
   p-value: 0.000000 (significant)
-  Effect size: -4.6683
+  Effect size: -4.5981
 
 Distance d=13:
-  DeepSets: 0.5229 ± 0.0000
-  GraphSAGE: 0.5996 ± 0.0000
-  Difference: +0.0766
+  DeepSets: 0.5257 ± 0.0000
+  GraphSAGE: 0.6078 ± 0.0000
+  Difference: +0.0821
   p-value: 0.000000 (significant)
-  Effect size: -3.3804
+  Effect size: -3.4764
 
 FINAL VERDICT
 --------------------------------------------------------------------------------
