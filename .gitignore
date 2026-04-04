@@ -3,6 +3,18 @@ requirements.txt
 /code/nn_datasets/
 /code/deepsets/extrapolation/cache/
 
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# macOS
+.DS_Store
+
+# IDE / editor
+.vscode/
+.cursor/
+
 # Windows
 desktop.ini
 *.ini
