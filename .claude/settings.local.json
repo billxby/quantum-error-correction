@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3:*)",
+      "Bash(python:*)",
+      "Bash(PYTHONUTF8=1 python _insert_cells.py)",
+      "Bash(PYTHONUTF8=1 python _fix_cell.py)",
+      "Bash(PYTHONUTF8=1 python _fix_cell2.py)",
+      "Bash(rm _fix_cell2.py)",
+      "Bash(PYTHONUTF8=1 python _fix_cell3.py)",
+      "Bash(rm _fix_cell3.py)"
+    ]
+  }
+}
