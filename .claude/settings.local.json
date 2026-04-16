@@ -8,7 +8,12 @@
       "Bash(PYTHONUTF8=1 python _fix_cell2.py)",
       "Bash(rm _fix_cell2.py)",
       "Bash(PYTHONUTF8=1 python _fix_cell3.py)",
-      "Bash(rm _fix_cell3.py)"
+      "Bash(rm _fix_cell3.py)",
+      "Bash(find \"/g/My Drive/Research/QEC/quantum-error-correction/quantum-error-correction/code\" -name \"*.py\" -type f -exec basename {} \\\\;)",
+      "Bash(xargs grep *)",
+      "Bash(grep -o \"plt\\\\\\\\.loglog\\\\|plt\\\\\\\\.plot\\\\|plt\\\\\\\\.savefig\\\\|plt\\\\\\\\.figure\" \"/g/My Drive/Research/QEC/quantum-error-correction/quantum-error-correction/code/results/deepsets_vs_gnn_comparison/comparison.ipynb\")",
+      "Bash(grep \"\\\\.pt$\")",
+      "Bash(cd \"g:\\\\\\\\My Drive\\\\\\\\Research\\\\\\\\QEC\\\\\\\\quantum-error-correction\\\\\\\\quantum-error-correction\")"
     ]
   }
 }
