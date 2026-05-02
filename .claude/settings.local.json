@@ -13,7 +13,9 @@
       "Bash(xargs grep *)",
       "Bash(grep -o \"plt\\\\\\\\.loglog\\\\|plt\\\\\\\\.plot\\\\|plt\\\\\\\\.savefig\\\\|plt\\\\\\\\.figure\" \"/g/My Drive/Research/QEC/quantum-error-correction/quantum-error-correction/code/results/deepsets_vs_gnn_comparison/comparison.ipynb\")",
       "Bash(grep \"\\\\.pt$\")",
-      "Bash(cd \"g:\\\\\\\\My Drive\\\\\\\\Research\\\\\\\\QEC\\\\\\\\quantum-error-correction\\\\\\\\quantum-error-correction\")"
+      "Bash(cd \"g:\\\\\\\\My Drive\\\\\\\\Research\\\\\\\\QEC\\\\\\\\quantum-error-correction\\\\\\\\quantum-error-correction\")",
+      "Bash(xargs -I{} sh -c 'echo \"== {} ==\"; head -2 \"{}\"')",
+      "Bash(/Library/Frameworks/Python.framework/Versions/3.12/bin/python3 -c ' *)"
     ]
   }
 }
