@@ -4,6 +4,7 @@ import math
 from pathlib import Path
 
 import matplotlib.pyplot as plt
+from matplotlib.backends.backend_pdf import PdfPages
 from matplotlib.lines import Line2D
 
 
@@ -90,110 +91,145 @@ def plot_supplementary(data, output_path):
         for idx, d in enumerate(distances)
     ]
 
-    fig_gnn, gnn_ax = plt.subplots(figsize=(11, 8.5))
-    for idx, d in enumerate(distances):
-        gnn_points = [(p, l) for p, l in data[d]["GraphSAGE"] if l > 0]
-        if not gnn_points:
-            continue
-        color = colors[idx % len(colors)]
-        gnn_p, gnn_l = zip(*gnn_points)
-        gnn_ax.loglog(
-            gnn_p,
-            gnn_l,
-            color=color,
-            linewidth=2.0,
-            label=f"d={d}",
-        )
+    def style_page(fig, ax, figure_title):
+        ax.set_title(figure_title, fontsize=12)
+        ax.grid(True, which="both", linestyle=":", linewidth=0.7)
+        fig.subplots_adjust(top=0.90, bottom=0.22)
 
-    gnn_ax.set_title("GraphSAGE", fontsize=16)
-    gnn_ax.set_xlabel("Physical error rate $p$")
-    gnn_ax.set_ylabel("Logical error rate $p_L$")
-    gnn_ax.grid(True, which="both", linestyle=":", linewidth=0.7)
-    gnn_ax.legend(
-        handles=distance_handles,
-        loc="upper left",
-        frameon=False,
-        title="Distance",
-    )
-    fig_gnn.tight_layout()
-    fig_gnn.savefig(output_path.with_name(f"{output_path.stem}_graphsage{output_path.suffix}"), dpi=300)
-    plt.close(fig_gnn)
+    png_prefix = output_path.with_suffix("")
 
-    fig_mwpm, mwpm_ax = plt.subplots(figsize=(11, 8.5))
-    for idx, d in enumerate(distances):
-        mwpm_points = [(p, l) for p, l in data[d]["MWPM"] if l > 0]
-        if not mwpm_points:
-            continue
-        color = colors[idx % len(colors)]
-        mwpm_p, mwpm_l = zip(*mwpm_points)
-        mwpm_ax.loglog(
-            mwpm_p,
-            mwpm_l,
-            color=color,
-            linewidth=2.0,
-            label=f"d={d}",
-        )
-
-    mwpm_ax.set_title("MWPM", fontsize=16)
-    mwpm_ax.set_xlabel("Physical error rate $p$")
-    mwpm_ax.set_ylabel("Logical error rate $p_L$")
-    mwpm_ax.grid(True, which="both", linestyle=":", linewidth=0.7)
-    mwpm_ax.legend(
-        handles=distance_handles,
-        loc="upper left",
-        frameon=False,
-        title="Distance",
-    )
-    fig_mwpm.tight_layout()
-    fig_mwpm.savefig(output_path.with_name(f"{output_path.stem}_mwpm{output_path.suffix}"), dpi=300)
-    plt.close(fig_mwpm)
-
-    gnn_lambda = compute_lambda_series(data, distances, "GraphSAGE", pairs)
-    mwpm_lambda = compute_lambda_series(data, distances, "MWPM", pairs)
-
-    fig_lambda, lambda_ax = plt.subplots(figsize=(11, 8.5))
-    pair_colors = plt.cm.tab20.colors
-    for idx, pair in enumerate(pairs):
-        color = pair_colors[idx % len(pair_colors)]
-        gnn_points = gnn_lambda.get(pair, [])
-        mwpm_points = mwpm_lambda.get(pair, [])
-
-        if gnn_points:
-            p_vals, lambda_vals = zip(*gnn_points)
-            lambda_ax.semilogx(
-                p_vals,
-                lambda_vals,
+    with PdfPages(output_path) as pdf:
+        fig_gnn, gnn_ax = plt.subplots(figsize=(11, 8.5))
+        for idx, d in enumerate(distances):
+            gnn_points = [(p, l) for p, l in data[d]["GraphSAGE"] if l > 0]
+            if not gnn_points:
+                continue
+            color = colors[idx % len(colors)]
+            gnn_p, gnn_l = zip(*gnn_points)
+            gnn_ax.loglog(
+                gnn_p,
+                gnn_l,
                 color=color,
                 linewidth=2.0,
-                label=f"d{pair[0]}-d{pair[1]} GraphSAGE",
+                label=f"d={d}",
             )
 
-        if mwpm_points:
-            p_vals, lambda_vals = zip(*mwpm_points)
-            lambda_ax.semilogx(
-                p_vals,
-                lambda_vals,
+        gnn_ax.set_xlabel("Physical error rate $p$")
+        gnn_ax.set_ylabel("Logical error rate $p_L$")
+        gnn_ax.legend(
+            handles=distance_handles,
+            loc="upper left",
+            frameon=False,
+            title="Distance",
+        )
+        style_page(fig_gnn, gnn_ax, "GraphSAGE: $p_L$ vs $p$ (log-log)")
+        fig_gnn.savefig(
+            png_prefix.with_name(f"{png_prefix.name}_graphsage.png"),
+            dpi=300,
+            bbox_inches="tight",
+            pad_inches=0.05,
+        )
+        gnn_caption = (
+            "Figure A8. GraphSAGE specialist decoder logical error rate across physical error rates for distances d=3–13.\n"
+            "Points with $p_L=0$ are omitted due to the log scale; lower curves indicate better suppression."
+        )
+        fig_gnn.text(0.5, 0.06, gnn_caption, ha="center", va="bottom", fontsize=10)
+        pdf.savefig(fig_gnn)
+        plt.close(fig_gnn)
+
+        fig_mwpm, mwpm_ax = plt.subplots(figsize=(11, 8.5))
+        for idx, d in enumerate(distances):
+            mwpm_points = [(p, l) for p, l in data[d]["MWPM"] if l > 0]
+            if not mwpm_points:
+                continue
+            color = colors[idx % len(colors)]
+            mwpm_p, mwpm_l = zip(*mwpm_points)
+            mwpm_ax.loglog(
+                mwpm_p,
+                mwpm_l,
                 color=color,
-                linestyle="--",
-                linewidth=1.8,
-                label=f"d{pair[0]}-d{pair[1]} MWPM",
+                linewidth=2.0,
+                label=f"d={d}",
             )
 
-    lambda_ax.axhline(1.0, color="black", linewidth=1.0, linestyle=":")
-    lambda_ax.set_title("Lambda between distances ($\\Lambda = p_L(d_1) / p_L(d_2)$)", fontsize=14)
-    lambda_ax.set_xlabel("Physical error rate $p$")
-    lambda_ax.set_ylabel("$\\Lambda$")
-    lambda_ax.grid(True, which="both", linestyle=":", linewidth=0.7)
-    lambda_ax.legend(loc="upper left", frameon=False, fontsize=9, ncol=2)
+        mwpm_ax.set_xlabel("Physical error rate $p$")
+        mwpm_ax.set_ylabel("Logical error rate $p_L$")
+        mwpm_ax.legend(
+            handles=distance_handles,
+            loc="upper left",
+            frameon=False,
+            title="Distance",
+        )
+        style_page(fig_mwpm, mwpm_ax, "MWPM: $p_L$ vs $p$ (log-log)")
+        fig_mwpm.savefig(
+            png_prefix.with_name(f"{png_prefix.name}_mwpm.png"),
+            dpi=300,
+            bbox_inches="tight",
+            pad_inches=0.05,
+        )
+        mwpm_caption = (
+            "Figure A9. MWPM baseline logical error rate across physical error rates for distances d=3–13.\n"
+            "Zero-error points are omitted on the log scale; crossover near $p \u2248 7.5\u00d710^{-3}$ marks the threshold region."
+        )
+        fig_mwpm.text(0.5, 0.06, mwpm_caption, ha="center", va="bottom", fontsize=10)
+        pdf.savefig(fig_mwpm)
+        plt.close(fig_mwpm)
 
-    caption = (
-        "GraphSAGE shows $\\Lambda < 1$ across tested $p$; MWPM shows $\\Lambda > 1$ below threshold.\n"
-        "Closing the gap requires soft information + circuit-level training (see future work)."
-    )
-    fig_lambda.text(0.5, 0.02, caption, ha="center", va="bottom", fontsize=10)
-    fig_lambda.tight_layout(rect=(0, 0.06, 1, 1))
-    fig_lambda.savefig(output_path.with_name(f"{output_path.stem}_lambda{output_path.suffix}"), dpi=300)
-    plt.close(fig_lambda)
+        gnn_lambda = compute_lambda_series(data, distances, "GraphSAGE", pairs)
+        mwpm_lambda = compute_lambda_series(data, distances, "MWPM", pairs)
+
+        fig_lambda, lambda_ax = plt.subplots(figsize=(11, 8.5))
+        pair_colors = plt.cm.tab20.colors
+        for idx, pair in enumerate(pairs):
+            color = pair_colors[idx % len(pair_colors)]
+            gnn_points = gnn_lambda.get(pair, [])
+            mwpm_points = mwpm_lambda.get(pair, [])
+
+            if gnn_points:
+                p_vals, lambda_vals = zip(*gnn_points)
+                lambda_ax.semilogx(
+                    p_vals,
+                    lambda_vals,
+                    color=color,
+                    linewidth=2.0,
+                    label=f"d{pair[0]}-d{pair[1]} GraphSAGE",
+                )
+
+            if mwpm_points:
+                p_vals, lambda_vals = zip(*mwpm_points)
+                lambda_ax.semilogx(
+                    p_vals,
+                    lambda_vals,
+                    color=color,
+                    linestyle="--",
+                    linewidth=1.8,
+                    label=f"d{pair[0]}-d{pair[1]} MWPM",
+                )
+
+        lambda_ax.axhline(1.0, color="black", linewidth=1.0, linestyle=":")
+        lambda_ax.set_xlabel("Physical error rate $p$")
+        lambda_ax.set_ylabel("$\\Lambda$")
+        lambda_ax.legend(
+            loc="upper center",
+            bbox_to_anchor=(0.5, -0.14),
+            frameon=False,
+            fontsize=9,
+            ncol=3,
+        )
+        style_page(fig_lambda, lambda_ax, "Lambda between distances ($\\Lambda = p_L(d_1) / p_L(d_2)$)")
+        fig_lambda.savefig(
+            png_prefix.with_name(f"{png_prefix.name}_lambda.png"),
+            dpi=300,
+            bbox_inches="tight",
+            pad_inches=0.05,
+        )
+        lambda_caption = (
+            "Figure A10. Error suppression factor $\\Lambda$ between adjacent distances for GraphSAGE (solid) and MWPM (dashed).\n"
+            "Values below 1 indicate improved suppression with distance; the dotted line marks $\\Lambda = 1$."
+        )
+        fig_lambda.text(0.5, 0.02, lambda_caption, ha="center", va="bottom", fontsize=10)
+        pdf.savefig(fig_lambda)
+        plt.close(fig_lambda)
 
 
 def main():
@@ -205,7 +241,7 @@ def main():
     )
     parser.add_argument(
         "--output",
-        default="supplementary_lambda_scaling.pdf",
+        default="references/appendix_supplementary_figures.pdf",
         help="Path to the output PDF.",
     )
     args = parser.parse_args()
